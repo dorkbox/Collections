@@ -36,7 +36,7 @@ plugins {
 
 object Extras {
     // set for the project
-    const val description = "Information about the system, Java runtime, OS, Window Manager, and Desktop Environment."
+    const val description = "Niche collections to augment what is already available."
     const val group = "com.dorkbox"
     const val version = "1.0"
 
