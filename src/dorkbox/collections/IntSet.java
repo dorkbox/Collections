@@ -19,7 +19,6 @@
 package dorkbox.collections;
 
 import java.util.NoSuchElementException;
-import java.util.Random;
 
 /** An unordered set that uses int keys. This implementation uses cuckoo hashing using 3 hashes, random walking, and a small stash
  * for problematic keys. No allocation is done except when growing the table size. <br>
@@ -29,7 +28,9 @@ import java.util.Random;
  * size.
  * @author Nathan Sweet */
 public class IntSet {
-	private static final int PRIME1 = 0xbe1f14b1;
+    public static final String version = Collections.version;
+
+    private static final int PRIME1 = 0xbe1f14b1;
 	private static final int PRIME2 = 0xb4b82e39;
 	private static final int PRIME3 = 0xced1c241;
 	private static final int EMPTY = 0;
@@ -63,7 +64,7 @@ public class IntSet {
 	 * @param initialCapacity If not a power of two, it is increased to the next nearest power of two. */
 	public IntSet (int initialCapacity, float loadFactor) {
 		if (initialCapacity < 0) throw new IllegalArgumentException("initialCapacity must be >= 0: " + initialCapacity);
-		initialCapacity = MathUtil.nextPowerOfTwo((int)Math.ceil(initialCapacity / loadFactor));
+		initialCapacity = Collections.nextPowerOfTwo((int)Math.ceil(initialCapacity / loadFactor));
 		if (initialCapacity > 1 << 30) throw new IllegalArgumentException("initialCapacity is too large: " + initialCapacity);
 		capacity = initialCapacity;
 
@@ -211,7 +212,7 @@ public class IntSet {
 		int i = 0, pushIterations = this.pushIterations;
 		do {
 			// Replace the key and value for one of the hashes.
-			switch (MathUtil.random.nextInt(2)) {
+			switch (Collections.INSTANCE.random(2)) {
 			case 0:
 				evictedKey = key1;
 				keyTable[index1] = insertKey;
@@ -336,7 +337,7 @@ public class IntSet {
 		if (maximumCapacity < 0) throw new IllegalArgumentException("maximumCapacity must be >= 0: " + maximumCapacity);
 		if (size > maximumCapacity) maximumCapacity = size;
 		if (capacity <= maximumCapacity) return;
-		maximumCapacity = MathUtil.nextPowerOfTwo(maximumCapacity);
+		maximumCapacity = Collections.nextPowerOfTwo(maximumCapacity);
 		resize(maximumCapacity);
 	}
 
@@ -394,7 +395,7 @@ public class IntSet {
 	public void ensureCapacity (int additionalCapacity) {
 		if (additionalCapacity < 0) throw new IllegalArgumentException("additionalCapacity must be >= 0: " + additionalCapacity);
 		int sizeNeeded = size + additionalCapacity;
-		if (sizeNeeded >= threshold) resize(MathUtil.nextPowerOfTwo((int)Math.ceil(sizeNeeded / loadFactor)));
+		if (sizeNeeded >= threshold) resize(Collections.nextPowerOfTwo((int)Math.ceil(sizeNeeded / loadFactor)));
 	}
 
 	private void resize (int newSize) {

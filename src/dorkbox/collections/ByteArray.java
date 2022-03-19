@@ -24,6 +24,8 @@ import java.util.Arrays;
  * avoids a memory copy when removing elements (the last element is moved to the removed element's position).
  * @author Nathan Sweet */
 public class ByteArray {
+    public static final String version = Collections.version;
+
 	public byte[] items;
 	public int size;
 	public boolean ordered;
@@ -326,7 +328,7 @@ public class ByteArray {
 	public void shuffle () {
 		byte[] items = this.items;
 		for (int i = size - 1; i >= 0; i--) {
-			int ii = MathUtil.random(i);
+			int ii = Collections.INSTANCE.random(i);
 			byte temp = items[i];
 			items[i] = items[ii];
 			items[ii] = temp;
@@ -342,7 +344,7 @@ public class ByteArray {
 	/** Returns a random item from the array, or zero if the array is empty. */
 	public byte random () {
 		if (size == 0) return 0;
-		return items[MathUtil.random(0, size - 1)];
+		return items[Collections.random(0, size - 1)];
 	}
 
 	public byte[] toArray () {

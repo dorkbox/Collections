@@ -28,7 +28,9 @@ import java.util.NoSuchElementException;
  * @author Nathan Sweet */
 @SuppressWarnings({"unchecked", "rawtypes"})
 public class OrderedSet<T> extends ObjectSet<T> {
-	final Array<T> items;
+    public static final String version = Collections.version;
+
+    final Array<T> items;
 	OrderedSetIterator iterator1, iterator2;
 
 	public OrderedSet () {

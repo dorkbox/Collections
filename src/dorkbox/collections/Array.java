@@ -28,6 +28,8 @@ import java.util.NoSuchElementException;
  * @author Nathan Sweet */
 @SuppressWarnings({"unchecked", "rawtypes", "SuspiciousSystemArraycopy", "unused", "NullableProblems", "DuplicatedCode"})
 public class Array<T> implements Iterable<T> {
+    public static final String version = Collections.version;
+
 	/** Provides direct access to the underlying array. If the Array's generic type is not Object, this field may only be accessed
 	 * if the {@link Array#Array(boolean, int, Class)} constructor was used. */
 	public T[] items;
@@ -438,7 +440,7 @@ public class Array<T> implements Iterable<T> {
 	public void shuffle () {
 		T[] items = this.items;
 		for (int i = size - 1; i >= 0; i--) {
-			int ii = MathUtil.random(i);
+			int ii = Collections.INSTANCE.random(i);
 			T temp = items[i];
 			items[i] = items[ii];
 			items[ii] = temp;
@@ -477,7 +479,7 @@ public class Array<T> implements Iterable<T> {
 	/** Returns a random item from the array, or null if the array is empty. */
 	public T random () {
 		if (size == 0) return null;
-		return items[MathUtil.random(0, size - 1)];
+		return items[Collections.random(0, size - 1)];
 	}
 
 	/** Returns the items as an array. Note the array is typed, so the {@link #Array(Class)} constructor must have been used.

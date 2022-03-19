@@ -31,6 +31,8 @@ import dorkbox.collections.ObjectMap.Entry;
  * @author Nathan Sweet */
 @SuppressWarnings({"unchecked", "rawtypes", "unused", "SuspiciousSystemArraycopy", "NullableProblems"})
 public class ArrayMap<K, V> implements Iterable<Entry<K, V>> {
+    public static final String version = Collections.version;
+
 	public K[] keys;
 	public V[] values;
 	public int size;
@@ -384,7 +386,7 @@ public class ArrayMap<K, V> implements Iterable<Entry<K, V>> {
 
 	public void shuffle () {
 		for (int i = size - 1; i >= 0; i--) {
-			int ii = MathUtil.random(i);
+			int ii = Collections.INSTANCE.random(i);
 			K tempKey = keys[i];
 			keys[i] = keys[ii];
 			keys[ii] = tempKey;

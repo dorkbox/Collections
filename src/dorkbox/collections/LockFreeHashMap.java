@@ -39,6 +39,8 @@ import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
  */
 public final
 class LockFreeHashMap<K, V> implements Map<K, V>, Cloneable, Serializable {
+    public static final String version = dorkbox.collections.Collections.version;
+
     // Recommended for best performance while adhering to the "single writer principle". Must be static-final
     private static final AtomicReferenceFieldUpdater<LockFreeHashMap, HashMap> mapREF = AtomicReferenceFieldUpdater.newUpdater(
             LockFreeHashMap.class,

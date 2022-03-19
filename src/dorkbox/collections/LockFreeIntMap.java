@@ -45,6 +45,8 @@ import dorkbox.collections.IntMap.*;
 @SuppressWarnings("unchecked")
 public final
 class LockFreeIntMap<V> implements Cloneable, Serializable {
+    public static final String version = Collections.version;
+
     // Recommended for best performance while adhering to the "single writer principle". Must be static-final
     private static final AtomicReferenceFieldUpdater<LockFreeIntMap, IntMap> mapREF = AtomicReferenceFieldUpdater.newUpdater(
             LockFreeIntMap.class,

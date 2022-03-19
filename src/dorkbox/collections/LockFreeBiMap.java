@@ -39,6 +39,8 @@ import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
 @SuppressWarnings("WeakerAccess")
 public final
 class LockFreeBiMap<K, V> {
+    public static final String version = Collections.version;
+
     // Recommended for best performance while adhering to the "single writer principle". Must be static-final
     private static final AtomicReferenceFieldUpdater<LockFreeBiMap, HashMap> forwardREF =
                     AtomicReferenceFieldUpdater.newUpdater(LockFreeBiMap.class,

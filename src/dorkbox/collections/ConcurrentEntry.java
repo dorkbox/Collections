@@ -25,6 +25,8 @@ package dorkbox.collections;
  */
 public
 class ConcurrentEntry<T> {
+    public static final String version = Collections.version;
+
     private final T value;
 
     private volatile ConcurrentEntry<T> next;

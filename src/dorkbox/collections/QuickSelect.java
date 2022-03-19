@@ -25,7 +25,9 @@ import java.util.Comparator;
  * http://en.wikipedia.org/wiki/Quickselect
  * @author Jon Renner */
 public class QuickSelect<T> {
-	private T[] array;
+    public static final String version = Collections.version;
+
+    private T[] array;
 	private Comparator<? super T> comp;
 
 	public int select (T[] items, Comparator<T> comp, int n, int size) {

@@ -21,6 +21,8 @@ package dorkbox.collections;
  * conjunction with a comparator that simply returns {@code ((Comparable)first).compareTo(Second)}. If this is the case, you are
  * better off deleting ComparableTimSort to eliminate the code duplication. (See Arrays.java for details.) */
 class ComparableTimSort {
+    public static final String version = Collections.version;
+
 	/** This is the minimum sized sequence that will be merged. Shorter sequences will be lengthened by calling binarySort. If the
 	 * entire array is less than this length, no merges will be performed.
 	 *

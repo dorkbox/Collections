@@ -34,6 +34,8 @@ import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
  */
 public
 class LockFreeObjectIntMap<V> {
+    public static final String version = Collections.version;
+
     // Recommended for best performance while adhering to the "single writer principle". Must be static-final
     private static final AtomicReferenceFieldUpdater<LockFreeObjectIntMap, ObjectIntMap> mapREF = AtomicReferenceFieldUpdater.newUpdater(
             LockFreeObjectIntMap.class,

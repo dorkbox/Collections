@@ -24,6 +24,8 @@ import java.util.Arrays;
  * class avoids a memory copy when removing elements (the last element is moved to the removed element's position).
  * @author Nathan Sweet */
 public class CharArray {
+    public static final String version = Collections.version;
+
 	public char[] items;
 	public int size;
 	public boolean ordered;
@@ -326,7 +328,7 @@ public class CharArray {
 	public void shuffle () {
 		char[] items = this.items;
 		for (int i = size - 1; i >= 0; i--) {
-			int ii = MathUtil.random(i);
+			int ii = Collections.INSTANCE.random(i);
 			char temp = items[i];
 			items[i] = items[ii];
 			items[ii] = temp;
@@ -342,7 +344,7 @@ public class CharArray {
 	/** Returns a random item from the array, or zero if the array is empty. */
 	public char random () {
 		if (size == 0) return 0;
-		return items[MathUtil.random(0, size - 1)];
+		return items[Collections.random(0, size - 1)];
 	}
 
 	public char[] toArray () {

@@ -39,7 +39,9 @@ import java.util.Comparator;
  * in place, using a binary insertion sort. */
 @SuppressWarnings("unchecked")
 class TimSort<T> {
-	/** This is the minimum sized sequence that will be merged. Shorter sequences will be lengthened by calling binarySort. If the
+    public static final String version = Collections.version;
+
+    /** This is the minimum sized sequence that will be merged. Shorter sequences will be lengthened by calling binarySort. If the
 	 * entire array is less than this length, no merges will be performed.
 	 *
 	 * This constant should be a power of two. It was 64 in Tim Peter's C implementation, but 32 was empirically determined to work

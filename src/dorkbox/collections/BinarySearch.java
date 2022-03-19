@@ -43,6 +43,7 @@ import java.util.List;
  * @author Tim Boudreau
  */
 public class BinarySearch<T> {
+    public static final String version = Collections.version;
 
     private final Evaluator<T> eval;
     private final Indexed<T> indexed;

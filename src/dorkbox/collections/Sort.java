@@ -23,7 +23,9 @@ import java.util.Comparator;
  * @author Nathan Sweet */
 @SuppressWarnings({"RedundantCast", "unchecked", "rawtypes"})
 public class Sort {
-	static private Sort instance;
+    public static final String version = Collections.version;
+
+    static private Sort instance;
 
 	private TimSort timSort;
 	private ComparableTimSort comparableTimSort;

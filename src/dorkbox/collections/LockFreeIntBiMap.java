@@ -40,6 +40,8 @@ import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
  */
 public
 class LockFreeIntBiMap<V> {
+    public static final String version = Collections.version;
+
     // Recommended for best performance while adhering to the "single writer principle". Must be static-final
     private static final AtomicReferenceFieldUpdater<LockFreeIntBiMap, IntMap> forwardREF = AtomicReferenceFieldUpdater.newUpdater(
             LockFreeIntBiMap.class,

@@ -30,7 +30,9 @@ import java.util.NoSuchElementException;
  * @author Nathan Sweet */
 @SuppressWarnings({"NullableProblems", "rawtypes", "unchecked"})
 public class LongMap<V> implements Iterable<LongMap.Entry<V>> {
-	private static final int PRIME1 = 0xbe1f14b1;
+    public static final String version = Collections.version;
+
+    private static final int PRIME1 = 0xbe1f14b1;
 	private static final int PRIME2 = 0xb4b82e39;
 	private static final int PRIME3 = 0xced1c241;
 	private static final int EMPTY = 0;
@@ -68,7 +70,7 @@ public class LongMap<V> implements Iterable<LongMap.Entry<V>> {
 	 * @param initialCapacity If not a power of two, it is increased to the next nearest power of two. */
 	public LongMap (int initialCapacity, float loadFactor) {
 		if (initialCapacity < 0) throw new IllegalArgumentException("initialCapacity must be >= 0: " + initialCapacity);
-		initialCapacity = MathUtil.nextPowerOfTwo((int)Math.ceil(initialCapacity / loadFactor));
+		initialCapacity = Collections.nextPowerOfTwo((int)Math.ceil(initialCapacity / loadFactor));
 		if (initialCapacity > 1 << 30) throw new IllegalArgumentException("initialCapacity is too large: " + initialCapacity);
 		capacity = initialCapacity;
 
@@ -224,7 +226,7 @@ public class LongMap<V> implements Iterable<LongMap.Entry<V>> {
 		int i = 0, pushIterations = this.pushIterations;
 		do {
 			// Replace the key and value for one of the hashes.
-			switch (MathUtil.random(2)) {
+			switch (Collections.INSTANCE.random(2)) {
 			case 0:
 				evictedKey = key1;
 				evictedValue = valueTable[index1];
@@ -412,7 +414,7 @@ public class LongMap<V> implements Iterable<LongMap.Entry<V>> {
 		if (maximumCapacity < 0) throw new IllegalArgumentException("maximumCapacity must be >= 0: " + maximumCapacity);
 		if (size > maximumCapacity) maximumCapacity = size;
 		if (capacity <= maximumCapacity) return;
-		maximumCapacity = MathUtil.nextPowerOfTwo(maximumCapacity);
+		maximumCapacity = Collections.nextPowerOfTwo(maximumCapacity);
 		resize(maximumCapacity);
 	}
 
@@ -511,7 +513,7 @@ public class LongMap<V> implements Iterable<LongMap.Entry<V>> {
 	public void ensureCapacity (int additionalCapacity) {
 		if (additionalCapacity < 0) throw new IllegalArgumentException("additionalCapacity must be >= 0: " + additionalCapacity);
 		int sizeNeeded = size + additionalCapacity;
-		if (sizeNeeded >= threshold) resize(MathUtil.nextPowerOfTwo((int)Math.ceil(sizeNeeded / loadFactor)));
+		if (sizeNeeded >= threshold) resize(Collections.nextPowerOfTwo((int)Math.ceil(sizeNeeded / loadFactor)));
 	}
 
 	private void resize (int newSize) {

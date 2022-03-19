@@ -13,30 +13,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package dorkbox.collections;
+package dorkbox.collections
 
+import java.util.*
 
-import java.util.Random;
+object Collections {
+    /**
+     * Gets the version number.
+     */
+    const val version = "1.0"
 
-public
-class MathUtil {
-    public static final Random random = new Random();
-
-    /** Returns a random number between 0 (inclusive) and the specified value (inclusive). */
-    static public int random (int range) {
-        return random.nextInt(range + 1);
+    init {
+        // Add this project to the updates system, which verifies this class + UUID + version information
+        dorkbox.updates.Updates.add(java.util.Collections::class.java, "7a4be173d7fd48e4a09543cc572eb903", version)
     }
 
-    /** Returns a random number between start (inclusive) and end (inclusive). */
-    static public int random (int start, int end) {
-        return start + random.nextInt(end - start + 1);
+    internal val random = Random()
+
+    /** Returns a random number between 0 (inclusive) and the specified value (inclusive).  */
+    fun random(range: Int): Int {
+        return random.nextInt(range + 1)
+    }
+
+    /** Returns a random number between start (inclusive) and end (inclusive).  */
+    @JvmStatic
+    fun random(start: Int, end: Int): Int {
+        return start + random.nextInt(end - start + 1)
     }
 
     /**
      * Returns the next power of two. Returns the specified value if the value is already a power of two.
      */
-    public static
-    int nextPowerOfTwo(int value) {
-        return 1 << (32 - Integer.numberOfLeadingZeros(value - 1));
+    @JvmStatic
+    fun nextPowerOfTwo(value: Int): Int {
+        return 1 shl 32 - Integer.numberOfLeadingZeros(value - 1)
     }
 }

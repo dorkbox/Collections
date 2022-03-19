@@ -39,6 +39,8 @@ import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
  */
 public final
 class LockFreeArrayList<E> implements List<E>, RandomAccess, Cloneable, Serializable {
+    public static final String version = Collections.version;
+
     // Recommended for best performance while adhering to the "single writer principle". Must be static-final
     private static final AtomicReferenceFieldUpdater<LockFreeArrayList, ArrayList> listRef =
             AtomicReferenceFieldUpdater.newUpdater(LockFreeArrayList.class,
@@ -107,9 +109,9 @@ class LockFreeArrayList<E> implements List<E>, RandomAccess, Cloneable, Serializ
     }
 
 
+    @SuppressWarnings("unchecked")
     public
     E get(int index) {
-        //noinspection unchecked
         return (E) listRef.get(this).get(index);
     }
 
@@ -156,6 +158,7 @@ class LockFreeArrayList<E> implements List<E>, RandomAccess, Cloneable, Serializ
 
 
     // lock-free get
+    @SuppressWarnings("unchecked")
     @Override
     public
     ListIterator<E> listIterator() {
@@ -163,6 +166,7 @@ class LockFreeArrayList<E> implements List<E>, RandomAccess, Cloneable, Serializ
     }
 
     // lock-free get
+    @SuppressWarnings("unchecked")
     @Override
     public
     ListIterator<E> listIterator(final int index) {
@@ -170,6 +174,7 @@ class LockFreeArrayList<E> implements List<E>, RandomAccess, Cloneable, Serializ
     }
 
     // lock-free get
+    @SuppressWarnings("unchecked")
     @Override
     public
     List<E> subList(final int startIndex, final int endIndex) {
@@ -185,10 +190,10 @@ class LockFreeArrayList<E> implements List<E>, RandomAccess, Cloneable, Serializ
     }
 
     // lock-free get
+    @SuppressWarnings("unchecked")
     @Override
     public
     boolean containsAll(final Collection<?> collection) {
-        //noinspection unchecked
         return listRef.get(this).containsAll(collection);
     }
 
@@ -213,6 +218,7 @@ class LockFreeArrayList<E> implements List<E>, RandomAccess, Cloneable, Serializ
     }
 
     // lock-free get
+    @SuppressWarnings("unchecked")
     @Override
     public
     Iterator<E> iterator() {
@@ -227,10 +233,10 @@ class LockFreeArrayList<E> implements List<E>, RandomAccess, Cloneable, Serializ
     }
 
     // lock-free get
+    @SuppressWarnings("unchecked")
     @Override
     public
     <T> T[] toArray(final T[] targetArray) {
-        //noinspection unchecked
         return (T[]) listRef.get(this).toArray(targetArray);
     }
 

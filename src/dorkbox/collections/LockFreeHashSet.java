@@ -38,6 +38,8 @@ import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
  */
 public final
 class LockFreeHashSet<E> implements Set<E>, Cloneable, Serializable {
+    public static final String version = Collections.version;
+
     // Recommended for best performance while adhering to the "single writer principle". Must be static-final
     private static final AtomicReferenceFieldUpdater<LockFreeHashSet, Set> setREF =
             AtomicReferenceFieldUpdater.newUpdater(LockFreeHashSet.class,
@@ -71,6 +73,7 @@ class LockFreeHashSet<E> implements Set<E>, Cloneable, Serializable {
         return hashSet.add(element);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public
     boolean containsAll(final Collection<?> collection) {
@@ -133,10 +136,10 @@ class LockFreeHashSet<E> implements Set<E>, Cloneable, Serializable {
     }
 
     // lock-free get
+    @SuppressWarnings("unchecked")
     @Override
     public
     Iterator<E> iterator() {
-        //noinspection unchecked
         return setREF.get(this).iterator();
     }
 
@@ -148,10 +151,10 @@ class LockFreeHashSet<E> implements Set<E>, Cloneable, Serializable {
     }
 
     // lock-free get
+    @SuppressWarnings("unchecked")
     @Override
     public
     <T> T[] toArray(final T[] targetArray) {
-        //noinspection unchecked
         return (T[]) setREF.get(this).toArray(targetArray);
     }
 }

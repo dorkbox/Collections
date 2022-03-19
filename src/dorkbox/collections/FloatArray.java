@@ -19,12 +19,13 @@
 package dorkbox.collections;
 
 import java.util.Arrays;
-import java.util.Random;
 
 /** A resizable, ordered or unordered float array. Avoids the boxing that occurs with ArrayList<Float>. If unordered, this class
  * avoids a memory copy when removing elements (the last element is moved to the removed element's position).
  * @author Nathan Sweet */
 public class FloatArray {
+    public static final String version = Collections.version;
+
 	public float[] items;
 	public int size;
 	public boolean ordered;
@@ -327,7 +328,7 @@ public class FloatArray {
 	public void shuffle () {
 		float[] items = this.items;
 		for (int i = size - 1; i >= 0; i--) {
-			int ii = MathUtil.random(i);
+			int ii = Collections.INSTANCE.random(i);
 			float temp = items[i];
 			items[i] = items[ii];
 			items[ii] = temp;
@@ -343,7 +344,7 @@ public class FloatArray {
 	/** Returns a random item from the array, or zero if the array is empty. */
 	public float random () {
 		if (size == 0) return 0;
-		return items[MathUtil.random(0, size - 1)];
+		return items[Collections.random(0, size - 1)];
 	}
 
 	public float[] toArray () {

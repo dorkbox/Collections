@@ -26,6 +26,8 @@ import java.util.BitSet;
  * removing elements (the last element is moved to the removed element's position).
  * @author Nathan Sweet */
 public class BooleanArray {
+    public static final String version = Collections.version;
+
 	public boolean[] items;
 	public int size;
 	public boolean ordered;
@@ -281,7 +283,7 @@ public class BooleanArray {
 	public void shuffle () {
 		boolean[] items = this.items;
 		for (int i = size - 1; i >= 0; i--) {
-			int ii = MathUtil.random(i);
+			int ii = Collections.INSTANCE.random(i);
 			boolean temp = items[i];
 			items[i] = items[ii];
 			items[ii] = temp;
@@ -297,7 +299,7 @@ public class BooleanArray {
 	/** Returns a random item from the array, or false if the array is empty. */
 	public boolean random () {
 		if (size == 0) return false;
-		return items[MathUtil.random(0, size - 1)];
+		return items[Collections.random(0, size - 1)];
 	}
 
 	public boolean[] toArray () {

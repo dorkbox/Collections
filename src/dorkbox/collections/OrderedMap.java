@@ -28,7 +28,9 @@ import java.util.NoSuchElementException;
  * @author Nathan Sweet */
 @SuppressWarnings({"unchecked", "NullableProblems"})
 public class OrderedMap<K, V> extends ObjectMap<K, V> {
-	final Array<K> keys;
+    public static final String version = Collections.version;
+
+    final Array<K> keys;
 
 	private Entries entries1, entries2;
 	private Values values1, values2;

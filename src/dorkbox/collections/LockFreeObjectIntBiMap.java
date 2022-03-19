@@ -40,6 +40,8 @@ import dorkbox.collections.IntMap.*;
  */
 public
 class LockFreeObjectIntBiMap<V> {
+    public static final String version = Collections.version;
+
     // Recommended for best performance while adhering to the "single writer principle". Must be static-final
     private static final AtomicReferenceFieldUpdater<LockFreeObjectIntBiMap, ObjectIntMap> forwardREF = AtomicReferenceFieldUpdater.newUpdater(
             LockFreeObjectIntBiMap.class,

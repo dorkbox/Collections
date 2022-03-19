@@ -25,6 +25,8 @@ import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
 @SuppressWarnings("unchecked")
 public
 class ConcurrentIterator<T> {
+    public static final String version = Collections.version;
+
     /**
      * Specifies the load-factor for the IdentityMap used
      */

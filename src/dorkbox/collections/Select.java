@@ -34,7 +34,9 @@ import java.util.Comparator;
  * @author Jon Renner */
 @SuppressWarnings("unchecked")
 public class Select {
-	private static Select instance;
+    public static final String version = Collections.version;
+
+    private static Select instance;
 	private QuickSelect quickSelect;
 
 	/** Provided for convenience */

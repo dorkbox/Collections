@@ -20,7 +20,6 @@ package dorkbox.collections;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-import java.util.Random;
 
 
 /** An unordered map where the values are ints. This implementation is a cuckoo hash map using 3 hashes, random walking, and a
@@ -32,6 +31,8 @@ import java.util.Random;
  * @author Nathan Sweet */
 @SuppressWarnings({"unchecked", "NullableProblems"})
 public class ObjectIntMap<K> implements Iterable<ObjectIntMap.Entry<K>> {
+    public static final String version = Collections.version;
+
     private static final int PRIME1 = 0xbe1f14b1;
     private static final int PRIME2 = 0xb4b82e39;
     private static final int PRIME3 = 0xced1c241;
@@ -67,7 +68,7 @@ public class ObjectIntMap<K> implements Iterable<ObjectIntMap.Entry<K>> {
      * @param initialCapacity If not a power of two, it is increased to the next nearest power of two. */
     public ObjectIntMap (int initialCapacity, float loadFactor) {
         if (initialCapacity < 0) throw new IllegalArgumentException("initialCapacity must be >= 0: " + initialCapacity);
-        initialCapacity = MathUtil.nextPowerOfTwo((int)Math.ceil(initialCapacity / loadFactor));
+        initialCapacity = Collections.nextPowerOfTwo((int)Math.ceil(initialCapacity / loadFactor));
         if (initialCapacity > 1 << 30) throw new IllegalArgumentException("initialCapacity is too large: " + initialCapacity);
         capacity = initialCapacity;
 
@@ -203,7 +204,7 @@ public class ObjectIntMap<K> implements Iterable<ObjectIntMap.Entry<K>> {
         int i = 0, pushIterations = this.pushIterations;
         do {
             // Replace the key and value for one of the hashes.
-            switch (MathUtil.random(2)) {
+            switch (Collections.INSTANCE.random(2)) {
                 case 0:
                     evictedKey = key1;
                     evictedValue = valueTable[index1];
@@ -391,7 +392,7 @@ public class ObjectIntMap<K> implements Iterable<ObjectIntMap.Entry<K>> {
         if (maximumCapacity < 0) throw new IllegalArgumentException("maximumCapacity must be >= 0: " + maximumCapacity);
         if (size > maximumCapacity) maximumCapacity = size;
         if (capacity <= maximumCapacity) return;
-        maximumCapacity = MathUtil.nextPowerOfTwo(maximumCapacity);
+        maximumCapacity = Collections.nextPowerOfTwo(maximumCapacity);
         resize(maximumCapacity);
     }
 
@@ -460,7 +461,7 @@ public class ObjectIntMap<K> implements Iterable<ObjectIntMap.Entry<K>> {
     public void ensureCapacity (int additionalCapacity) {
         if (additionalCapacity < 0) throw new IllegalArgumentException("additionalCapacity must be >= 0: " + additionalCapacity);
         int sizeNeeded = size + additionalCapacity;
-        if (sizeNeeded >= threshold) resize(MathUtil.nextPowerOfTwo((int)Math.ceil(sizeNeeded / loadFactor)));
+        if (sizeNeeded >= threshold) resize(Collections.nextPowerOfTwo((int)Math.ceil(sizeNeeded / loadFactor)));
     }
 
     private void resize (int newSize) {

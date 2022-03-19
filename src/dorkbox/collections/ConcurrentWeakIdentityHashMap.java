@@ -36,6 +36,7 @@ import java.util.concurrent.ConcurrentMap;
  * @author zhanhb
  */
 class ConcurrentWeakIdentityHashMap<K, V> extends AbstractMap<K, V> implements ConcurrentMap<K, V> {
+    public static final String version = Collections.version;
 
     private final ConcurrentMap<Key<K>, V> map;
     private final ReferenceQueue<K> queue = new ReferenceQueue<>();

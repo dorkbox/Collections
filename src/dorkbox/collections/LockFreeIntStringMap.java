@@ -24,6 +24,8 @@ import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
 @SuppressWarnings("unchecked")
 public
 class LockFreeIntStringMap<V> {
+    public static final String version = Collections.version;
+
     private static final AtomicReferenceFieldUpdater<LockFreeIntStringMap, IntMap> mapREF = AtomicReferenceFieldUpdater.newUpdater(
             LockFreeIntStringMap.class,
             IntMap.class,

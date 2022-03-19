@@ -34,6 +34,8 @@ import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
 @SuppressWarnings("unchecked")
 public final
 class LockFreeObjectMap<K, V> implements Cloneable, Serializable {
+    public static final String version = Collections.version;
+
     // Recommended for best performance while adhering to the "single writer principle". Must be static-final
     private static final AtomicReferenceFieldUpdater<LockFreeObjectMap, ObjectMap> mapREF = AtomicReferenceFieldUpdater.newUpdater(
             LockFreeObjectMap.class,

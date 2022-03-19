@@ -38,6 +38,8 @@ import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
 @SuppressWarnings("unchecked")
 public final
 class LockFreeSet<E> implements Set<E>, Cloneable, java.io.Serializable {
+    public static final String version = dorkbox.collections.Collections.version;
+
     // Recommended for best performance while adhering to the "single writer principle". Must be static-final
     private static final AtomicReferenceFieldUpdater<LockFreeSet, Set> setREF = AtomicReferenceFieldUpdater.newUpdater(LockFreeSet.class,
                                                                                                                        Set.class,
