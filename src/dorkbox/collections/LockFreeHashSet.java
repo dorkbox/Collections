@@ -57,6 +57,12 @@ class LockFreeHashSet<E> implements Set<E>, Cloneable, Serializable {
         hashSet.addAll(elements);
     }
 
+    public
+    LockFreeHashSet(LockFreeHashSet<E> hashSet) {
+        hashSet.addAll(hashSet.hashSet);
+    }
+
+
     // synchronized is used here to ensure the "single writer principle", and make sure that ONLY one thread at a time can enter this
     // section. Because of this, we can have unlimited reader threads all going at the same time, without contention (which is our
     // use-case 99% of the time)

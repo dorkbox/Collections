@@ -15,7 +15,9 @@
  */
 package dorkbox.collections;
 
-import static dorkbox.collections.IntMap.*;
+import static dorkbox.collections.IntMap.Entries;
+import static dorkbox.collections.IntMap.Keys;
+import static dorkbox.collections.IntMap.Values;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -62,29 +64,6 @@ class LockFreeIntBiMap<V> {
     // synchronized is used here to ensure the "single writer principle", and make sure that ONLY one thread at a time can enter this
     // section. Because of this, we can have unlimited reader threads all going at the same time, without contention (which is our
     // use-case 99% of the time)
-
-    // public static
-    // void main(String[] args) {
-    //     LockFreeIntBiMap<String> test = new LockFreeIntBiMap<String>();
-    //     String one = "One";
-    //     String four = "Four";
-    //
-    //     test.put(1, one);
-    //     test.put(2, "Two");
-    //     test.put(3, "Three");
-    //     test.put(4, four);
-    //     // try {
-    //     //     test.put(1, four);
-    //     // } catch (IllegalArgumentException e) {
-    //     // }
-    //     test.putForce(1, four);
-    //     test.put(5, one);
-    //
-    //     System.out.println(test.toString());
-    //
-    //     System.out.println("Reverse");
-    //     System.out.println(test.inverse().toString());
-    // }
 
     /**
      * Creates a new bimap using @{link Integer#MIN_VALUE}.
@@ -366,7 +345,7 @@ class LockFreeIntBiMap<V> {
     public
     Keys keys() {
         return forwardREF.get(this)
-                     .keys();
+                         .keys();
     }
 
     /**
@@ -379,7 +358,7 @@ class LockFreeIntBiMap<V> {
     public
     Values<V> values() {
         return forwardREF.get(this)
-                     .values();
+                         .values();
     }
 
     /**
@@ -388,10 +367,11 @@ class LockFreeIntBiMap<V> {
      * Returns an iterator for the entries in the map. Remove is supported. Note that the same iterator instance is returned each
      * time this method is called. Use the {@link Entries} constructor for nested or multithreaded iteration.
      */
+    @SuppressWarnings("unchecked")
     public
-    Entries entries() {
+    Entries<V> entries() {
         return forwardREF.get(this)
-                     .entries();
+                         .entries();
     }
 
     /**

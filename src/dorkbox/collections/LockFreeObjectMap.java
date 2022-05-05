@@ -30,6 +30,16 @@ import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
  * contended writes.
  * <p>
  * This data structure is for many-read/few-write scenarios
+ * <p>
+ * An unordered map. This implementation is a cuckoo hash map using 3 hashes, random walking, and a small stash for problematic
+ * keys. Null keys are not allowed. Null values are allowed. No allocation is done except when growing the table size. <br>
+ *  <p>
+ * This map performs very fast get, containsKey, and remove (typically O(1), worst case O(log(n))). Put may be a bit slower,
+ * depending on hash collisions. Load factors greater than 0.91 greatly increase the chances the map will have to rehash to the
+ * next higher POT size.
+ * <p>
+ * Iteration can be very slow for a map with a large capacity. {@link #clear(int)} and {@link #shrink(int)} can be used to reduce
+ * the capacity. {@link OrderedMap} provides much faster iteration.
  */
 @SuppressWarnings("unchecked")
 public final
@@ -198,5 +208,26 @@ class LockFreeObjectMap<K, V> implements Cloneable, Serializable {
     String toString() {
         return mapREF.get(this)
                      .toString();
+    }
+
+    /**
+     * Clears the map and reduces the size of the backing arrays to be the specified capacity, if they are larger. The reduction
+     * is done by allocating new arrays, though for large arrays this can be faster than clearing the existing array.
+     * */
+    public
+    void clear(final int maximumCapacity) {
+        mapREF.get(this)
+              .clear(maximumCapacity);
+    }
+
+    /**
+     * Reduces the size of the backing arrays to be the specified capacity or less. If the capacity is already less, nothing is
+     * done.
+     * If the map contains more items than the specified capacity, the next highest power of two capacity is used instead.
+     */
+    public
+    void shrink(final int maximumCapacity) {
+        mapREF.get(this)
+              .shrink(maximumCapacity);
     }
 }

@@ -35,7 +35,7 @@ class LockFreeIntStringMap<V> {
 
 
     public LockFreeIntStringMap() {
-        this.map = new IntMap<>();
+        this.map = new IntMap<V>();
     }
 
     /**
@@ -48,7 +48,18 @@ class LockFreeIntStringMap<V> {
      */
     public
     LockFreeIntStringMap(int initialCapacity) {
-        map = new IntMap<>(initialCapacity);
+        map = new IntMap<V>(initialCapacity);
+    }
+
+    /**
+     * Constructs an empty <tt>IntMap</tt> with the specified initial
+     * capacity and the default load factor (0.75).
+     *
+     * @throws IllegalArgumentException if the initial capacity is negative.
+     */
+    public
+    LockFreeIntStringMap(LockFreeIntStringMap map) {
+        this.map = new IntMap<V>(map.map);
     }
 
     /**
@@ -63,7 +74,7 @@ class LockFreeIntStringMap<V> {
      */
     public
     LockFreeIntStringMap(int initialCapacity, float loadFactor) {
-        this.map = new IntMap(initialCapacity, loadFactor);
+        this.map = new IntMap<V>(initialCapacity, loadFactor);
     }
 
 

@@ -90,6 +90,12 @@ class LockFreeHashMap<K, V> implements Map<K, V>, Cloneable, Serializable {
         this.hashMap = new HashMap<K, V>(map);
     }
 
+
+    public
+    LockFreeHashMap(LockFreeHashMap<K, V> map) {
+        this.hashMap = new HashMap<K, V>(map.hashMap);
+    }
+
     /**
      * Constructs an empty <tt>HashMap</tt> with the specified initial
      * capacity and load factor.

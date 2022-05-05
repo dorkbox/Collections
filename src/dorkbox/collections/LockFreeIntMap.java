@@ -18,7 +18,9 @@ package dorkbox.collections;
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
 
-import dorkbox.collections.IntMap.*;
+import dorkbox.collections.IntMap.Entries;
+import dorkbox.collections.IntMap.Keys;
+import dorkbox.collections.IntMap.Values;
 
 
 /**
@@ -60,7 +62,7 @@ class LockFreeIntMap<V> implements Cloneable, Serializable {
     // use-case 99% of the time)
 
     /**
-     * Constructs an empty <tt>IntMap</tt> with the default initial capacity
+     * Constructs an empty <tt>LockFreeIntMap</tt> with the default initial capacity
      * (16) and the default load factor (0.75).
      */
     public
@@ -69,7 +71,15 @@ class LockFreeIntMap<V> implements Cloneable, Serializable {
     }
 
     /**
-     * Constructs an empty <tt>IntMap</tt> with the specified initial
+     * Constructs a copy of an <tt>LockFreeIntMap</tt>
+     */
+    public
+    LockFreeIntMap(LockFreeIntMap map) {
+        this.map = new IntMap<V>(map.map);
+    }
+
+    /**
+     * Constructs an empty <tt>LockFreeIntMap</tt> with the specified initial
      * capacity and the default load factor (0.75).
      *
      * @param initialCapacity the initial capacity.
@@ -82,7 +92,7 @@ class LockFreeIntMap<V> implements Cloneable, Serializable {
     }
 
     /**
-     * Constructs an empty <tt>IntMap</tt> with the specified initial
+     * Constructs an empty <tt>LockFreeIntMap</tt> with the specified initial
      * capacity and load factor.
      *
      * @param initialCapacity the initial capacity
@@ -163,7 +173,7 @@ class LockFreeIntMap<V> implements Cloneable, Serializable {
     public
     Keys keys() {
         return mapREF.get(this)
-                         .keys();
+                     .keys();
     }
 
     /**
@@ -175,7 +185,7 @@ class LockFreeIntMap<V> implements Cloneable, Serializable {
     public
     Values<V> values() {
         return mapREF.get(this)
-                         .values();
+                     .values();
     }
 
     /**
@@ -185,9 +195,9 @@ class LockFreeIntMap<V> implements Cloneable, Serializable {
      * time this method is called. Use the {@link Entries} constructor for nested or multithreaded iteration.
      */
     public
-    Entries entries() {
+    Entries<V> entries() {
         return mapREF.get(this)
-                         .entries();
+                     .entries();
     }
 
     public synchronized
