@@ -14,10 +14,6 @@ class FiniteStateMachine<V>(private val trie: DoubleArrayTrie<V>) {
         }
 
         fun build(strings: List<String>): FiniteStateMachine<Boolean> {
-            if (strings.isEmpty()) {
-                throw IllegalArgumentException("strings cannot be empty")
-            }
-
             val map = TreeMap<String, Boolean>()
             for (key in strings) {
                 map[key] = java.lang.Boolean.TRUE
@@ -27,10 +23,6 @@ class FiniteStateMachine<V>(private val trie: DoubleArrayTrie<V>) {
         }
 
         fun build(vararg strings: String): FiniteStateMachine<Boolean> {
-            if (strings.isEmpty()) {
-                throw IllegalArgumentException("strings cannot be empty")
-            }
-
             val map = TreeMap<String, Boolean>()
             for (key in strings) {
                 map[key] = java.lang.Boolean.TRUE
