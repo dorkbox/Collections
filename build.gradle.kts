@@ -141,6 +141,8 @@ tasks.jar.get().apply {
 
 dependencies {
     api("com.dorkbox:Updates:1.1")
+
+    testImplementation("junit:junit:4.13.2")
 }
 
 publishToSonatype {

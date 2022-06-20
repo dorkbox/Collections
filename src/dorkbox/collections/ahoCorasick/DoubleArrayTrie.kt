@@ -131,10 +131,9 @@ class DoubleArrayTrie<V>(map: Map<String, V>? = null,
         var currentState = 0
         val collectedEmits = LinkedList<Hit<V>>()  // unknown size, so
 
-        for (i in 0 until text.length) {
-            currentState = getState(currentState, text[i])
-            storeEmits(position, currentState, collectedEmits)
-            ++position
+        for (element in text) {
+            currentState = getState(currentState, element)
+            storeEmits(position++, currentState, collectedEmits)
         }
 
         return collectedEmits
@@ -151,15 +150,15 @@ class DoubleArrayTrie<V>(map: Map<String, V>? = null,
     ) {
         var position = 1
         var currentState = 0
-        for (i in 0 until text.length) {
-            currentState = getState(currentState, text[i])
+        for (element in text) {
+            currentState = getState(currentState, element)
             val hitArray = output[currentState]
             if (hitArray != null) {
                 for (hit in hitArray) {
                     processor.hit(position - l[hit], position, v[hit])
                 }
             }
-            ++position
+            position++
         }
     }
 
@@ -172,10 +171,11 @@ class DoubleArrayTrie<V>(map: Map<String, V>? = null,
     fun parseText(text: CharSequence,
                   processor: IHitCancellable<V>
     ) {
+        var position = 1
         var currentState = 0
-        for (i in 0 until text.length) {
-            val position = i + 1
-            currentState = getState(currentState, text[i])
+        for (element in text) {
+            position++
+            currentState = getState(currentState, element)
             val hitArray = output[currentState]
             if (hitArray != null) {
                 for (hit in hitArray) {
@@ -207,7 +207,7 @@ class DoubleArrayTrie<V>(map: Map<String, V>? = null,
                     processor.hit(position - l[hit], position, v[hit])
                 }
             }
-            ++position
+            position++
         }
     }
 
@@ -230,7 +230,7 @@ class DoubleArrayTrie<V>(map: Map<String, V>? = null,
                     processor.hit(position - l[hit], position, v[hit], hit)
                 }
             }
-            ++position
+            position++
         }
     }
 
@@ -243,8 +243,8 @@ class DoubleArrayTrie<V>(map: Map<String, V>? = null,
      */
     fun matches(text: String): Boolean {
         var currentState = 0
-        for (i in 0 until text.length) {
-            currentState = getState(currentState, text[i])
+        for (element in text) {
+            currentState = getState(currentState, element)
             val hitArray = output[currentState]
             if (hitArray != null) {
                 return true
@@ -263,14 +263,14 @@ class DoubleArrayTrie<V>(map: Map<String, V>? = null,
     fun findFirst(text: String): Hit<V>? {
         var position = 1
         var currentState = 0
-        for (i in 0 until text.length) {
-            currentState = getState(currentState, text[i])
+        for (element in text) {
+            currentState = getState(currentState, element)
             val hitArray = output[currentState]
             if (hitArray != null) {
                 val hitIndex = hitArray[0]
                 return Hit(position - l[hitIndex], position, v[hitIndex])
             }
-            ++position
+            position++
         }
         return null
     }
@@ -803,7 +803,7 @@ class DoubleArrayTrie<V>(map: Map<String, V>? = null,
          * construct failure table
          */
         private fun constructFailureStates() {
-            fail = IntArray(Math.max(size + 1, 2))
+            fail = IntArray((size + 1).coerceAtLeast(2))
             fail[1] = base[0]
             output = arrayOfNulls(size + 1)
 
