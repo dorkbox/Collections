@@ -63,7 +63,7 @@ class ConcurrentIterator<T> {
      * called from within SYNCHRONIZE
      */
     public final
-    void clear() {
+    synchronized void clear() {
         this.entries.clear();
         this.head = null;
     }
