@@ -5,12 +5,6 @@
      Dorkbox LLC
 
    Extra license information
-     - AhoCorasickDoubleArrayTrie - Niche collections to augment what is already available.
-       [The Apache Software License, Version 2.0]
-       https://github.com/hankcs/AhoCorasickDoubleArrayTrie
-       Copyright 2018
-         hankcs <me@hankcs.com>
-
      - Bias, BinarySearch - 
        [MIT License]
        https://git.dorkbox.com/dorkbox/Collections
