@@ -2,5 +2,7 @@ module dorkbox.collections {
     exports dorkbox.collections;
     exports dorkbox.collections.ahoCorasick;
 
-    requires java.base;
+    requires transitive dorkbox.updates;
+
+    requires transitive kotlin.stdlib;
 }
