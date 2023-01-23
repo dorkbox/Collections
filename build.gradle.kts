@@ -38,7 +38,7 @@ object Extras {
     // set for the project
     const val description = "Niche collections to augment what is already available."
     const val group = "com.dorkbox"
-    const val version = "1.2"
+    const val version = "1.3"
 
     // set as project.ext
     const val name = "Collections"
@@ -65,12 +65,6 @@ licensing {
         author(Extras.vendor)
         url(Extras.url)
 
-        extra("AhoCorasickDoubleArrayTrie", License.APACHE_2) {
-            description(Extras.description)
-            copyright(2018)
-            author("hankcs <me@hankcs.com>")
-            url("https://github.com/hankcs/AhoCorasickDoubleArrayTrie")
-        }
         extra("Bias, BinarySearch", License.MIT) {
             url(Extras.url)
             url("https://github.com/timboudreau/util")
