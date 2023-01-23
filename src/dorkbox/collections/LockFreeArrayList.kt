@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dorkbox, llc
+ * Copyright 2023 dorkbox, llc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,16 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package dorkbox.collections;
+package dorkbox.collections
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.RandomAccess;
-import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
+import java.io.Serializable
+import java.util.concurrent.atomic.*
+import kotlin.Array
 
 /**
  * This class uses the "single-writer-principle" for lock-free publication.
@@ -37,218 +32,181 @@ import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
  *
  * This data structure is for many-read/few-write scenarios
  */
-public final
-class LockFreeArrayList<E> implements List<E>, RandomAccess, Cloneable, Serializable {
-    public static final String version = Collections.version;
+class LockFreeArrayList<E> : MutableList<E>, RandomAccess, Cloneable, Serializable {
+    companion object {
+        const val version = Collections.version
 
-    // Recommended for best performance while adhering to the "single writer principle". Must be static-final
-    private static final AtomicReferenceFieldUpdater<LockFreeArrayList, ArrayList> listRef =
-            AtomicReferenceFieldUpdater.newUpdater(LockFreeArrayList.class,
-                                                   ArrayList.class, "arrayList");
-    private volatile ArrayList<E> arrayList = new ArrayList<>();
-
-
-    public
-    LockFreeArrayList(){}
-
-
-    public
-    LockFreeArrayList(Collection<E> elements) {
-        arrayList.addAll(elements);
+        // Recommended for best performance while adhering to the "single writer principle". Must be static-final
+        private val listRef = AtomicReferenceFieldUpdater.newUpdater(
+            LockFreeArrayList::class.java, ArrayList::class.java, "arrayList"
+        )
     }
 
-    public
-    LockFreeArrayList(LockFreeArrayList<E> list) {
-        arrayList.addAll(list.arrayList);
+    @Volatile
+    private var arrayList = ArrayList<E>()
+
+    constructor()
+    constructor(elements: Collection<E>?) {
+        arrayList.addAll(elements!!)
+    }
+
+    constructor(list: LockFreeArrayList<E>) {
+        arrayList.addAll(list.arrayList)
     }
 
     // synchronized is used here to ensure the "single writer principle", and make sure that ONLY one thread at a time can enter this
     // section. Because of this, we can have unlimited reader threads all going at the same time, without contention (which is our
     // use-case 99% of the time)
-    public synchronized
-    void clear() {
-        arrayList.clear();
+    @Synchronized
+    override fun clear() {
+        arrayList.clear()
     }
 
     // synchronized is used here to ensure the "single writer principle", and make sure that ONLY one thread at a time can enter this
     // section. Because of this, we can have unlimited reader threads all going at the same time, without contention (which is our
     // use-case 99% of the time)
-    public synchronized
-    boolean add(final E element) {
-        return arrayList.add(element);
+    @Synchronized
+    override fun add(element: E): Boolean {
+        return arrayList.add(element)
     }
 
     // synchronized is used here to ensure the "single writer principle", and make sure that ONLY one thread at a time can enter this
     // section. Because of this, we can have unlimited reader threads all going at the same time, without contention (which is our
     // use-case 99% of the time)
-    public synchronized
-    boolean addAll(final Collection<? extends E> elements) {
-        return arrayList.addAll(elements);
+    @Synchronized
+    override fun addAll(elements: Collection<E>): Boolean {
+        return arrayList.addAll(elements)
     }
 
     // synchronized is used here to ensure the "single writer principle", and make sure that ONLY one thread at a time can enter this
     // section. Because of this, we can have unlimited reader threads all going at the same time, without contention (which is our
     // use-case 99% of the time)
-    @Override
-    public synchronized
-    boolean addAll(final int i, final Collection<? extends E> collection) {
-        return arrayList.addAll(i, collection);
+    @Synchronized
+    override fun addAll(index: Int, elements: Collection<E>): Boolean {
+        return arrayList.addAll(index, elements)
     }
 
     // synchronized is used here to ensure the "single writer principle", and make sure that ONLY one thread at a time can enter this
     // section. Because of this, we can have unlimited reader threads all going at the same time, without contention (which is our
     // use-case 99% of the time)
-    @Override
-    public
-    boolean removeAll(final Collection<?> collection) {
-        return arrayList.removeAll(collection);
+    override fun removeAll(elements: Collection<E>): Boolean {
+        return arrayList.removeAll(elements.toSet())
     }
 
     // synchronized is used here to ensure the "single writer principle", and make sure that ONLY one thread at a time can enter this
     // section. Because of this, we can have unlimited reader threads all going at the same time, without contention (which is our
     // use-case 99% of the time)
-    @Override
-    public synchronized
-    boolean retainAll(final Collection<?> collection) {
-        return retainAll(collection);
+    @Synchronized
+    override fun retainAll(elements: Collection<E>): Boolean {
+        return retainAll(elements)
     }
 
-
-    @SuppressWarnings("unchecked")
-    public
-    E get(int index) {
-        return (E) listRef.get(this).get(index);
+    override fun get(index: Int): E {
+        @Suppress("UNCHECKED_CAST")
+        return listRef[this][index] as E
     }
 
     // synchronized is used here to ensure the "single writer principle", and make sure that ONLY one thread at a time can enter this
     // section. Because of this, we can have unlimited reader threads all going at the same time, without contention (which is our
     // use-case 99% of the time)
-    @Override
-    public synchronized
-    E set(final int index, final E element) {
-        return arrayList.set(index, element);
+    @Synchronized
+    override fun set(index: Int, element: E): E {
+        return arrayList.set(index, element)
     }
 
     // synchronized is used here to ensure the "single writer principle", and make sure that ONLY one thread at a time can enter this
     // section. Because of this, we can have unlimited reader threads all going at the same time, without contention (which is our
     // use-case 99% of the time)
-    @Override
-    public synchronized
-    void add(final int index, final E element) {
-        arrayList.add(index, element);
+    @Synchronized
+    override fun add(index: Int, element: E) {
+        arrayList.add(index, element)
     }
 
     // synchronized is used here to ensure the "single writer principle", and make sure that ONLY one thread at a time can enter this
     // section. Because of this, we can have unlimited reader threads all going at the same time, without contention (which is our
     // use-case 99% of the time)
-    @Override
-    public synchronized
-    E remove(final int index) {
-        return arrayList.remove(index);
+    @Synchronized
+    override fun removeAt(index: Int): E {
+        return arrayList.removeAt(index)
     }
 
     // lock-free get
-    @Override
-    public
-    int indexOf(final Object object) {
-        return listRef.get(this).indexOf(object);
+    override fun indexOf(element: E): Int {
+        return listRef[this].indexOf(element)
     }
 
     // lock-free get
-    @Override
-    public
-    int lastIndexOf(final Object object) {
-        return listRef.get(this).lastIndexOf(object);
-    }
-
-
-    // lock-free get
-    @SuppressWarnings("unchecked")
-    @Override
-    public
-    ListIterator<E> listIterator() {
-        return listRef.get(this).listIterator();
+    override fun lastIndexOf(element: E): Int {
+        return listRef[this].lastIndexOf(element)
     }
 
     // lock-free get
-    @SuppressWarnings("unchecked")
-    @Override
-    public
-    ListIterator<E> listIterator(final int index) {
-        return listRef.get(this).listIterator(index);
+    override fun listIterator(): MutableListIterator<E> {
+        @Suppress("UNCHECKED_CAST")
+        return listRef[this].listIterator() as MutableListIterator<E>
     }
 
     // lock-free get
-    @SuppressWarnings("unchecked")
-    @Override
-    public
-    List<E> subList(final int startIndex, final int endIndex) {
-        return listRef.get(this).subList(startIndex, endIndex);
+    override fun listIterator(index: Int): MutableListIterator<E> {
+        @Suppress("UNCHECKED_CAST")
+        return listRef[this].listIterator(index) as MutableListIterator<E>
+    }
+
+    // lock-free get
+    override fun subList(fromIndex: Int, toIndex: Int): MutableList<E> {
+        @Suppress("UNCHECKED_CAST")
+        return listRef[this].subList(fromIndex, toIndex) as MutableList<E>
     }
 
     // synchronized is used here to ensure the "single writer principle", and make sure that ONLY one thread at a time can enter this
     // section. Because of this, we can have unlimited reader threads all going at the same time, without contention (which is our
     // use-case 99% of the time)
-    public synchronized
-    boolean remove(final Object element) {
-        return arrayList.remove(element);
+    @Synchronized
+    override fun remove(element: E): Boolean {
+        return arrayList.remove(element)
     }
 
     // lock-free get
-    @SuppressWarnings("unchecked")
-    @Override
-    public
-    boolean containsAll(final Collection<?> collection) {
-        return listRef.get(this).containsAll(collection);
+    override fun containsAll(elements: Collection<E>): Boolean {
+        return listRef[this].containsAll(elements)
     }
 
     // lock-free get
-    public
-    int size() {
-        return listRef.get(this).size();
+    override val size: Int
+        get() {
+            return listRef[this].size
+        }
+
+    // lock-free get
+    override fun isEmpty(): Boolean {
+        return listRef[this].isEmpty()
     }
 
     // lock-free get
-    @Override
-    public
-    boolean isEmpty() {
-        return listRef.get(this).isEmpty();
-    }
-
-    // lock-free get
-    public
-    boolean contains(final Object element) {
+    override operator fun contains(element: E): Boolean {
         // use the SWP to get the value
-        return listRef.get(this).contains(element);
+        return listRef[this].contains(element)
     }
 
     // lock-free get
-    @SuppressWarnings("unchecked")
-    @Override
-    public
-    Iterator<E> iterator() {
-        return listRef.get(this).iterator();
+    override fun iterator(): MutableIterator<E> {
+        @Suppress("UNCHECKED_CAST")
+        return listRef[this].iterator() as MutableIterator<E>
     }
 
     // lock-free get
-    @Override
-    public
-    Object[] toArray() {
-        return listRef.get(this).toArray();
+    fun toArray(): Array<Any> {
+        return listRef[this].toTypedArray()
     }
 
     // lock-free get
-    @SuppressWarnings("unchecked")
-    @Override
-    public
-    <T> T[] toArray(final T[] targetArray) {
-        return (T[]) listRef.get(this).toArray(targetArray);
+    fun <T> toArray(targetArray: Array<T>): Array<T> {
+        return listRef[this].toArray(targetArray) as Array<T>
     }
 
     // lock-free get
-    @SuppressWarnings("unchecked")
-    public
-    ArrayList<E> elements() {
-        return listRef.get(this);
+    fun elements(): ArrayList<E> {
+        @Suppress("UNCHECKED_CAST")
+        return listRef[this] as ArrayList<E>
     }
 }

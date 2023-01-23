@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 dorkbox, llc
+ * Copyright 2023 dorkbox, llc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,41 +13,41 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package dorkbox.collections;
+package dorkbox.collections
 
-import java.io.Serializable;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
+import java.io.Serializable
+import java.util.concurrent.atomic.*
 
 /**
  * This class uses the "single-writer-principle" for lock-free publication.
- * <p>
+ *
+ *
  * Since there are only 2 methods to guarantee that modifications can only be called one-at-a-time (either it is only called by
  * one thread, or only one thread can access it at a time) -- we chose the 2nd option -- and use 'synchronized' to make sure that only
  * one thread can access this modification methods at a time. Getting or checking the presence of values can then happen in a lock-free
  * manner.
- * <p>
+ *
+ *
  * According to my benchmarks, this is approximately 25% faster than ConcurrentHashMap for (all types of) reads, and a lot slower for
  * contended writes.
- * <p>
+ *
+ *
  * This data structure is for many-read/few-write scenarios
  */
-public final
-class LockFreeHashMap<K, V> implements Map<K, V>, Cloneable, Serializable {
-    public static final String version = dorkbox.collections.Collections.version;
+class LockFreeHashMap<K, V> : MutableMap<K, V?>, Cloneable, Serializable {
 
-    // Recommended for best performance while adhering to the "single writer principle". Must be static-final
-    private static final AtomicReferenceFieldUpdater<LockFreeHashMap, HashMap> mapREF = AtomicReferenceFieldUpdater.newUpdater(
-            LockFreeHashMap.class,
-            HashMap.class,
-            "hashMap");
+    companion object {
+        const val version = Collections.version
 
-    private volatile HashMap<K, V> hashMap;
+        // Recommended for best performance while adhering to the "single writer principle". Must be static-final
+        private val mapREF = AtomicReferenceFieldUpdater.newUpdater(
+            LockFreeHashMap::class.java, HashMap::class.java, "hashMap"
+        )
+    }
+
+    @Volatile
+    private var hashMap: HashMap<K, V?>
+
 
     // synchronized is used here to ensure the "single writer principle", and make sure that ONLY one thread at a time can enter this
     // section. Because of this, we can have unlimited reader threads all going at the same time, without contention (which is our
@@ -57,9 +57,8 @@ class LockFreeHashMap<K, V> implements Map<K, V>, Cloneable, Serializable {
      * Constructs an empty <tt>HashMap</tt> with the default initial capacity
      * (16) and the default load factor (0.75).
      */
-    public
-    LockFreeHashMap() {
-        hashMap = new HashMap<K, V>();
+    constructor() {
+        hashMap = HashMap()
     }
 
     /**
@@ -70,9 +69,8 @@ class LockFreeHashMap<K, V> implements Map<K, V>, Cloneable, Serializable {
      *
      * @throws IllegalArgumentException if the initial capacity is negative.
      */
-    public
-    LockFreeHashMap(int initialCapacity) {
-        hashMap = new HashMap<K, V>(initialCapacity);
+    constructor(initialCapacity: Int) {
+        hashMap = HashMap(initialCapacity)
     }
 
     /**
@@ -85,15 +83,12 @@ class LockFreeHashMap<K, V> implements Map<K, V>, Cloneable, Serializable {
      *
      * @throws NullPointerException if the specified map is null
      */
-    public
-    LockFreeHashMap(Map<K, V> map) {
-        this.hashMap = new HashMap<K, V>(map);
+    constructor(map: Map<K, V>?) {
+        hashMap = HashMap(map)
     }
 
-
-    public
-    LockFreeHashMap(LockFreeHashMap<K, V> map) {
-        this.hashMap = new HashMap<K, V>(map.hashMap);
+    constructor(map: LockFreeHashMap<K, V>) {
+        hashMap = HashMap(map.hashMap)
     }
 
     /**
@@ -104,88 +99,86 @@ class LockFreeHashMap<K, V> implements Map<K, V>, Cloneable, Serializable {
      * @param loadFactor the load factor
      *
      * @throws IllegalArgumentException if the initial capacity is negative
-     *         or the load factor is nonpositive
+     * or the load factor is nonpositive
      */
-    public
-    LockFreeHashMap(int initialCapacity, float loadFactor) {
-        this.hashMap = new HashMap<K, V>(initialCapacity, loadFactor);
+    constructor(initialCapacity: Int, loadFactor: Float) {
+        hashMap = HashMap(initialCapacity, loadFactor)
     }
 
-    @SuppressWarnings("unchecked")
-    public
-    Map<K, V> getMap() {
-        // use the SWP to get a lock-free get of the map. It's values are only valid at the moment this method is called.
-        return Collections.unmodifiableMap(mapREF.get(this));
+    val map: Map<K, V>
+    get() {
+        @Suppress("UNCHECKED_CAST")
+        return mapREF[this] as Map<K, V>
     }
 
-    @Override
-    public
-    int size() {
+
+    override val size: Int
+    get() {
         // use the SWP to get a lock-free get of the value
-        return mapREF.get(this)
-                     .size();
+        return mapREF[this].size
     }
 
-    @Override
-    public
-    boolean isEmpty() {
+    override val keys: MutableSet<K>
+        get() {
+            return map.keys as MutableSet<K>
+        }
+
+    override val values: MutableCollection<V?>
+        get() {
+            @Suppress("UNCHECKED_CAST")
+            return map.values as MutableCollection<V?>
+        }
+
+    override val entries: MutableSet<MutableMap.MutableEntry<K, V?>>
+        get() {
+            @Suppress("UNCHECKED_CAST")
+            return map.entries as MutableSet<MutableMap.MutableEntry<K, V?>>
+        }
+
+    override fun isEmpty(): Boolean {
         // use the SWP to get a lock-free get of the value
-        return mapREF.get(this)
-                     .isEmpty();
+        return mapREF[this].isEmpty()
     }
 
-    @Override
-    public
-    boolean containsKey(final Object key) {
+    override fun containsKey(key: K): Boolean {
         // use the SWP to get a lock-free get of the value
-        return mapREF.get(this)
-                     .containsKey(key);
+        return mapREF[this].containsKey(key)
     }
 
-    @Override
-    public
-    boolean containsValue(final Object value) {
+    override fun containsValue(value: V?): Boolean {
         // use the SWP to get a lock-free get of the value
-        return mapREF.get(this)
-                     .containsValue(value);
+        return mapREF[this].containsValue(value)
     }
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public
-    V get(final Object key) {
-        // use the SWP to get a lock-free get of the value
-        return (V) mapREF.get(this)
-                         .get(key);
+    override operator fun get(key: K): V? {
+        @Suppress("UNCHECKED_CAST")
+        return mapREF[this][key] as V?
     }
 
-    @Override
-    public synchronized
-    V put(final K key, final V value) {
-        return hashMap.put(key, value);
+    @Synchronized
+    override fun put(key: K, value: V?): V? {
+        return hashMap.put(key, value)
     }
 
-    @Override
-    public synchronized
-    V remove(final Object key) {
-        return hashMap.remove(key);
+    @Synchronized
+    override fun remove(key: K): V? {
+        return hashMap.remove(key)
     }
 
-    @SuppressWarnings("Java8CollectionRemoveIf")
-    public synchronized
-    void removeAllValues(final V value) {
-        for (Iterator<Entry<K, V>> iterator = hashMap.entrySet().iterator(); iterator.hasNext(); ) {
-            final Map.Entry<K, V> kvEntry = iterator.next();
-            if (kvEntry.getValue().equals(value)) {
-                iterator.remove();
+    @Synchronized
+    fun removeAllValues(value: V) {
+        val iterator: MutableIterator<Map.Entry<K, V?>> = hashMap.entries.iterator()
+        while (iterator.hasNext()) {
+            val (_, value1) = iterator.next()
+            if (value1 == value) {
+                iterator.remove()
             }
         }
     }
 
-    @Override
-    public synchronized
-    void putAll(final Map<? extends K, ? extends V> map) {
-        this.hashMap.putAll(map);
+    @Synchronized
+    override fun putAll(from: Map<out K, V?>) {
+        hashMap.putAll(from)
     }
 
     /**
@@ -193,85 +186,36 @@ class LockFreeHashMap<K, V> implements Map<K, V>, Cloneable, Serializable {
      * the ONLY location this is used (in the Database, for updating all DeviceUser in the map), equals compares ONLY the DB ID. In only
      * this situation, this makes sense (since anything with the same DB ID, we should replace/update the value)
      */
-    public synchronized
-    void updateAllWithValue(final V value) {
-        for (Map.Entry<K, V> entry : hashMap.entrySet()) {
-            if (value.equals(entry.getValue())) {
+    @Synchronized
+    fun updateAllWithValue(value: V) {
+        for (entry in hashMap.entries) {
+            if (value == entry.value) {
                 // get's all device IDs that have this user assigned, and reassign the value
-                entry.setValue(value);
+                entry.setValue(value)
             }
         }
     }
 
-    public synchronized
-    void replaceAll(Map<K,V> hashMap) {
-        this.hashMap.clear();
-        this.hashMap.putAll(hashMap);
+    @Synchronized
+    fun replaceAll(hashMap: Map<K, V>?) {
+        this.hashMap.clear()
+        this.hashMap.putAll(hashMap!!)
     }
 
-    @Override
-    public synchronized
-    void clear() {
-        hashMap.clear();
+    @Synchronized
+    override fun clear() {
+        hashMap.clear()
     }
 
-    @Override
-    public
-    Set<K> keySet() {
-        return getMap().keySet();
+    override fun equals(other: Any?): Boolean {
+        return (mapREF[this] == other)
     }
 
-    @Override
-    public
-    Collection<V> values() {
-        return getMap().values();
+    override fun hashCode(): Int {
+        return mapREF[this].hashCode()
     }
 
-    @Override
-    public
-    Set<Entry<K, V>> entrySet() {
-        return getMap().entrySet();
-    }
-
-    @Override
-    public
-    boolean equals(final Object o) {
-        return mapREF.get(this)
-                     .equals(o);
-    }
-
-    @Override
-    public
-    int hashCode() {
-        return mapREF.get(this)
-                     .hashCode();
-    }
-
-    @Override
-    public
-    String toString() {
-        return mapREF.get(this)
-                     .toString();
-    }
-
-    @SuppressWarnings("unchecked")
-    public
-    Collection<K> keys() {
-        // use the SWP to get a lock-free get of the value
-        return mapREF.get(this).keySet();
-    }
-
-    @SuppressWarnings("unchecked")
-    public
-    Map<K,V> elements() {
-        // use the SWP to get a lock-free get of the value
-        return mapREF.get(this);
-    }
-
-    @SuppressWarnings("unchecked")
-    public
-    HashMap<K, V> backingMap() {
-        // use the SWP to get a lock-free get of the value
-        return mapREF.get(this);
+    override fun toString(): String {
+        return mapREF[this].toString()
     }
 }
