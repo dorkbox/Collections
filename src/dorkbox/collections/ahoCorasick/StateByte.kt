@@ -1,4 +1,20 @@
 /*
+ * Copyright 2023 dorkbox, llc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
  * AhoCorasickDoubleArrayTrie Project
  *      https://github.com/hankcs/AhoCorasickDoubleArrayTrie
  *
@@ -43,32 +59,26 @@ import java.util.*
  *
  * @author Robert Bor
  */
-class State
-/**
- * Construct a node with a depth of depth
- */
-@JvmOverloads constructor(
+class StateByte(
     /**
      * The length of the pattern string is also the depth of this state
      */
-        /**
-         * Get node depth
-         */
-        val depth: Int = 0) {
+    val depth: Int = 0) {
 
     /**
      * The fail function, if there is no match, jumps to this state.
      */
-    private var failure: State? = null
+    private var failure: StateByte? = null
 
     /**
      * Record mode string as long as this state is reachable
      */
     private var emits: MutableSet<Int>? = null
+
     /**
      * The goto table, also known as the transfer function. Move to the next state based on the next character of the string
      */
-    private val success = TreeMap<Char, State>()
+    private val success = TreeMap<Byte, StateByte>()
 
     /**
      * Corresponding subscript in double array
@@ -90,10 +100,10 @@ class State
     val isAcceptable: Boolean
         get() = this.depth > 0 && this.emits != null
 
-    val states: Collection<State>
+    val states: Collection<StateByte>
         get() = this.success.values
 
-    val transitions: Collection<Char>
+    val transitions: Collection<Byte>
         get() = this.success.keys
 
     /**
@@ -125,14 +135,14 @@ class State
     /**
      * Get the failure status
      */
-    fun failure(): State? {
+    fun failure(): StateByte? {
         return this.failure
     }
 
     /**
      * Set the failure status
      */
-    fun setFailure(failState: State,
+    fun setFailure(failState: StateByte,
                    fail: IntArray) {
         this.failure = failState
         fail[index] = failState.index
@@ -146,9 +156,9 @@ class State
      *
      * @return transfer result
      */
-    private fun nextState(character: Char,
-                          ignoreRootState: Boolean): State? {
-        var nextState: State? = this.success[character]
+    private fun nextState(character: Byte,
+                          ignoreRootState: Boolean): StateByte? {
+        var nextState: StateByte? = this.success[character]
         if (!ignoreRootState && nextState == null && this.depth == 0) {
             nextState = this
         }
@@ -158,21 +168,21 @@ class State
     /**
      * According to the character transfer, the root node transfer failure will return itself (never return null)
      */
-    fun nextState(character: Char): State? {
+    fun nextState(character: Byte): StateByte? {
         return nextState(character, false)
     }
 
     /**
      * According to character transfer, any node transfer failure will return null
      */
-    fun nextStateIgnoreRootState(character: Char): State? {
+    fun nextStateIgnoreRootState(character: Byte): StateByte? {
         return nextState(character, true)
     }
 
-    fun addState(character: Char): State {
+    fun addState(character: Byte): StateByte {
         var nextState = nextStateIgnoreRootState(character)
         if (nextState == null) {
-            nextState = State(this.depth + 1)
+            nextState = StateByte(this.depth + 1)
             this.success[character] = nextState
         }
         return nextState
@@ -193,10 +203,7 @@ class State
     /**
      * Get goto table
      */
-    fun getSuccess(): Map<Char, State> {
+    fun getSuccess(): Map<Byte, StateByte> {
         return success
     }
 }
-/**
- * Construct a node with a depth of 0
- */

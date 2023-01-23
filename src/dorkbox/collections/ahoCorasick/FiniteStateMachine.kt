@@ -1,3 +1,19 @@
+/*
+ * Copyright 2023 dorkbox, llc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package dorkbox.collections.ahoCorasick
 
 import java.util.*
@@ -7,62 +23,48 @@ import java.util.*
  *
  * This is a wrapper for DoubleArrayTrie, since that class is awkward to use
  */
-class FiniteStateMachine<V>(private val trie: DoubleArrayTrie<V>) {
-    companion object {
-        fun <V> build(map: Map<String, V>): FiniteStateMachine<V> {
-            return FiniteStateMachine(DoubleArrayTrie(map))
+object FiniteStateMachine {
+    fun <V> build(map: Map<String, V>): DoubleArrayStringTrie<V> {
+        return DoubleArrayStringTrie(map)
+    }
+
+    fun <V> build(map: Map<ByteArray, V>): DoubleArrayByteArrayTrie<V> {
+        return DoubleArrayByteArrayTrie(map)
+    }
+
+    fun build(strings: List<String>): DoubleArrayStringTrie<Boolean> {
+        val map = TreeMap<String, Boolean>()
+        for (key in strings) {
+            map[key] = java.lang.Boolean.TRUE
         }
 
-        fun build(strings: List<String>): FiniteStateMachine<Boolean> {
-            val map = TreeMap<String, Boolean>()
-            for (key in strings) {
-                map[key] = java.lang.Boolean.TRUE
-            }
+        return build(map)
+    }
 
-            return build(map)
+    fun build(strings: List<ByteArray>): DoubleArrayByteArrayTrie<Boolean> {
+        val map = TreeMap<ByteArray, Boolean>()
+        for (key in strings) {
+            map[key] = java.lang.Boolean.TRUE
         }
 
-        fun build(vararg strings: String): FiniteStateMachine<Boolean> {
-            val map = TreeMap<String, Boolean>()
-            for (key in strings) {
-                map[key] = java.lang.Boolean.TRUE
-            }
+        return build(map)
+    }
 
-            return build(map)
+    fun build(vararg strings: String): DoubleArrayStringTrie<Boolean> {
+        val map = TreeMap<String, Boolean>()
+        for (key in strings) {
+            map[key] = java.lang.Boolean.TRUE
         }
+
+        return build(map)
     }
 
-    /**
-     * @return true if this string is exactly contained. False otherwise
-     */
-    fun matches(text: String): Boolean {
-        return (trie.exactMatchSearch(text) > -1)
-    }
+    fun build(vararg strings: ByteArray): DoubleArrayByteArrayTrie<Boolean> {
+        val map = TreeMap<ByteArray, Boolean>()
+        for (key in strings) {
+            map[key] = java.lang.Boolean.TRUE
+        }
 
-    /**
-     * Parses text and finds PARTIALLY matching results. For exact matches only it is better to use `matches`
-     *
-     * @return a list of outputs that contain matches or partial matches. The returned list will specify HOW MUCH of the text matches (A full match would be from 0 (the start), to N (the length of the text).
-     */
-    fun partialMatch(text: String): List<DoubleArrayTrie.Hit<V>> {
-        return trie.parseText(text)
-    }
-
-    /**
-     * Parses text and returns true if there are PARTIALLY matching results. For exact matches only it is better to use `matches`
-     *
-     * @return true if there is a match or partial match. "fun.reddit.com" will partially match to "reddit.com"
-     */
-    fun hasPartialMatch(text: String): Boolean {
-        return trie.parseText(text).isNotEmpty()
-    }
-
-    /**
-     * Returns the backing keywords IN THEIR NATURAL ORDER, in the case that you need access to the original FSM data.
-     *
-     * @return for example, if the FSM was populated with [reddit.com, cnn.com], this will return [cnn.com, reddit.com]
-     */
-    fun getKeywords(): Array<V> {
-        return trie.v
+        return build(map)
     }
 }
