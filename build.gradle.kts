@@ -38,7 +38,7 @@ object Extras {
     // set for the project
     const val description = "Niche collections to augment what is already available."
     const val group = "com.dorkbox"
-    const val version = "1.3"
+    const val version = "1.4"
 
     // set as project.ext
     const val name = "Collections"
@@ -117,6 +117,14 @@ licensing {
         }
     }
 }
+
+kotlin.apply {
+    sourceSets.main {
+        // kotlin has some deps on java files still
+        kotlin.include("**/*.java")
+    }
+}
+
 
 tasks.jar.get().apply {
     manifest {

@@ -19,7 +19,7 @@ Maven Info
     <dependency>
       <groupId>com.dorkbox</groupId>
       <artifactId>Collections</artifactId>
-      <version>1.3</version>
+      <version>1.4</version>
     </dependency>
 </dependencies>
 ```
@@ -29,7 +29,7 @@ Gradle Info
 ```
 dependencies {
     ...
-    implementation("com.dorkbox:Collections:1.3")
+    implementation("com.dorkbox:Collections:1.4")
 }
 ```
 
