@@ -33,14 +33,6 @@ import kotlin.Array
  * This data structure is for many-read/few-write scenarios
  */
 class LockFreeArrayList<E> : MutableList<E>, RandomAccess, Cloneable, Serializable {
-    companion object {
-        const val version = Collections.version
-
-        // Recommended for best performance while adhering to the "single writer principle". Must be static-final
-        private val listRef = AtomicReferenceFieldUpdater.newUpdater(
-            LockFreeArrayList::class.java, ArrayList::class.java, "arrayList"
-        )
-    }
 
     @Volatile
     private var arrayList = ArrayList<E>()
@@ -208,5 +200,15 @@ class LockFreeArrayList<E> : MutableList<E>, RandomAccess, Cloneable, Serializab
     fun elements(): ArrayList<E> {
         @Suppress("UNCHECKED_CAST")
         return listRef[this] as ArrayList<E>
+    }
+
+    // this must be at the end of the file!
+    companion object {
+        const val version = Collections.version
+
+        // Recommended for best performance while adhering to the "single writer principle". Must be static-final
+        private val listRef = AtomicReferenceFieldUpdater.newUpdater(
+            LockFreeArrayList::class.java, ArrayList::class.java, "arrayList"
+        )
     }
 }

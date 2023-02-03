@@ -36,15 +36,6 @@ import java.util.concurrent.atomic.*
  */
 class LockFreeHashMap<K, V> : MutableMap<K, V?>, Cloneable, Serializable {
 
-    companion object {
-        const val version = Collections.version
-
-        // Recommended for best performance while adhering to the "single writer principle". Must be static-final
-        private val mapREF = AtomicReferenceFieldUpdater.newUpdater(
-            LockFreeHashMap::class.java, HashMap::class.java, "hashMap"
-        )
-    }
-
     @Volatile
     private var hashMap: HashMap<K, V?>
 
@@ -217,5 +208,15 @@ class LockFreeHashMap<K, V> : MutableMap<K, V?>, Cloneable, Serializable {
 
     override fun toString(): String {
         return mapREF[this].toString()
+    }
+
+    // this must be at the end of the file!
+    companion object {
+        const val version = Collections.version
+
+        // Recommended for best performance while adhering to the "single writer principle". Must be static-final
+        private val mapREF = AtomicReferenceFieldUpdater.newUpdater(
+            LockFreeHashMap::class.java, HashMap::class.java, "hashMap"
+        )
     }
 }
