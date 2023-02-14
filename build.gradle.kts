@@ -26,10 +26,10 @@ gradle.startParameter.showStacktrace = ShowStacktrace.ALWAYS   // always show th
 
 
 plugins {
-    id("com.dorkbox.GradleUtils") version "3.9"
-    id("com.dorkbox.Licensing") version "2.19.1"
-    id("com.dorkbox.VersionUpdate") version "2.5"
-    id("com.dorkbox.GradlePublish") version "1.17"
+    id("com.dorkbox.GradleUtils") version "3.13"
+    id("com.dorkbox.Licensing") version "2.22"
+    id("com.dorkbox.VersionUpdate") version "2.7"
+    id("com.dorkbox.GradlePublish") version "1.18"
 
     kotlin("jvm") version "1.8.0"
 }
@@ -38,7 +38,7 @@ object Extras {
     // set for the project
     const val description = "Niche collections to augment what is already available."
     const val group = "com.dorkbox"
-    const val version = "1.4"
+    const val version = "1.5"
 
     // set as project.ext
     const val name = "Collections"
