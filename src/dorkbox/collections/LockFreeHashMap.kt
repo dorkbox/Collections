@@ -96,10 +96,10 @@ class LockFreeHashMap<K, V> : MutableMap<K, V>, Cloneable, Serializable {
         hashMap = HashMap(initialCapacity, loadFactor)
     }
 
-    val map: Map<K, V>
+    val map: MutableMap<K, V>
     get() {
         @Suppress("UNCHECKED_CAST")
-        return mapREF[this] as Map<K, V>
+        return mapREF[this] as MutableMap<K, V>
     }
 
 
