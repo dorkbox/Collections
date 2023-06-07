@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 dorkbox, llc
+ * Copyright 2023 dorkbox, llc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,15 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package dorkbox.collections;
+package dorkbox.collections
 
-import java.io.Serializable;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
-
+import java.io.Serializable
+import java.util.concurrent.atomic.*
+import kotlin.Array
 
 /**
  * This class uses the "single-writer-principle" for lock-free publication.
@@ -36,131 +32,106 @@ import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
  *
  * This data structure is for many-read/few-write scenarios
  */
-public final
-class LockFreeHashSet<E> implements Set<E>, Cloneable, Serializable {
-    public static final String version = Collections.version;
+class LockFreeHashSet<E> : MutableSet<E>, Cloneable, Serializable {
 
-    // Recommended for best performance while adhering to the "single writer principle". Must be static-final
-    private static final AtomicReferenceFieldUpdater<LockFreeHashSet, Set> setREF =
-            AtomicReferenceFieldUpdater.newUpdater(LockFreeHashSet.class,
-                                                   Set.class,
-                                                   "hashSet");
-    private volatile Set<E> hashSet = new HashSet<>();
-
-
-    public
-    LockFreeHashSet(){}
-
-
-    public
-    LockFreeHashSet(Collection<E> elements) {
-        hashSet.addAll(elements);
-    }
-
-    public
-    LockFreeHashSet(LockFreeHashSet<E> hashSet) {
-        hashSet.addAll(hashSet.hashSet);
-    }
-
+    @Volatile
+    private var hashSet: MutableSet<E> = HashSet()
 
     // synchronized is used here to ensure the "single writer principle", and make sure that ONLY one thread at a time can enter this
     // section. Because of this, we can have unlimited reader threads all going at the same time, without contention (which is our
     // use-case 99% of the time)
-    public synchronized
-    void clear() {
-        hashSet.clear();
+
+    constructor()
+
+    constructor(elements: Collection<E>) {
+        hashSet.addAll(elements)
     }
 
-    // synchronized is used here to ensure the "single writer principle", and make sure that ONLY one thread at a time can enter this
-    // section. Because of this, we can have unlimited reader threads all going at the same time, without contention (which is our
-    // use-case 99% of the time)
-    public synchronized
-    boolean add(final E element) {
-        return hashSet.add(element);
+    constructor(hashSet: LockFreeHashSet<E>) {
+        this.hashSet.addAll(hashSet.hashSet)
     }
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public
-    boolean containsAll(final Collection<?> collection) {
-        return setREF.get(this).containsAll(collection);
+    override val size: Int
+        get() {
+            return setREF[this].size
+        }
+
+    val elements: MutableSet<E>
+        get() {
+            @Suppress("UNCHECKED_CAST")
+            return setREF[this] as MutableSet<E>
+        }
+
+    override fun isEmpty(): Boolean {
+        return setREF[this].isEmpty()
     }
 
-    @Override
-    public synchronized
-    boolean retainAll(final Collection<?> collection) {
-        return hashSet.retainAll(collection);
+    override fun containsAll(elements: Collection<E>): Boolean {
+        return setREF[this].containsAll(elements)
     }
 
-    @Override
-    public synchronized
-    boolean removeAll(final Collection<?> collection) {
-        return hashSet.removeAll(collection);
+    override fun contains(element: E): Boolean {
+        return setREF[this].contains(element)
     }
 
-    // synchronized is used here to ensure the "single writer principle", and make sure that ONLY one thread at a time can enter this
-    // section. Because of this, we can have unlimited reader threads all going at the same time, without contention (which is our
-    // use-case 99% of the time)
-    public synchronized
-    boolean addAll(final Collection<? extends E> collection) {
-        return hashSet.addAll(collection);
+    @Synchronized
+    override fun add(element: E): Boolean {
+        return hashSet.add(element)
     }
 
-    // synchronized is used here to ensure the "single writer principle", and make sure that ONLY one thread at a time can enter this
-    // section. Because of this, we can have unlimited reader threads all going at the same time, without contention (which is our
-    // use-case 99% of the time)
-    public synchronized
-    boolean remove(final Object element) {
-        return hashSet.remove(element);
+    @Synchronized
+    override fun retainAll(elements: Collection<E>): Boolean {
+        return hashSet.retainAll(elements)
     }
 
-    // lock-free get
-    @Override
-    public
-    boolean contains(final Object element) {
-        return setREF.get(this).contains(element);
+    @Synchronized
+    override fun removeAll(elements: Collection<E>): Boolean {
+        return hashSet.removeAll(elements)
     }
 
-    // lock-free get
-    @SuppressWarnings("unchecked")
-    public
-    Set<E> elements() {
-        return setREF.get(this);
+    @Synchronized
+    override fun addAll(elements: Collection<E>): Boolean {
+        return hashSet.addAll(elements)
     }
 
-    // lock-free get
-    public
-    int size() {
-        return setREF.get(this).size();
+    @Synchronized
+    override fun remove(element: E): Boolean {
+        return hashSet.remove(element)
     }
 
-    // lock-free get
-    @Override
-    public
-    boolean isEmpty() {
-        return setREF.get(this).isEmpty();
+    override fun iterator(): MutableIterator<E> {
+        @Suppress("UNCHECKED_CAST")
+        return setREF[this].iterator() as MutableIterator<E>
     }
 
-    // lock-free get
-    @SuppressWarnings("unchecked")
-    @Override
-    public
-    Iterator<E> iterator() {
-        return setREF.get(this).iterator();
+    fun toArray(): Array<Any> {
+        @Suppress("UNCHECKED_CAST")
+        return setREF[this].toTypedArray() as Array<Any>
     }
 
-    // lock-free get
-    @Override
-    public
-    Object[] toArray() {
-        return setREF.get(this).toArray();
+    @Synchronized
+    override fun clear() {
+        hashSet.clear()
     }
 
-    // lock-free get
-    @SuppressWarnings("unchecked")
-    @Override
-    public
-    <T> T[] toArray(final T[] targetArray) {
-        return (T[]) setREF.get(this).toArray(targetArray);
+    override fun equals(other: Any?): Boolean {
+        return (setREF[this] == other)
+    }
+
+    override fun hashCode(): Int {
+        return setREF[this].hashCode()
+    }
+
+    override fun toString(): String {
+        return setREF[this].toString()
+    }
+
+    companion object {
+        const val version = Collections.version
+
+        // Recommended for best performance while adhering to the "single writer principle". Must be static-final
+        private val setREF = AtomicReferenceFieldUpdater.newUpdater(
+            LockFreeHashSet::class.java, MutableSet::class.java, "hashSet"
+        )
     }
 }
