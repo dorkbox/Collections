@@ -36,7 +36,7 @@ object Extras {
     // set for the project
     const val description = "Niche collections to augment what is already available."
     const val group = "com.dorkbox"
-    const val version = "1.5"
+    const val version = "1.6"
 
     // set as project.ext
     const val name = "Collections"
