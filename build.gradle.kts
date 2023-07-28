@@ -114,14 +114,6 @@ licensing {
     }
 }
 
-kotlin.apply {
-    sourceSets.main {
-        // kotlin has some deps on java files still
-        kotlin.include("**/*.java")
-    }
-}
-
-
 tasks.jar.get().apply {
     manifest {
         // https://docs.oracle.com/javase/tutorial/deployment/jar/packageman.html
