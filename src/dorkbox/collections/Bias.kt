@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package dorkbox.collections;
+package dorkbox.collections
 
 /**
  * Bias used to decide how to resolve ambiguity, for example in a binary search
@@ -31,24 +31,26 @@ package dorkbox.collections;
  *
  * @author Tim Boudreau
  */
-public enum Bias {
-
+enum class Bias {
     /**
      * If a search result falls between two elements, prefer the next element
      */
     FORWARD,
+
     /**
      * If a search result falls between two elements, prefer the previous element
      */
     BACKWARD,
+
     /**
      * If a search result falls between two elements, prefer the element with
      * the minimum distance
      */
     NEAREST,
+
     /**
      * If a search result falls between two elements, return no element unless
      * there is an exact match
      */
-    NONE;
+    NONE
 }
