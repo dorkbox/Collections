@@ -731,11 +731,12 @@ open class ObjectMap<K: Any, V> : MutableMap<K, V?>, MutableIterable<MutableMap.
         }
 
         override fun containsAll(elements: Collection<Entry<K, V?>>): Boolean {
-            var contains = true
             elements.forEach {(k,v) ->
-                contains = contains && (map.get(k) == v)
+                if (map.get(k) != v) {
+                    return false
+                }
             }
-            return contains
+            return true
         }
 
         override fun contains(element: Entry<K, V?>): Boolean {
