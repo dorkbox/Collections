@@ -20,7 +20,7 @@ import java.util.concurrent.atomic.*
 /**
  * @author dorkbox, llc
  */
-class ConcurrentIterator<T> {
+class ConcurrentIterator<T: Any> {
     /**
      * Specifies the load-factor for the IdentityMap used
      */
