@@ -36,7 +36,6 @@ object Collections {
     }
 
     /** Returns a random number between start (inclusive) and end (inclusive).  */
-    @JvmStatic
     fun random(start: Int, end: Int): Int {
         return start + random.nextInt(end - start + 1)
     }
@@ -44,8 +43,16 @@ object Collections {
     /**
      * Returns the next power of two. Returns the specified value if the value is already a power of two.
      */
-    @JvmStatic
     fun nextPowerOfTwo(value: Int): Int {
         return 1 shl 32 - Integer.numberOfLeadingZeros(value - 1)
     }
+
+    /**
+     * When true, [Iterable.iterator] for [ObjectMap], and other collections will allocate a new
+     * iterator for each invocation.
+     *
+     * When false, the iterator is reused and nested use will throw an exception. Default is
+     * false.
+     */
+    var allocateIterators = false
 }
