@@ -182,7 +182,7 @@ open class ObjectSet<T: Any> : MutableSet<T> {
     override fun addAll(elements: Collection<T>): Boolean {
         var added = false
         elements.forEach {
-            added = added || add(it)
+            added = add(it) || added
         }
         return added
     }

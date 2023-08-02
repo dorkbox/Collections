@@ -192,7 +192,7 @@ class IntSet: MutableSet<Int> {
     override fun addAll(elements: Collection<Int>): Boolean {
         var added = false
         elements.forEach {
-            added = added || add(it)
+            added = add(it) || added
         }
 
         return added
