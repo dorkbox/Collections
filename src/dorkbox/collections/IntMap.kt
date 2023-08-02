@@ -563,8 +563,8 @@ class IntMap<V> : MutableMap<Int, V>, MutableIterable<IntMap.Entry<V?>> {
     fun entries(): Entries<V?> {
         if (allocateIterators) return Entries(this as IntMap<V?>)
         if (entries1 == null) {
-            entries1 = Entries(this)
-            entries2 = Entries(this)
+            entries1 = Entries(this as IntMap<V?>)
+            entries2 = Entries(this as IntMap<V?>)
         }
         if (!entries1!!.valid) {
             entries1!!.reset()
@@ -709,11 +709,7 @@ class IntMap<V> : MutableMap<Int, V>, MutableIterable<IntMap.Entry<V?>> {
         }
     }
 
-    class Entries<V>(map: IntMap<V>) :
-        MutableSet<Entry<V?>>,
-        MapIterator<V, Entry<V?>>(map),
-        Iterable<Entry<V?>>,
-        MutableIterator<Entry<V?>> {
+    class Entries<V>(map: IntMap<V?>) : MutableSet<Entry<V?>>, MapIterator<V?, Entry<V?>>(map) {
         private val entry = Entry<V?>()
 
         /** Note the same entry instance is returned each time this method is called.  */
@@ -740,11 +736,18 @@ class IntMap<V> : MutableMap<Int, V>, MutableIterable<IntMap.Entry<V?>> {
         }
 
         override fun add(element: Entry<V?>): Boolean {
-            TODO("Not yet implemented")
+            map.put(element.key, element.value)
+            return true
         }
 
         override fun addAll(elements: Collection<Entry<V?>>): Boolean {
-            TODO("Not yet implemented")
+            var added = false
+            elements.forEach {
+                map.put(it.key, it.value)
+                added = true
+            }
+
+            return added
         }
 
         override val size: Int
