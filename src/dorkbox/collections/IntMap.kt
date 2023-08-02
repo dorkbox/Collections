@@ -431,8 +431,10 @@ class IntMap<V> : MutableMap<Int, V>, MutableIterable<IntMap.Entry<V?>> {
         shift = java.lang.Long.numberOfLeadingZeros(mask.toLong())
         val oldKeyTable = keyTable
         val oldValueTable = valueTable
-        keyTable = kotlin.IntArray(newSize)
-        valueTable = arrayOfNulls<Any>(newSize) as kotlin.Array<V?>
+        keyTable = IntArray(newSize)
+        @Suppress("UNCHECKED_CAST")
+        valueTable = arrayOfNulls<Any>(newSize) as Array<V?>
+
         if (size_ > 0) {
             for (i in 0 until oldCapacity) {
                 val key = oldKeyTable[i]
@@ -460,10 +462,10 @@ class IntMap<V> : MutableMap<Int, V>, MutableIterable<IntMap.Entry<V?>> {
         return h
     }
 
-    override fun equals(obj: Any?): Boolean {
-        if (obj === this) return true
-        if (obj !is IntMap<*>) return false
-        val other = obj as IntMap<V>
+    override fun equals(other: Any?): Boolean {
+        if (other === this) return true
+        if (other !is IntMap<*>) return false
+
         if (other.size_ != size_) return false
         if (other.hasZeroValue != hasZeroValue) return false
         if (hasZeroValue) {
@@ -483,7 +485,7 @@ class IntMap<V> : MutableMap<Int, V>, MutableIterable<IntMap.Entry<V?>> {
             if (key != 0) {
                 val value: V? = valueTable[i]
                 if (value == null) {
-                    if (other.get(key, ObjectMap.dummy as V?) != null) return false
+                    if (other[key] != null) return false
                 }
                 else {
                     if (value != other[key]) return false
@@ -497,10 +499,10 @@ class IntMap<V> : MutableMap<Int, V>, MutableIterable<IntMap.Entry<V?>> {
     /**
      * Uses == for comparison of each value.
      */
-    fun equalsIdentity(obj: Any?): Boolean {
-        if (obj === this) return true
-        if (obj !is IntMap<*>) return false
-        val other = obj as IntMap<V>
+    fun equalsIdentity(other: Any?): Boolean {
+        if (other === this) return true
+        if (other !is IntMap<*>) return false
+
         if (other.size_ != size_) return false
         if (other.hasZeroValue != hasZeroValue) return false
         if (hasZeroValue && zeroValue !== other.zeroValue) return false
@@ -510,7 +512,7 @@ class IntMap<V> : MutableMap<Int, V>, MutableIterable<IntMap.Entry<V?>> {
         val n = keyTable.size
         while (i < n) {
             val key = keyTable[i]
-            if (key != 0 && valueTable[i] !== other.get(key, ObjectMap.dummy as V?)) return false
+            if (key != 0 && valueTable[i] !== other[key]) return false
             i++
         }
         return true
@@ -560,6 +562,7 @@ class IntMap<V> : MutableMap<Int, V>, MutableIterable<IntMap.Entry<V?>> {
      *
      * Use the [Entries] constructor for nested or multithreaded iteration.
      */
+    @Suppress("UNCHECKED_CAST")
     fun entries(): Entries<V?> {
         if (allocateIterators) return Entries(this as IntMap<V?>)
         if (entries1 == null) {
@@ -918,6 +921,7 @@ class IntMap<V> : MutableMap<Int, V>, MutableIterable<IntMap.Entry<V?>> {
         }
     }
 
+    @Suppress("UNCHECKED_CAST")
     class Keys(map: IntMap<*>) : MutableSet<Int>, MapIterator<Any?, Int>(map as IntMap<Any?>) {
         override fun hasNext(): Boolean {
             if (!valid) throw RuntimeException("#iterator() cannot be used nested.")

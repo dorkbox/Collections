@@ -63,8 +63,6 @@ open class ObjectMap<K: Any, V> : MutableMap<K, V>, MutableIterable<MutableMap.M
 
     companion object {
         const val version = Collections.version
-
-        internal val dummy = Any()
     }
 
     protected var mapSize = 0
@@ -451,10 +449,10 @@ open class ObjectMap<K: Any, V> : MutableMap<K, V>, MutableIterable<MutableMap.M
             if (key != null) {
                 val value: V? = valueTable[i]
                 if (value == null) {
-                    if (other.get(key, dummy as V?) != null) return false
+                    if (other[key] != null) return false
                 }
                 else {
-                    if (value != other.get(key)) return false
+                    if (value != other[key]) return false
                 }
             }
             i++
@@ -477,7 +475,9 @@ open class ObjectMap<K: Any, V> : MutableMap<K, V>, MutableIterable<MutableMap.M
         val n = keyTable.size
         while (i < n) {
             val key: K? = keyTable[i]
-            if (key != null && valueTable[i] !== other.get(key, dummy as V?)) return false
+            if (key != null && valueTable[i] !== other[key]) {
+                return false
+            }
             i++
         }
         return true
