@@ -166,6 +166,11 @@ class IntSet: MutableSet<Int> {
         }
     }
 
+    operator fun get(key: Int): Int? {
+        val i = locateKey(key)
+        return if (i < 0) null else keyTable[i]
+    }
+
     /**
      * Returns true if the key was added to the set or false if it was already in the set.
      */
