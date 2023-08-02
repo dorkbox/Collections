@@ -37,7 +37,7 @@ import dorkbox.collections.ObjectSet.Companion.tableSize
 import java.util.*
 
 /**
- * An unordered map where the keys are unboxed ints and values are objects. No allocation is done except when growing the table
+ * An unordered map where the keys are unboxed ints and values are floats. No allocation is done except when growing the table
  * size.
  *
  * This class performs fast contains and remove (typically O(1), worst case O(n) but that is rare in practice). Add may be
