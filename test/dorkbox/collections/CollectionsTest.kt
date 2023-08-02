@@ -247,6 +247,7 @@ $b"""
         run {
             println(IntIntMap::class.java)
             val map = IntIntMap(0)
+
             val keys = intValues
             val values = intValues
             val otherMap: Any = IntIntMap(0)
@@ -257,7 +258,10 @@ $b"""
                 while (i < n) {
                     val anotherMap = copy(map)
                     assertEquals(map, anotherMap)
-                    assertEquals((map)[keys[n - 1] as Int, 0], 0)
+                    val a = map.get(keys[n - 1] as Int, 0)
+                    assertEquals(a as Any, 0)
+
+
                     map.put(keys[i] as Int, values[i] as Int)
 
                     (otherMap as IntIntMap).put(keys[i] as Int, values[i] as Int)
