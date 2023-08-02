@@ -54,7 +54,7 @@ import java.util.*
  * @author Nathan Sweet
  * @author Tommy Ettinger
  */
-class IntMap<V> : MutableMap<Int, V>, MutableIterable<IntMap.Entry<V?>> {
+open class IntMap<V> : MutableMap<Int, V>, MutableIterable<IntMap.Entry<V?>> {
     companion object {
         const val version = Collections.version
     }
@@ -198,14 +198,14 @@ class IntMap<V> : MutableMap<Int, V>, MutableIterable<IntMap.Entry<V?>> {
         return null
     }
 
-    fun putAll(map: IntMap<out V>) {
-        ensureCapacity(map.size_)
-        if (map.hasZeroValue) {
-            put(0, map.zeroValue!!)
+    open fun putAll(from: IntMap<out V>) {
+        ensureCapacity(from.size_)
+        if (from.hasZeroValue) {
+            put(0, from.zeroValue!!)
         }
 
-        val keyTable = map.keyTable
-        val valueTable = map.valueTable
+        val keyTable = from.keyTable
+        val valueTable = from.valueTable
         var i = 0
         val n = keyTable.size
         while (i < n) {
@@ -306,7 +306,7 @@ class IntMap<V> : MutableMap<Int, V>, MutableIterable<IntMap.Entry<V?>> {
      * nothing is done. If the map contains more items than the specified capacity, the next highest power of two capacity is used
      * instead.
      */
-    fun shrink(maximumCapacity: Int) {
+    open fun shrink(maximumCapacity: Int) {
         require(maximumCapacity >= 0) { "maximumCapacity must be >= 0: $maximumCapacity" }
         val tableSize = tableSize(maximumCapacity, loadFactor)
         if (keyTable.size > tableSize) resize(tableSize)
@@ -315,7 +315,7 @@ class IntMap<V> : MutableMap<Int, V>, MutableIterable<IntMap.Entry<V?>> {
     /**
      * Clears the map and reduces the size of the backing arrays to be the specified capacity / loadFactor, if they are larger.
      * */
-    fun clear(maximumCapacity: Int) {
+    open fun clear(maximumCapacity: Int) {
         val tableSize = tableSize(maximumCapacity, loadFactor)
         if (keyTable.size <= tableSize) {
             clear()
@@ -357,7 +357,7 @@ class IntMap<V> : MutableMap<Int, V>, MutableIterable<IntMap.Entry<V?>> {
      * @param identity If true, uses == to compare the specified value with values in the map. If false, uses
      * [.equals].
      */
-    fun containsValue(value: Any?, identity: Boolean = false): Boolean {
+    open fun containsValue(value: Any?, identity: Boolean): Boolean {
         val valueTable = valueTable
         if (value == null) {
             if (hasZeroValue && zeroValue == null) return true
@@ -503,7 +503,7 @@ class IntMap<V> : MutableMap<Int, V>, MutableIterable<IntMap.Entry<V?>> {
      * Uses == for comparison of each value.
      */
     @Suppress("UNCHECKED_CAST")
-    fun equalsIdentity(other: Any?): Boolean {
+    open fun equalsIdentity(other: Any?): Boolean {
         if (other === this) return true
         if (other !is IntMap<*>) return false
         other as IntMap<V>
@@ -568,7 +568,7 @@ class IntMap<V> : MutableMap<Int, V>, MutableIterable<IntMap.Entry<V?>> {
      * Use the [Entries] constructor for nested or multithreaded iteration.
      */
     @Suppress("UNCHECKED_CAST")
-    fun entries(): Entries<V?> {
+    open fun entries(): Entries<V?> {
         if (allocateIterators) return Entries(this as IntMap<V?>)
         if (entries1 == null) {
             entries1 = Entries(this as IntMap<V?>)
@@ -592,7 +592,7 @@ class IntMap<V> : MutableMap<Int, V>, MutableIterable<IntMap.Entry<V?>> {
      * If [Collections.allocateIterators] is false, the same iterator instance is returned each time this method is called.
      * Use the [Entries] constructor for nested or multithreaded iteration.
      */
-    fun values(): Values<V> {
+    open fun values(): Values<V> {
         if (allocateIterators) return Values(this)
         if (values1 == null) {
             values1 = Values(this)
@@ -616,7 +616,7 @@ class IntMap<V> : MutableMap<Int, V>, MutableIterable<IntMap.Entry<V?>> {
      * If [Collections.allocateIterators] is false, the same iterator instance is returned each time this method is called.
      * Use the [Entries] constructor for nested or multithreaded iteration.
      */
-    fun keys(): Keys {
+    open fun keys(): Keys {
         if (allocateIterators) return Keys(this)
         if (keys1 == null) {
             keys1 = Keys(this)
