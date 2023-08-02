@@ -264,11 +264,11 @@ class IntMap<V> : MutableMap<Int, V>, MutableIterable<IntMap.Entry<V?>> {
         val mask = mask
         var next = (i + 1) and mask
 
-        var key: Int
-        while (keyTable[next].also { key = it } != 0) {
-            val placement = place(key)
+        var k: Int
+        while (keyTable[next].also { k = it } != 0) {
+            val placement = place(k)
             if ((next - placement and mask) > (i - placement and mask)) {
-                keyTable[i] = key
+                keyTable[i] = k
                 valueTable[i] = valueTable[next]
                 i = next
             }
@@ -327,6 +327,7 @@ class IntMap<V> : MutableMap<Int, V>, MutableIterable<IntMap.Entry<V?>> {
         resize(tableSize)
     }
 
+    @Suppress("UNCHECKED_CAST")
     override val entries: MutableSet<MutableMap.MutableEntry<Int, V>>
         get() = entries() as MutableSet<MutableMap.MutableEntry<Int, V>>
     override val keys: MutableSet<Int>
@@ -882,7 +883,7 @@ class IntMap<V> : MutableMap<Int, V>, MutableIterable<IntMap.Entry<V?>> {
         override fun retainAll(elements: Collection<V>): Boolean {
             var removed = false
             map.keyTable.forEach { key ->
-                if (key != null) {
+                if (key != 0) {
                     val value = map[key]
                     if (!elements.contains(value)) {
                         map.remove(key)
@@ -1012,14 +1013,19 @@ class IntMap<V> : MutableMap<Int, V>, MutableIterable<IntMap.Entry<V?>> {
         /**
          * Returns a new array containing the remaining keys.
          */
-        fun toArray(): Array<Int> {
-            return Array(map.size_) { next() }
+        fun toArray(): IntArray {
+            val array = IntArray(map.size)
+            var index = 0
+            while (hasNext()) {
+                array[index++] = next()
+            }
+            return array
         }
 
         /**
          * Adds the remaining values to the specified array.
          */
-        fun toArray(array: Array<Int>): Array<Int> {
+        fun toArray(array: IntArray): IntArray {
             var index = 0
             while (hasNext) {
                 array[index++] = next()

@@ -552,8 +552,24 @@ class IntSet: MutableSet<Int> {
         }
 
         /** Returns a new array containing the remaining keys.  */
-        fun toArray(): Array<Int> {
-            return Array(set.size_) { next() }
+        fun toArray(): IntArray {
+            val array = IntArray(set.size)
+            var index = 0
+            while (hasNext()) {
+                array[index++] = next()
+            }
+            return array
+        }
+
+        /**
+         * Adds the remaining values to the specified array.
+         */
+        fun toArray(array: IntArray): IntArray {
+            var index = 0
+            while (hasNext) {
+                array[index++] = next()
+            }
+            return array
         }
 
         companion object {

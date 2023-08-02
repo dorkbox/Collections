@@ -971,14 +971,19 @@ class IntIntMap : MutableMap<Int, Int>, MutableIterable<IntIntMap.Entry> {
         /**
          * Returns a new array containing the remaining keys.
          */
-        fun toArray(): Array<Int> {
-            return Array(map.size_) { next() }
+        fun toArray(): IntArray {
+            val array = IntArray(map.size)
+            var index = 0
+            while (hasNext()) {
+                array[index++] = next()
+            }
+            return array
         }
 
         /**
          * Adds the remaining values to the specified array.
          */
-        fun toArray(array: Array<Int>): Array<Int> {
+        fun toArray(array: IntArray): IntArray {
             var index = 0
             while (hasNext) {
                 array[index++] = next()
