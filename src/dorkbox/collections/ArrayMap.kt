@@ -527,12 +527,12 @@ class ArrayMap<K: Any, V> : MutableMap<K, V?>, MutableIterable<Entry<K, V?>> {
 
     protected fun resize(newSize: Int) {
         @Suppress("UNCHECKED_CAST")
-        val newKeys = java.lang.reflect.Array.newInstance(keyTable.javaClass.componentType, newSize) as kotlin.Array<K?>
+        val newKeys = java.lang.reflect.Array.newInstance(keyTable.javaClass.componentType, newSize) as Array<K?>
         System.arraycopy(keyTable, 0, newKeys, 0, min(size_.toDouble(), newKeys.size.toDouble()).toInt())
         keyTable = newKeys
 
         @Suppress("UNCHECKED_CAST")
-        val newValues = java.lang.reflect.Array.newInstance(valueTable.javaClass.componentType, newSize) as kotlin.Array<V?>
+        val newValues = java.lang.reflect.Array.newInstance(valueTable.javaClass.componentType, newSize) as Array<V?>
         System.arraycopy(valueTable, 0, newValues, 0, min(size_.toDouble(), newValues.size.toDouble()).toInt())
         valueTable = newValues
     }

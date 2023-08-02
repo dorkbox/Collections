@@ -364,7 +364,7 @@ class IntSet: MutableSet<Int> {
         mask = newSize - 1
         shift = java.lang.Long.numberOfLeadingZeros(mask.toLong())
         val oldKeyTable = keyTable
-        keyTable = kotlin.IntArray(newSize)
+        keyTable = IntArray(newSize)
         if (size_ > 0) {
             for (i in 0 until oldCapacity) {
                 val key = oldKeyTable[i]

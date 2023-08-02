@@ -111,7 +111,7 @@ class ExpandingArray<T> : Iterable<T> {
      * backing array. The capacity is set to the number of elements, so any subsequent elements added will cause the backing array
      * to be grown.
      */
-    constructor(array: kotlin.Array<T>) : this(true, array, 0, array.size)
+    constructor(array: Array<T>) : this(true, array, 0, array.size)
 
     /**
      * Creates a new array containing the elements in the specified array. The new array will have the same type of backing array.
@@ -488,7 +488,7 @@ class ExpandingArray<T> : Iterable<T> {
      *
      * @return [.items]
      */
-    fun shrink(): kotlin.Array<T?> {
+    fun shrink(): Array<T?> {
         if (items.size != size) resize(size)
         return items
     }
@@ -499,7 +499,7 @@ class ExpandingArray<T> : Iterable<T> {
      *
      * @return [.items]
      */
-    fun ensureCapacity(additionalCapacity: Int): kotlin.Array<T?> {
+    fun ensureCapacity(additionalCapacity: Int): Array<T?> {
         require(additionalCapacity >= 0) { "additionalCapacity must be >= 0: $additionalCapacity" }
         val sizeNeeded = size + additionalCapacity
         if (sizeNeeded > items.size) resize(
@@ -513,7 +513,7 @@ class ExpandingArray<T> : Iterable<T> {
      *
      * @return [.items]
      */
-    fun setSize(newSize: Int): kotlin.Array<T?> {
+    fun setSize(newSize: Int): Array<T?> {
         truncate(newSize)
         if (newSize > items.size) resize(max(8.0, newSize.toDouble()).toInt())
         size = newSize
