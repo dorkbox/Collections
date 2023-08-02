@@ -63,6 +63,9 @@ open class ObjectMap<K: Any, V> : MutableMap<K, V>, MutableIterable<MutableMap.M
 
     companion object {
         const val version = Collections.version
+
+        // This is used to tell the difference between a legit NULL value in a map, and a non-existent value
+        internal val dummy = Any()
     }
 
     protected var mapSize = 0
@@ -445,14 +448,14 @@ open class ObjectMap<K: Any, V> : MutableMap<K, V>, MutableIterable<MutableMap.M
         var i = 0
         val n = keyTable.size
         while (i < n) {
-            val key: K? = keyTable[i]
+            val key = keyTable[i]
             if (key != null) {
-                val value: V? = valueTable[i]
+                val value = valueTable[i]
                 if (value == null) {
-                    if (other[key] != null) return false
+                    if (other.get(key, dummy as V?) != null) return false
                 }
                 else {
-                    if (value != other[key]) return false
+                    if (value != other.get(key)) return false
                 }
             }
             i++
@@ -475,9 +478,7 @@ open class ObjectMap<K: Any, V> : MutableMap<K, V>, MutableIterable<MutableMap.M
         val n = keyTable.size
         while (i < n) {
             val key: K? = keyTable[i]
-            if (key != null && valueTable[i] !== other[key]) {
-                return false
-            }
+            if (key != null && valueTable[i] !== other.get(key, dummy as V?)) return false
             i++
         }
         return true

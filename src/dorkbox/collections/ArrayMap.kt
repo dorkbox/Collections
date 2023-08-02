@@ -34,6 +34,7 @@ package dorkbox.collections
 
 import dorkbox.collections.Collections.allocateIterators
 import dorkbox.collections.Collections.random
+import dorkbox.collections.ObjectMap.Companion.dummy
 import dorkbox.collections.ObjectMap.Entry
 import java.lang.IllegalStateException
 import java.util.*
@@ -612,7 +613,7 @@ class ArrayMap<K: Any, V> : MutableMap<K, V?>, MutableIterable<Entry<K, V?>> {
             val key = keys[i] as K
             val value = values[i]
             if (value == null) {
-                if (other.get(key) != null) {
+                if (other.get(key, dummy as V?) != null) {
                     return false
                 }
             }
@@ -642,7 +643,7 @@ class ArrayMap<K: Any, V> : MutableMap<K, V?>, MutableIterable<Entry<K, V?>> {
         var i = 0
         val n = size_
         while (i < n) {
-            if (values[i] !== other.get(keys[i])) return false
+            if (values[i] !== other.get(keys[i], dummy as V?)) return false
             i++
         }
         return true

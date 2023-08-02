@@ -462,9 +462,11 @@ class IntMap<V> : MutableMap<Int, V>, MutableIterable<IntMap.Entry<V?>> {
         return h
     }
 
+    @Suppress("UNCHECKED_CAST")
     override fun equals(other: Any?): Boolean {
         if (other === this) return true
         if (other !is IntMap<*>) return false
+        other as IntMap<V>
 
         if (other.size_ != size_) return false
         if (other.hasZeroValue != hasZeroValue) return false
@@ -485,7 +487,7 @@ class IntMap<V> : MutableMap<Int, V>, MutableIterable<IntMap.Entry<V?>> {
             if (key != 0) {
                 val value: V? = valueTable[i]
                 if (value == null) {
-                    if (other[key] != null) return false
+                    if (other.get(key, ObjectMap.dummy as V?) != null) return false
                 }
                 else {
                     if (value != other[key]) return false
@@ -499,9 +501,11 @@ class IntMap<V> : MutableMap<Int, V>, MutableIterable<IntMap.Entry<V?>> {
     /**
      * Uses == for comparison of each value.
      */
+    @Suppress("UNCHECKED_CAST")
     fun equalsIdentity(other: Any?): Boolean {
         if (other === this) return true
         if (other !is IntMap<*>) return false
+        other as IntMap<V>
 
         if (other.size_ != size_) return false
         if (other.hasZeroValue != hasZeroValue) return false
@@ -512,7 +516,7 @@ class IntMap<V> : MutableMap<Int, V>, MutableIterable<IntMap.Entry<V?>> {
         val n = keyTable.size
         while (i < n) {
             val key = keyTable[i]
-            if (key != 0 && valueTable[i] !== other[key]) return false
+            if (key != 0 && valueTable[i] !== other.get(key, ObjectMap.dummy as V?)) return false
             i++
         }
         return true
