@@ -98,7 +98,9 @@ class IntSet: MutableSet<Int> {
     @Transient
     private var iterator2: IntSetIterator? = null
 
-    /** Creates a new set with an initial capacity of 51 and a load factor of 0.8.  */
+    /**
+     * Creates a new set with an initial capacity of 51 and a load factor of 0.8
+     */
     constructor() : this(51,0.8f)
 
     /**
@@ -118,7 +120,9 @@ class IntSet: MutableSet<Int> {
         keyTable = IntArray(tableSize)
     }
 
-    /** Creates a new set identical to the specified set.  */
+    /**
+     * Creates a new set identical to the specified set.
+     */
     constructor(set: IntSet) : this((set.keyTable.size * set.loadFactor).toInt(), set.loadFactor) {
         System.arraycopy(set.keyTable, 0, keyTable, 0, set.keyTable.size)
         size_ = set.size_
