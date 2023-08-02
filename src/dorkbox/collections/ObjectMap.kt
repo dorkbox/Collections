@@ -754,7 +754,7 @@ open class ObjectMap<K: Any, V> : MutableMap<K, V>, MutableIterable<MutableMap.M
                 if (key != null) {
                     val hasElement = elements.firstOrNull { it.key == key } != null
                     if (!hasElement) {
-                        removed = removed || map.remove(key) != null
+                        removed = map.remove(key) != null || removed
                     }
                 }
             }
@@ -765,7 +765,7 @@ open class ObjectMap<K: Any, V> : MutableMap<K, V>, MutableIterable<MutableMap.M
         override fun removeAll(elements: Collection<Entry<K, V?>>): Boolean {
             var removed = false
             elements.forEach { (k,_) ->
-                removed = removed || map.remove(k) != null
+                removed = map.remove(k) != null || removed
             }
             reset()
             return removed
@@ -850,7 +850,7 @@ open class ObjectMap<K: Any, V> : MutableMap<K, V>, MutableIterable<MutableMap.M
             elements.forEach {
                 val key = map.findKey(it, false)
                 if (key != null) {
-                    removed = removed || map.remove(key) != null
+                    removed = map.remove(key) != null || removed
                 }
             }
             reset()

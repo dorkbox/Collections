@@ -839,7 +839,7 @@ class ArrayMap<K: Any, V> : MutableMap<K, V?>, MutableIterable<Entry<K, V?>> {
                 if (key != null) {
                     val hasElement = elements.firstOrNull { it.key == key } != null
                     if (!hasElement) {
-                        removed = removed || map.remove(key) != null
+                        removed = map.remove(key) != null || removed
                     }
                 }
             }
@@ -958,7 +958,7 @@ class ArrayMap<K: Any, V> : MutableMap<K, V?>, MutableIterable<Entry<K, V?>> {
             elements.forEach {
                 val key = map.getKey(it, false)
                 if (key != null) {
-                    removed = removed || map.remove(key) != null
+                    removed = map.remove(key) != null || removed
                 }
             }
             reset()

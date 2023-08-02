@@ -256,7 +256,7 @@ open class ObjectSet<T: Any> : MutableSet<T> {
         keyTable.forEach { key ->
             if (key != null) {
                 if (!elements.contains(key)) {
-                    removed = removed || remove(key)
+                    removed = remove(key) || removed
                 }
             }
         }
