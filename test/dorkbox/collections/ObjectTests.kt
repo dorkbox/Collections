@@ -163,7 +163,7 @@ class ObjectTests {
         assertTrue(map.size == 3)
 
         val entries = map.entries()
-        val keepEntry = ObjectMap.Entry<String, Int?>()
+        val keepEntry = ObjectMap.Entry<String, Int?>(map)
         keepEntry.key = "1"
         keepEntry.value = 1
 

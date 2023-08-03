@@ -695,8 +695,8 @@ class ArrayMap<K: Any, V> : MutableMap<K, V?>{
         }
 
         if (entries1 == null) {
-            entries1 = Entries(this)
-            entries2 = Entries(this)
+            entries1 = Entries(this as ArrayMap<K, V?>)
+            entries2 = Entries(this as ArrayMap<K, V?>)
         }
         if (!entries1!!.valid) {
             entries1!!.index = 0
@@ -774,9 +774,9 @@ class ArrayMap<K: Any, V> : MutableMap<K, V?>{
         return keys2!!
     }
 
-    class Entries<K: Any, V>(private val map: ArrayMap<K, V>) :  MutableSet<Entry<K, V?>>,Iterable<Entry<K, V?>>, MutableIterator<Entry<K, V?>> {
+    class Entries<K: Any, V>(private val map: ArrayMap<K, V?>) :  MutableSet<Entry<K, V?>>,Iterable<Entry<K, V?>>, MutableIterator<Entry<K, V?>> {
 
-        var entry: Entry<K, V?> = Entry()
+        var entry: Entry<K, V?> = Entry(map)
         var index = 0
         var valid = true
 

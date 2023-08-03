@@ -583,12 +583,14 @@ class IntFloatMap : MutableMap<Int, Float> {
         return keys2!!
     }
 
-    class Entry: MutableMap.MutableEntry<Int, Float> {
-        override var key = 0
+    class Entry(val map: IntFloatMap): MutableMap.MutableEntry<Int, Float> {
 
+        override var key = 0
         override var value = 0F
+
         override fun setValue(newValue: Float): Float {
             val oldValue = value
+            map[key] = newValue
             value = newValue
             return oldValue
         }
@@ -598,15 +600,13 @@ class IntFloatMap : MutableMap<Int, Float> {
         }
     }
 
-    abstract class MapIterator<V, I>(map: IntFloatMap): Iterable<I>, MutableIterator<I>  {
+    abstract class MapIterator<V, I>(val map: IntFloatMap): Iterable<I>, MutableIterator<I>  {
         var hasNext = false
-        val map: IntFloatMap
         var nextIndex = 0
         var currentIndex = 0
         var valid = true
 
         init {
-            this.map = map
             reset()
         }
 
@@ -667,7 +667,7 @@ class IntFloatMap : MutableMap<Int, Float> {
     }
 
     class Entries(map: IntFloatMap) : MutableSet<Entry>, MapIterator<Int, Entry>(map) {
-        private val entry = Entry()
+        private val entry = Entry(map)
 
         /** Note the same entry instance is returned each time this method is called.  */
         override fun next(): Entry {

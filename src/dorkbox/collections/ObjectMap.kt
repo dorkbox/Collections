@@ -609,12 +609,13 @@ open class ObjectMap<K: Any, V> : MutableMap<K, V> {
         return keys2 as Keys<K>
     }
 
-    class Entry<K: Any, V>: MutableMap.MutableEntry<K, V?> {
+    class Entry<K: Any, V>(val map: ObjectMap<K, V?>) : MutableMap.MutableEntry<K, V?> {
         override lateinit var key: K
         override var value: V? = null
 
         override fun setValue(newValue: V?): V? {
             val oldValue = value
+            map[key] = newValue
             value = newValue
             return oldValue
         }
@@ -682,7 +683,7 @@ open class ObjectMap<K: Any, V> : MutableMap<K, V> {
     }
 
     open class Entries<K: Any, V>(map: ObjectMap<K, V?>) : MutableSet<Entry<K, V?>>, MapIterator<K, V?, Entry<K, V?>>(map) {
-        var entry = Entry<K, V?>()
+        var entry = Entry<K, V?>(map)
 
         /** Note the same entry instance is returned each time this method is called.  */
         override fun next(): Entry<K, V?> {

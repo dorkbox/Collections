@@ -630,12 +630,13 @@ class LongMap<V> : MutableMap<Long, V> {
         return keys2!!
     }
 
-    class Entry<V>: MutableMap.MutableEntry<Long, V?> {
+    class Entry<V>(val map: LongMap<V?>): MutableMap.MutableEntry<Long, V?> {
         override var key = 0L
-
         override var value: V? = null
+
         override fun setValue(newValue: V?): V? {
             val oldValue = value
+            map[key] = newValue
             value = newValue
             return oldValue
         }
@@ -645,15 +646,13 @@ class LongMap<V> : MutableMap<Long, V> {
         }
     }
 
-    abstract class MapIterator<V, I>(map: LongMap<V>): Iterable<I>, MutableIterator<I>  {
+    abstract class MapIterator<V, I>(val map: LongMap<V>): Iterable<I>, MutableIterator<I>  {
         var hasNext = false
-        val map: LongMap<V>
         var nextIndex = 0
         var currentIndex = 0
         var valid = true
 
         init {
-            this.map = map
             reset()
         }
 
@@ -714,7 +713,7 @@ class LongMap<V> : MutableMap<Long, V> {
     }
 
     class Entries<V>(map: LongMap<V?>) : MutableSet<Entry<V?>>, MapIterator<V?, Entry<V?>>(map) {
-        private val entry = Entry<V?>()
+        private val entry = Entry<V?>(map)
 
         /** Note the same entry instance is returned each time this method is called.  */
         override fun next(): Entry<V?> {
