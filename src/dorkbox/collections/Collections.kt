@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 dorkbox, llc
+ * Copyright 2023 dorkbox, llc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ object Collections {
     /**
      * Gets the version number.
      */
-    const val version = "1.6"
+    const val version = "2.0"
 
     init {
         // Add this project to the updates system, which verifies this class + UUID + version information
