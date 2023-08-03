@@ -265,6 +265,24 @@ open class ObjectIntMap<K: Any> : MutableMap<K, Int>, MutableIterable<MutableMap
     }
 
     /**
+     * Returns the key's current value and increments the stored value. If the key is not in the map, defaultValue + increment is
+     * put into the map and defaultValue is returned.
+     */
+    fun getAndIncrement(key: K, defaultValue: Int, increment: Int): Int {
+        var i = locateKey(key)
+        if (i >= 0) { // Existing key was found.
+            val oldValue = valueTable[i]
+            valueTable[i] += increment
+            return oldValue
+        }
+        i = -(i + 1) // Empty space was found.
+        keyTable[i] = key
+        valueTable[i] = defaultValue + increment
+        if (++mapSize >= threshold) resize(keyTable.size shl 1)
+        return defaultValue
+    }
+
+    /**
      * Returns the value for the removed key, or null if the key is not in the map.
      */
     override fun remove(key: K): Int? {
