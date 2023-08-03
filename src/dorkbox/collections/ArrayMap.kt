@@ -35,7 +35,6 @@ package dorkbox.collections
 import dorkbox.collections.Collections.allocateIterators
 import dorkbox.collections.Collections.random
 import dorkbox.collections.ObjectMap.Companion.dummy
-import dorkbox.collections.ObjectMap.Entry
 import java.lang.IllegalStateException
 import java.util.*
 import kotlin.math.max
@@ -881,6 +880,22 @@ class ArrayMap<K: Any, V> : MutableMap<K, V?>{
 
         fun reset() {
             index = 0
+        }
+    }
+
+    class Entry<K: Any, V>(val map: ArrayMap<K, V?>) : MutableMap.MutableEntry<K, V?> {
+        override lateinit var key: K
+        override var value: V? = null
+
+        override fun setValue(newValue: V?): V? {
+            val oldValue = value
+            map[key] = newValue
+            value = newValue
+            return oldValue
+        }
+
+        override fun toString(): String {
+            return "$key=$value"
         }
     }
 
