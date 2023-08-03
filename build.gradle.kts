@@ -54,7 +54,6 @@ GradleUtils.defaults()
 GradleUtils.compileConfiguration(JavaVersion.VERSION_1_8)
 GradleUtils.jpms(JavaVersion.VERSION_1_9)
 
-
 licensing {
     license(License.APACHE_2) {
         description(Extras.description)
@@ -98,18 +97,6 @@ licensing {
             author("Mario Zechner (badlogicgames@gmail.com)")
             author("Nathan Sweet (nathan.sweet@gmail.com)")
             author("Jon Renner")
-        }
-        extra("TimSort, ComparableTimSort", License.APACHE_2) {
-            url(Extras.url)
-            url("https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/utils")
-            copyright(2008)
-            author("The Android Open Source Project")
-        }
-        extra("ConcurrentWeakIdentityHashMap", License.APACHE_2) {
-            copyright(2016)
-            description("Concurrent WeakIdentity HashMap")
-            author("zhanhb")
-            url("https://github.com/spring-projects/spring-loaded/blob/master/springloaded/src/main/java/org/springsource/loaded/support/ConcurrentWeakIdentityHashMap.java")
         }
     }
 }
