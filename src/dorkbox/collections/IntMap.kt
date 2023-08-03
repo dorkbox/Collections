@@ -51,10 +51,11 @@ import java.util.*
  *
  * This implementation uses linear probing with the backward shift algorithm for removal. Hashcodes are rehashed using Fibonacci
  * hashing, instead of the more common power-of-two mask, to better distribute poor hashCodes (see [Malte Skarupke's blog post](https://probablydance.com/2018/06/16/fibonacci-hashing-the-optimization-that-the-world-forgot-or-a-better-alternative-to-integer-modulo/)). Linear probing continues to work even when all hashCodes collide, just more slowly.
+ *
  * @author Nathan Sweet
  * @author Tommy Ettinger
  */
-open class IntMap<V> : MutableMap<Int, V>, MutableIterable<IntMap.Entry<V?>> {
+open class IntMap<V> : MutableMap<Int, V> {
     companion object {
         const val version = Collections.version
     }
@@ -554,10 +555,6 @@ open class IntMap<V> : MutableMap<Int, V>, MutableIterable<IntMap.Entry<V?>> {
         }
         buffer.append(']')
         return buffer.toString()
-    }
-
-    override fun iterator(): MutableIterator<Entry<V?>> {
-        return entries()
     }
 
     /**

@@ -54,7 +54,7 @@ import java.util.*
  * @author Nathan Sweet
  * @author Tommy Ettinger
  */
-class LongMap<V> : MutableMap<Long, V>, MutableIterable<LongMap.Entry<V?>> {
+class LongMap<V> : MutableMap<Long, V> {
     companion object {
         const val version = Collections.version
     }
@@ -554,10 +554,6 @@ class LongMap<V> : MutableMap<Long, V>, MutableIterable<LongMap.Entry<V?>> {
         }
         buffer.append(']')
         return buffer.toString()
-    }
-
-    override fun iterator(): MutableIterator<Entry<V?>> {
-        return entries()
     }
 
     /**

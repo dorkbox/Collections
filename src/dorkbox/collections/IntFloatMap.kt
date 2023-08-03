@@ -54,7 +54,7 @@ import java.util.*
  * @author Nathan Sweet
  * @author Tommy Ettinger
  */
-class IntFloatMap : MutableMap<Int, Float>, MutableIterable<IntFloatMap.Entry> {
+class IntFloatMap : MutableMap<Int, Float> {
     companion object {
         const val version = Collections.version
     }
@@ -509,9 +509,6 @@ class IntFloatMap : MutableMap<Int, Float>, MutableIterable<IntFloatMap.Entry> {
         return buffer.toString()
     }
 
-    override fun iterator(): MutableIterator<Entry> {
-        return entries()
-    }
 
     /**
      * Returns an iterator for the entries in the map. Remove is supported.

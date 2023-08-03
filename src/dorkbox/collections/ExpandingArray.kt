@@ -45,7 +45,7 @@ import kotlin.math.min
  *
  * @author Nathan Sweet
  */
-class ExpandingArray<T> : Iterable<T> {
+class ExpandingArray<T> : MutableIterable<T> {
     /**
      * Provides direct access to the underlying array. If the Array's generic type is not Object, this field may only be accessed
      * if the [ExpandingArray.Array] constructor was used.
@@ -473,9 +473,12 @@ class ExpandingArray<T> : Iterable<T> {
         return size > 0
     }
 
-    val isEmpty: Boolean
-        /** Returns true if the array is empty.  */
-        get() = size == 0
+    /**
+     * Returns true if the array is empty.
+     */
+    fun isEmpty(): Boolean {
+        return size == 0
+    }
 
     fun clear() {
         Arrays.fill(items, 0, size, null)
@@ -520,7 +523,9 @@ class ExpandingArray<T> : Iterable<T> {
         return items
     }
 
-    /** Creates a new backing array with the specified size containing the current items.  */
+    /**
+     * Creates a new backing array with the specified size containing the current items.
+     */
     protected fun resize(newSize: Int): Array<T?> {
         val items = items
         @Suppress("UNCHECKED_CAST")
@@ -608,7 +613,8 @@ class ExpandingArray<T> : Iterable<T> {
      *
      * If [Collections.allocateIterators] is false, the same iterator instance is returned each time this method is called.
      *
-     * Use the [ArrayIterator] constructor for nested or multithreaded iteration.  */
+     * Use the [ArrayIterator] constructor for nested or multithreaded iteration.
+     */
     override fun iterator(): ArrayIterator<T> {
         if (allocateIterators) return ArrayIterator(this, true)
         if (iterable == null) iterable = ArrayIterable(this)
@@ -620,7 +626,8 @@ class ExpandingArray<T> : Iterable<T> {
      *
      * If [Collections.allocateIterators] is false, the same iterable instance is returned each time this method is called.
      *
-     * Use the [Predicate.PredicateIterable] constructor for nested or multithreaded iteration.  */
+     * Use the [Predicate.PredicateIterable] constructor for nested or multithreaded iteration.
+     */
     fun select(predicate: Predicate<T>?): Iterable<T> {
         if (allocateIterators) return PredicateIterable(this, predicate)
         if (predicateIterable == null) {
@@ -799,7 +806,8 @@ class ExpandingArray<T> : Iterable<T> {
             this.allowRemove = allowRemove
         }
 
-        /** @see Collections.allocateIterators
+        /**
+         * @see Collections.allocateIterators
          */
         override fun iterator(): ArrayIterator<T> {
             if (allocateIterators) return ArrayIterator(array, allowRemove)
@@ -807,8 +815,8 @@ class ExpandingArray<T> : Iterable<T> {
             // lastAcquire.getBuffer().setLength(0);
             // new Throwable().printStackTrace(new java.io.PrintWriter(lastAcquire));
             if (iterator1 == null) {
-                iterator1 = ArrayIterator(array, allowRemove) as ArrayIterator<T>?
-                iterator2 = ArrayIterator(array, allowRemove) as ArrayIterator<T>?
+                iterator1 = ArrayIterator(array, allowRemove)
+                iterator2 = ArrayIterator(array, allowRemove)
                 // iterator1.iterable = this;
                 // iterator2.iterable = this;
             }

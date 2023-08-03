@@ -50,7 +50,7 @@ import kotlin.math.min
  *
  * @author Nathan Sweet
  */
-class ArrayMap<K: Any, V> : MutableMap<K, V?>, MutableIterable<Entry<K, V?>> {
+class ArrayMap<K: Any, V> : MutableMap<K, V?>{
     companion object {
         const val version = Collections.version
     }
@@ -668,10 +668,6 @@ class ArrayMap<K: Any, V> : MutableMap<K, V?>, MutableIterable<Entry<K, V?>> {
         }
         buffer.append('}')
         return buffer.toString()
-    }
-
-    override fun iterator(): MutableIterator<Entry<K, V?>> {
-        return entries()
     }
 
     @Suppress("UNCHECKED_CAST")

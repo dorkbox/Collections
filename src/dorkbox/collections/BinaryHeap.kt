@@ -93,6 +93,7 @@ class BinaryHeap<T : BinaryHeap.Node?> @JvmOverloads constructor(capacity: Int =
      * a max heap).  */
     fun peek(): T? {
         check(size != 0) { "The heap is empty." }
+        @Suppress("UNCHECKED_CAST")
         return nodes[0] as T?
     }
 
@@ -106,6 +107,7 @@ class BinaryHeap<T : BinaryHeap.Node?> @JvmOverloads constructor(capacity: Int =
             down(0)
         }
         else nodes[0] = null
+        @Suppress("UNCHECKED_CAST")
         return removed as T?
     }
 
@@ -143,6 +145,7 @@ class BinaryHeap<T : BinaryHeap.Node?> @JvmOverloads constructor(capacity: Int =
         if ((value < oldValue) xor isMaxHeap) up(node.index) else down(node.index)
     }
 
+    @Suppress("NAME_SHADOWING")
     private fun up(index: Int) {
         var index = index
         val nodes = nodes
@@ -162,6 +165,7 @@ class BinaryHeap<T : BinaryHeap.Node?> @JvmOverloads constructor(capacity: Int =
         node.index = index
     }
 
+    @Suppress("NAME_SHADOWING")
     private fun down(index: Int) {
         var index = index
         val nodes = nodes
@@ -207,9 +211,8 @@ class BinaryHeap<T : BinaryHeap.Node?> @JvmOverloads constructor(capacity: Int =
         node.index = index
     }
 
-    override fun equals(obj: Any?): Boolean {
-        if (obj !is BinaryHeap<*>) return false
-        val other = obj
+    override fun equals(other: Any?): Boolean {
+        if (other !is BinaryHeap<*>) return false
         if (other.size != size) return false
         val nodes1 = nodes
         val nodes2 = other.nodes

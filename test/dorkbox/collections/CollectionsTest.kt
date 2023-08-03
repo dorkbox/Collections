@@ -45,7 +45,6 @@ import kotlin.arrayOf
 import kotlin.arrayOfNulls
 import kotlin.intArrayOf
 import kotlin.run
-import kotlin.toString
 
 /** Tests for the collection classes. Currently, only equals() and hashCode() methods are tested.  */
 class CollectionsTest {
@@ -191,12 +190,12 @@ $b"""
         }
 
         // perform an iteration test
-        var anotherMap = copy(map)
-        var it = (anotherMap as MutableIterable<*>).iterator()
+        var anotherMap = copy(map)as MutableMap<*,*>
+        var it = anotherMap.iterator()
 
         var iterationCount = 0
         while (it.hasNext()) {
-            val entry = it.next()!!
+            val entry = it.next()
             iterationCount++
         }
         assertEquals(iterationCount, keys.size)
@@ -206,11 +205,11 @@ $b"""
             var i = 0
             val n = keys.size
             while (i < n) {
-                anotherMap = copy(map)
-                it = (anotherMap as MutableIterable<*>).iterator()
+                anotherMap = copy(map) as MutableMap<*,*>
+                it = anotherMap.iterator()
                 iterationCount = 0
                 while (it.hasNext()) {
-                    val entry = it.next()!!
+                    val entry = it.next()
                     if (iterationCount == i) {
                         it.remove()
                     }
@@ -274,8 +273,8 @@ $b"""
             }
 
             // perform an iteration test
-            var anotherMap = copy(map)
-            var it = (anotherMap as Iterable<*>).iterator()
+            var anotherMap = copy(map) as MutableMap<*,*>
+            var it = anotherMap.iterator()
             var iterationCount = 0
             while (it.hasNext()) {
                 it.next()
@@ -287,8 +286,8 @@ $b"""
             var i = 0
             val n = keys.size
             while (i < n) {
-                anotherMap = copy(map)
-                it = (anotherMap as MutableIterable<*>).iterator()
+                anotherMap = copy(map) as MutableMap<*,*>
+                it = anotherMap.iterator()
                 iterationCount = 0
                 while (it.hasNext()) {
                     it.next()
@@ -331,8 +330,8 @@ $b"""
             }
 
             // perform an iteration test
-            var anotherMap = copy(map)
-            var it = (anotherMap as MutableIterable<*>).iterator()
+            var anotherMap = copy(map) as MutableMap<*,*>
+            var it = anotherMap.iterator()
             var iterationCount = 0
             while (it.hasNext()) {
                 it.next()
@@ -344,8 +343,8 @@ $b"""
             var i = 0
             val n = keys.size
             while (i < n) {
-                anotherMap = copy(map)
-                it = (anotherMap as MutableIterable<*>).iterator()
+                anotherMap = copy(map) as MutableMap<*,*>
+                it = anotherMap.iterator()
                 iterationCount = 0
                 while (it.hasNext()) {
                     it.next()

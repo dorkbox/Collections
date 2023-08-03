@@ -37,7 +37,7 @@ import java.util.concurrent.atomic.*
 class LockFreeHashMap<K: Any, V> : MutableMap<K, V?>, Cloneable, Serializable {
 
     @Volatile
-    private var hashMap: HashMap<K, V?>
+    private var hashMap: MutableMap<K, V?>
 
 
     // synchronized is used here to ensure the "single writer principle", and make sure that ONLY one thread at a time can enter this

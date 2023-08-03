@@ -51,7 +51,7 @@ class ObjectTests {
 
         assertTrue(map["2"] == null)
 
-        map.retainAll { it.key == "1"}
+        map.entries.retainAll { it.key == "1"}
         assertTrue(map.size == 1)
         assertTrue(map["1"] == 1)
 

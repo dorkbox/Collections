@@ -142,12 +142,12 @@ class BinarySearch<T>(private val eval: Evaluator<T>, private val indexed: Index
                 else {
                     -1
                 }
-
-                else          -> throw AssertionError(bias)
             }
+
         }
         val mid = start + range / 2
         val vm = eval.getValue(indexed[mid])
+
         return if (value >= vm) {
             search(mid, end, value, bias)
         }

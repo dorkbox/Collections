@@ -106,9 +106,9 @@ class OrderedSet<T> : ObjectSet<T> where T : Any, T : Comparable<T> {
         items.sortWith(comparator)
     }
 
-    override fun add(key: T): Boolean {
-        if (!super.add(key)) return false
-        items.add(key)
+    override fun add(element: T): Boolean {
+        if (!super.add(element)) return false
+        items.add(element)
         return true
     }
 
@@ -119,9 +119,9 @@ class OrderedSet<T> : ObjectSet<T> where T : Any, T : Comparable<T> {
     fun add(key: T, index: Int): Boolean {
         if (!super.add(key)) {
             var oldIndex = -1
-            items.forEachIndexed { index, item ->
+            items.forEachIndexed { i, item ->
                 if (item === key) {
-                    oldIndex = index
+                    oldIndex = i
                     return@forEachIndexed
                 }
             }
@@ -274,8 +274,8 @@ class OrderedSet<T> : ObjectSet<T> where T : Any, T : Comparable<T> {
             (set as OrderedSet<*>).removeIndex(nextIndex)
         }
 
+        @Suppress("USELESS_CAST", "UNCHECKED_CAST")
         override fun toArray(): Array<T> {
-            @Suppress("UNCHECKED_CAST")
             return Array(set.size - nextIndex) { next() as Any } as Array<T>
         }
 

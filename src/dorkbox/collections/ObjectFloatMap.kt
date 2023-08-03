@@ -59,7 +59,7 @@ import java.util.*
  * @author Nathan Sweet
  * @author Tommy Ettinger
  */
-open class ObjectFloatMap<K: Any> : MutableMap<K, Float>, MutableIterable<MutableMap.MutableEntry<K, Float>> {
+open class ObjectFloatMap<K: Any> : MutableMap<K, Float> {
 
     companion object {
         const val version = Collections.version
@@ -559,10 +559,6 @@ open class ObjectFloatMap<K: Any> : MutableMap<K, Float>, MutableIterable<Mutabl
 
         if (braces) buffer.append('}')
         return buffer.toString()
-    }
-
-    override fun iterator(): MutableIterator<Entry<K>> {
-        return entries()
     }
 
     override val entries: MutableSet<MutableMap.MutableEntry<K, Float>>

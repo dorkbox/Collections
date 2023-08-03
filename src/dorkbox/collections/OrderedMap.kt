@@ -33,7 +33,7 @@
 package dorkbox.collections
 
 import dorkbox.collections.Collections.allocateIterators
-import java.util.Comparator
+
 
 
 /**
@@ -205,10 +205,6 @@ class OrderedMap<K, V> : ObjectMap<K, V?> where K : Any, K : Comparable<K> {
         return keys_
     }
 
-    override fun iterator(): Entries<K, V?> {
-        return entries()
-    }
-
     /**
      * Returns an iterator for the entries in the map. Remove is supported.
      *
@@ -241,6 +237,7 @@ class OrderedMap<K, V> : ObjectMap<K, V?> where K : Any, K : Comparable<K> {
      *
      * Use the [OrderedMapValues] constructor for nested or multithreaded iteration.
      */
+    @Suppress("UNCHECKED_CAST")
     override fun values(): Values<V?> {
         if (allocateIterators) return OrderedMapValues(this as OrderedMap<K, V?>)
         if (values1 == null) {
@@ -284,6 +281,7 @@ class OrderedMap<K, V> : ObjectMap<K, V?> where K : Any, K : Comparable<K> {
         return keys2 as Keys<K>
     }
 
+    @Suppress("KotlinConstantConditions")
     override fun toString(separator: String, braces: Boolean): String {
         if (size == 0) return if (braces) "{}" else ""
 
@@ -369,8 +367,8 @@ class OrderedMap<K, V> : ObjectMap<K, V?> where K : Any, K : Comparable<K> {
             currentIndex = -1
         }
 
+        @Suppress("USELESS_CAST", "UNCHECKED_CAST")
         override fun toArray(): Array<K> {
-            @Suppress("UNCHECKED_CAST")
             return Array(keys.size - nextIndex) { next() as Any } as Array<K>
         }
     }

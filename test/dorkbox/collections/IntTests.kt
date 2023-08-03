@@ -38,6 +38,15 @@ class IntTests {
         return map
     }
 
+    private fun map3(): LockFreeIntMap<String?> {
+        val map = LockFreeIntMap<String?>()
+        map[1] = "1"
+        map[2] = "2"
+        map[3] = null
+
+        return map
+    }
+
     private fun set(): IntSet {
         val set = IntSet()
         set.add(1)
@@ -60,7 +69,7 @@ class IntTests {
 
         assertTrue(map[2] == null)
 
-        map.retainAll { it.key == 1}
+        map.entries.retainAll { it.key == 1}
         assertTrue(map.size == 1)
         assertTrue(map[1] == "1")
 
@@ -204,7 +213,7 @@ class IntTests {
 
         assertTrue(map[2] == null)
 
-        map.retainAll { it.key == 1}
+        map.entries.retainAll { it.key == 1}
         assertTrue(map.size == 1)
         assertTrue(map[1] == 1)
 
@@ -325,6 +334,149 @@ class IntTests {
         entries.retainAll(keep)
         assertTrue(map.size == 1)
         assertTrue(map[1] == 1)
+
+        entries.clear()
+
+        assertTrue(map.isEmpty())
+        assertTrue(entries.isEmpty())
+        assertTrue(map.size == 0)
+        assertTrue(entries.size == 0)
+    }
+
+    @Test
+    fun testLFIntMap() {
+        val map = map3()
+        assertTrue(map.size == 3)
+
+        assertTrue(map.size == 3)
+
+        assertTrue(map[2] == "2")
+        map.remove(2)
+        assertTrue(map.size == 2)
+
+        assertTrue(map[2] == null)
+
+        map.entries.retainAll { it.key == 1}
+        assertTrue(map.size == 1)
+        assertTrue(map[1] == "1")
+
+
+        map.clear()
+
+        assertTrue(map.isEmpty())
+        assertTrue(map.size == 0)
+    }
+
+    @Test
+    fun testLFIntMapKeys() {
+        val map = map3()
+        assertTrue(map.size == 3)
+
+        val keys = map.keys()
+        assertTrue(keys.size == 3)
+
+        assertTrue(map[2] == "2")
+        keys.remove(2)
+        assertTrue(map.size == 2)
+        assertTrue(keys.size == 2)
+
+        assertTrue(map[2] == null)
+
+        val keep = listOf(1)
+        keys.retainAll(keep)
+        assertTrue(map.size == 1)
+        assertTrue(map[1] == "1")
+
+        keys.clear()
+
+        assertTrue(map.isEmpty())
+        assertTrue(keys.isEmpty())
+        assertTrue(map.size == 0)
+        assertTrue(keys.size == 0)
+    }
+
+    @Test
+    fun testLFIntMapValues() {
+        val map = map3()
+        assertTrue(map.size == 3)
+
+        val values = map.values()
+        assertTrue(values.size == 3)
+
+        values.remove("2")
+        assertTrue(map.size == 2)
+        assertTrue(values.size == 2)
+
+        assertTrue(map[2] == null)
+
+        val keep = listOf("1")
+        values.retainAll(keep)
+        assertTrue(map.size == 1)
+        assertTrue(map[1] == "1")
+
+        values.clear()
+
+        assertTrue(map.isEmpty())
+        assertTrue(values.isEmpty())
+        assertTrue(map.size == 0)
+        assertTrue(values.size == 0)
+    }
+
+    @Test
+    fun testLFIntMapEntries() {
+        val map = map3()
+        assertTrue(map.size == 3)
+
+        val entries = map.entries()
+        assertTrue(entries.size == 3)
+
+        var toRemove: IntMap.Entry<String?>? = null
+        val iter = entries.iterator()
+        while (iter.hasNext()) {
+            val entry = iter.next()
+            if (entry.key == 2) {
+                toRemove = entry
+                break
+            }
+        }
+
+
+        assertTrue(toRemove?.key == 2)
+        entries.remove(toRemove)
+        assertTrue(map.size == 2)
+        assertTrue(entries.size == 2)
+
+        assertTrue(map[2] == null)
+
+        val keepEntry = entries.iterator().next()
+
+        val keep = listOf(keepEntry)
+        entries.retainAll(keep)
+        assertTrue(map.size == 1)
+        assertTrue(map[1] == "1")
+
+        entries.clear()
+
+        assertTrue(map.isEmpty())
+        assertTrue(entries.isEmpty())
+        assertTrue(map.size == 0)
+        assertTrue(entries.size == 0)
+    }
+
+    @Test
+    fun testLFIntMapEntries2() {
+        val map = map3()
+        assertTrue(map.size == 3)
+
+        val entries = map.entries()
+        val keepEntry = IntMap.Entry<String?>()
+        keepEntry.key = 1
+        keepEntry.value = "1"
+
+        val keep = listOf(keepEntry)
+        entries.retainAll(keep)
+        assertTrue(map.size == 1)
+        assertTrue(map[1] == "1")
 
         entries.clear()
 

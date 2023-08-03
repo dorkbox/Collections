@@ -68,7 +68,7 @@ class LockFreeIntBiMap<V: Any> : MutableMap<Int, V>, Cloneable, Serializable {
         get() = forwardHashMap.size
 
     /**
-     * Removes all of the mappings from this bimap.
+     * Removes all the mappings from this bimap.
      * The bimap will be empty after this call returns.
      */
     @Synchronized
@@ -95,7 +95,7 @@ class LockFreeIntBiMap<V: Any> : MutableMap<Int, V>, Cloneable, Serializable {
     }
 
     /**
-     * Replaces all of the mappings from the specified map to this bimap.
+     * Replaces all the mappings from the specified map to this bimap.
      * These mappings will replace any mappings that this map had for
      * any of the keys currently in the specified map.
      *
@@ -225,7 +225,7 @@ class LockFreeIntBiMap<V: Any> : MutableMap<Int, V>, Cloneable, Serializable {
     }
 
     /**
-     * Copies all of the mappings from the specified map to this map.
+     * Copies all the mappings from the specified map to this map.
      * These mappings will replace any mappings that this map had for
      * any of the keys currently in the specified map.
      *

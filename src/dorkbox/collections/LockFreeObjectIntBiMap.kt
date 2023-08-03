@@ -68,7 +68,7 @@ class LockFreeObjectIntBiMap<K: Any> : MutableMap<K, Int>, Cloneable, Serializab
         get() = forwardHashMap.size
 
     /**
-     * Removes all of the mappings from this bimap.
+     * Removes all the mappings from this bimap.
      * The bimap will be empty after this call returns.
      */
     @Synchronized
@@ -96,7 +96,7 @@ class LockFreeObjectIntBiMap<K: Any> : MutableMap<K, Int>, Cloneable, Serializab
     }
 
     /**
-     * Replaces all of the mappings from the specified map to this bimap.
+     * Replaces all the mappings from the specified map to this bimap.
      * These mappings will replace any mappings that this map had for
      * any of the keys currently in the specified map.
      *
@@ -130,7 +130,7 @@ class LockFreeObjectIntBiMap<K: Any> : MutableMap<K, Int>, Cloneable, Serializab
     }
 
     /**
-     * Replaces all of the mappings from the specified map to this bimap.
+     * Replaces all the mappings from the specified map to this bimap.
      * These mappings will replace any mappings that this map had for
      * any of the keys currently in the specified map. This is an alternate
      * form of [.replaceAll] replaceAll(K, V) that will silently

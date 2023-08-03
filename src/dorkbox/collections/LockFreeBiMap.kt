@@ -425,10 +425,10 @@ class LockFreeBiMap<K: Any, V: Any> : MutableMap<K, V>, Cloneable, Serializable 
 
         // Recommended for best performance while adhering to the "single writer principle". Must be static-final
         private val forwardREF = AtomicReferenceFieldUpdater.newUpdater(
-            LockFreeBiMap::class.java, HashMap::class.java, "forwardHashMap"
+            LockFreeBiMap::class.java, MutableMap::class.java, "forwardHashMap"
         )
         private val reverseREF = AtomicReferenceFieldUpdater.newUpdater(
-            LockFreeBiMap::class.java, HashMap::class.java, "reverseHashMap"
+            LockFreeBiMap::class.java, MutableMap::class.java, "reverseHashMap"
         )
     }
 }

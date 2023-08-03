@@ -117,6 +117,7 @@ interface Predicate<T> {
             else {
                 iterator!!.set(iterable!!.iterator() as MutableIterator<T>, predicate)
             }
+            @Suppress("UNCHECKED_CAST")
             return iterator as MutableIterator<T>
         }
     }
