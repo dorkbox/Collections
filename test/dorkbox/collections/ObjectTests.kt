@@ -16,6 +16,8 @@
 
 package dorkbox.collections
 
+import org.junit.Assert
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -158,20 +160,18 @@ class ObjectTests {
     }
 
     @Test
-    fun testObjectMapEntries2() {
-        val map = map()
-        assertTrue(map.size == 3)
+    fun testIdentityMapIterator() {
+        val map = IdentityMap<Int, String>()
+        repeat(64) {
+            map[it] = it.toString()
+        }
+
+        assertEquals(64, map.size)
 
         val entries = map.entries()
-        entries.findNextIndex()
-        val keepEntry = ObjectMap.Entry<String, Int?>(map, entries.nextIndex)
-        keepEntry.key = "1"
-        keepEntry.value = 1
-
-        val keep = listOf(keepEntry)
-        entries.retainAll(keep)
-        assertTrue(map.size == 1)
-        assertTrue(map["1"] == 1)
+        entries.forEach { (k,v) ->
+            Assert.assertTrue(k.toString() == v)
+        }
 
         entries.clear()
 
