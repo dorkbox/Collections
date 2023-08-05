@@ -328,16 +328,23 @@ class OrderedMap<K, V> : ObjectMap<K, V> where K : Any, K : Comparable<K> {
             if (!hasNext) throw NoSuchElementException()
             if (!valid) throw RuntimeException("#iterator() cannot be used nested.")
             currentIndex = nextIndex
-            entry.key = keys[nextIndex]
-            entry.value = map.get(entry.key)
+
+            val key = keys[nextIndex]
+            if (entry == null) {
+                entry = Entry(key, map.get(key), map)
+            } else {
+                entry!!.key = key
+                entry!!.value = map.get(key)
+            }
+
             nextIndex++
             hasNext = nextIndex < map.size
-            return entry
+            return entry!!
         }
 
         override fun remove() {
             check(currentIndex >= 0) { "next must be called before remove." }
-            map.remove(entry.key)
+            map.remove(entry!!.key)
             nextIndex--
             currentIndex = -1
         }

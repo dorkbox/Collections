@@ -609,10 +609,9 @@ open class ObjectMap<K: Any, V> : MutableMap<K, V?> {
         return keys2!!
     }
 
-    class Entry<K: Any, V>(val map: ObjectMap<K, V?>, index: Int) : MutableMap.MutableEntry<K, V?> {
-        // we know there will be at least one
-        override var key: K = map.keyTable[index]!!
-        override var value: V? = map.valueTable[index]
+    class Entry<K: Any, V>(key: K, value: V, val map: ObjectMap<K, V?>) : MutableMap.MutableEntry<K, V?> {
+        override var key: K = key
+        override var value: V? = value
 
         override fun setValue(newValue: V?): V? {
             val oldValue = value
@@ -684,25 +683,24 @@ open class ObjectMap<K: Any, V> : MutableMap<K, V?> {
     }
 
     open class Entries<K: Any, V>(map: ObjectMap<K, V?>) : MutableSet<Entry<K, V?>>, MapIterator<K, V?, Entry<K, V?>>(map) {
-        internal lateinit var entry: Entry<K, V?>
-
-        init {
-            if (hasNext) {
-                findNextIndex()
-                entry = Entry(map, nextIndex)
-            }
-        }
+        internal var entry: Entry<K, V?>? = null
 
         /** Note the same entry instance is returned each time this method is called.  */
         override fun next(): Entry<K, V?> {
             if (!hasNext) throw NoSuchElementException()
             if (!valid) throw RuntimeException("#iterator() cannot be used nested.")
             val keyTable = map.keyTable
-            entry.key = keyTable[nextIndex]!!
-            entry.value = map.valueTable[nextIndex]
+
+            if (entry == null) {
+                entry = Entry(keyTable[nextIndex]!!, map.valueTable[nextIndex], map)
+            } else {
+                entry!!.key = keyTable[nextIndex]!!
+                entry!!.value = map.valueTable[nextIndex]
+            }
+
             currentIndex = nextIndex
             findNextIndex()
-            return entry
+            return entry!!
         }
 
         override fun hasNext(): Boolean {
@@ -778,7 +776,7 @@ open class ObjectMap<K: Any, V> : MutableMap<K, V?> {
         }
 
         override fun remove(element: Entry<K, V?>): Boolean {
-            val removed = map.remove(entry.key) != null
+            val removed = map.remove(entry!!.key) != null
             reset()
             return removed
         }
