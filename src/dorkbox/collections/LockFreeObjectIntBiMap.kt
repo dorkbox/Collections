@@ -286,21 +286,19 @@ class LockFreeObjectIntBiMap<K: Any> : MutableMap<K, Int>, Cloneable, Serializab
      *
      * @param key key whose mapping is to be removed from the map
      *
-     * @return the previous value associated with <tt>key</tt>, or
-     * <tt>null</tt> if there was no mapping for <tt>key</tt>.
-     * (A <tt>null</tt> return can also indicate that the map
-     * previously associated <tt>null</tt> with <tt>key</tt>.)
+     * @return the previous value associated with [key] or [defaultReturnValue] if it doesn't exist
+     *
      */
     @Synchronized
-    override fun remove(key: K): Int? {
+    override fun remove(key: K): Int {
         val value = forwardHashMap.remove(key)
         reverseHashMap.remove(value)
-        return value
+        return value ?: defaultReturnValue
     }
 
     /**
      * Returns the value to which the specified key is mapped,
-     * or `null` if this map contains no mapping for the key.
+     * or [defaultReturnValue] if this map contains no mapping for the key.
      *
      *
      * More formally, if this map contains a mapping from a key
@@ -309,9 +307,9 @@ class LockFreeObjectIntBiMap<K: Any> : MutableMap<K, Int>, Cloneable, Serializab
      * it returns `null`.  (There can be at most one such mapping.)
      *
      *
-     * A return value of `null` does not *necessarily*
+     * A return value of [defaultReturnValue] does not *necessarily*
      * indicate that the map contains no mapping for the key; it's also
-     * possible that the map explicitly maps the key to `null`.
+     * possible that the map explicitly maps the key to [defaultReturnValue].
      * The [containsKey][HashMap.containsKey] operation may be used to
      * distinguish these two cases.
      *
@@ -319,8 +317,7 @@ class LockFreeObjectIntBiMap<K: Any> : MutableMap<K, Int>, Cloneable, Serializab
      */
     override operator fun get(key: K): Int {
         // use the SWP to get a lock-free get of the value
-        @Suppress("UNCHECKED_CAST")
-        return (forwardREF[this] as ObjectIntMap<K>)[key] as Int
+        return forwardREF[this][key] ?: defaultReturnValue
     }
 
     /**

@@ -163,7 +163,8 @@ class ObjectTests {
         assertTrue(map.size == 3)
 
         val entries = map.entries()
-        val keepEntry = ObjectMap.Entry<String, Int?>(map)
+        entries.findNextIndex()
+        val keepEntry = ObjectMap.Entry<String, Int?>(map, entries.nextIndex)
         keepEntry.key = "1"
         keepEntry.value = 1
 

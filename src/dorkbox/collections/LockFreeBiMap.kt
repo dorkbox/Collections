@@ -263,16 +263,13 @@ class LockFreeBiMap<K: Any, V: Any> : MutableMap<K, V>, Cloneable, Serializable 
      *
      * @param key key whose mapping is to be removed from the map
      *
-     * @return the previous value associated with <tt>key</tt>, or
-     * <tt>null</tt> if there was no mapping for <tt>key</tt>.
-     * (A <tt>null</tt> return can also indicate that the map
-     * previously associated <tt>null</tt> with <tt>key</tt>.)
+     * @return the previous value associated with [key]
      */
     @Synchronized
-    override fun remove(key: K): V? {
+    override fun remove(key: K): V {
         val value = forwardHashMap.remove(key)
         reverseHashMap.remove(value)
-        return value
+        return value!!
     }
 
     /**

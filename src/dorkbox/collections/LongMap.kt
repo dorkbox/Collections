@@ -54,7 +54,7 @@ import java.util.*
  * @author Nathan Sweet
  * @author Tommy Ettinger
  */
-class LongMap<V> : MutableMap<Long, V> {
+class LongMap<V> : MutableMap<Long, V?> {
     companion object {
         const val version = Collections.version
     }
@@ -87,16 +87,16 @@ class LongMap<V> : MutableMap<Long, V> {
     protected var mask: Int
 
     @Transient
-    private var entries1: Entries<V>? = null
+    private var entries1: Entries<V?>? = null
 
     @Transient
-    private var entries2: Entries<V>? = null
+    private var entries2: Entries<V?>? = null
 
     @Transient
-    private var values1: Values<V>? = null
+    private var values1: Values<V?>? = null
 
     @Transient
-    private var values2: Values<V>? = null
+    private var values2: Values<V?>? = null
 
     @Transient
     private var keys1: Keys? = null
@@ -175,7 +175,7 @@ class LongMap<V> : MutableMap<Long, V> {
     }
 
 
-    override fun put(key: Long, value: V): V? {
+    override fun put(key: Long, value: V?): V? {
         if (key == 0L) {
             val oldValue = zeroValue
             zeroValue = value
@@ -198,7 +198,7 @@ class LongMap<V> : MutableMap<Long, V> {
         return null
     }
 
-    fun putAll(map: LongMap<out V>) {
+    fun putAll(map: LongMap<out V?>) {
         ensureCapacity(map.size_)
         if (map.hasZeroValue) {
             put(0, map.zeroValue!!)
@@ -237,8 +237,8 @@ class LongMap<V> : MutableMap<Long, V> {
         return if (i >= 0) valueTable[i] else null
     }
 
-    operator fun get(key: Long, defaultValue: V?): V? {
-        if (key == 0L) return if (hasZeroValue) zeroValue else defaultValue
+    operator fun get(key: Long, defaultValue: V): V? {
+        if (key == 0L) return if (hasZeroValue) zeroValue!! else defaultValue
         val i = locateKey(key)
         return if (i >= 0) valueTable[i] else defaultValue
     }
@@ -294,7 +294,7 @@ class LongMap<V> : MutableMap<Long, V> {
         return size_ == 0
     }
 
-    override fun putAll(from: Map<out Long, V>) {
+    override fun putAll(from: Map<out Long, V?>) {
         ensureCapacity(from.size)
         from.entries.forEach { (k,v) ->
             put(k, v)
@@ -328,13 +328,13 @@ class LongMap<V> : MutableMap<Long, V> {
     }
 
     @Suppress("UNCHECKED_CAST")
-    override val entries: MutableSet<MutableMap.MutableEntry<Long, V>>
-        get() = entries() as MutableSet<MutableMap.MutableEntry<Long, V>>
+    override val entries: MutableSet<MutableMap.MutableEntry<Long, V?>>
+        get() = entries() as MutableSet<MutableMap.MutableEntry<Long, V?>>
     override val keys: MutableSet<Long>
         get() = keys()
     override val size: Int
         get() = size_
-    override val values: MutableCollection<V>
+    override val values: MutableCollection<V?>
         get() = values()
 
     override fun clear() {
@@ -346,7 +346,7 @@ class LongMap<V> : MutableMap<Long, V> {
         hasZeroValue = false
     }
 
-    override fun containsValue(value: V): Boolean {
+    override fun containsValue(value: V?): Boolean {
         return containsValue(value, false)
     }
 
@@ -488,7 +488,7 @@ class LongMap<V> : MutableMap<Long, V> {
             if (key != 0L) {
                 val value: V? = valueTable[i]
                 if (value == null) {
-                    if (other.get(key, ObjectMap.dummy as V?) != null) return false
+                    if (other.get(key, ObjectMap.dummy as V) != null) return false
                 }
                 else {
                     if (value != other[key]) return false
@@ -517,7 +517,7 @@ class LongMap<V> : MutableMap<Long, V> {
         val n = keyTable.size
         while (i < n) {
             val key = keyTable[i]
-            if (key != 0L && valueTable[i] !== other.get(key, ObjectMap.dummy as V?)) return false
+            if (key != 0L && valueTable[i] !== other.get(key, ObjectMap.dummy as V)) return false
             i++
         }
         return true
@@ -588,22 +588,23 @@ class LongMap<V> : MutableMap<Long, V> {
      * If [Collections.allocateIterators] is false, the same iterator instance is returned each time this method is called.
      * Use the [Entries] constructor for nested or multithreaded iteration.
      */
-    fun values(): Values<V> {
-        if (allocateIterators) return Values(this)
+    @Suppress("UNCHECKED_CAST")
+    fun values(): Values<V?> {
+        if (allocateIterators) return Values(this as LongMap<V?>)
         if (values1 == null) {
-            values1 = Values(this)
-            values2 = Values(this)
+            values1 = Values(this as LongMap<V?>)
+            values2 = Values(this as LongMap<V?>)
         }
         if (!values1!!.valid) {
             values1!!.reset()
             values1!!.valid = true
             values2!!.valid = false
-            return values1 as Values<V>
+            return values1 as Values<V?>
         }
         values2!!.reset()
         values2!!.valid = true
         values1!!.valid = false
-        return values2 as Values<V>
+        return values2 as Values<V?>
     }
 
     /**

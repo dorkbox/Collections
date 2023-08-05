@@ -238,8 +238,8 @@ open class IntMap<V> : MutableMap<Int, V> {
         return if (i >= 0) valueTable[i] else null
     }
 
-    operator fun get(key: Int, defaultValue: V?): V? {
-        if (key == 0) return if (hasZeroValue) zeroValue else defaultValue
+    operator fun get(key: Int, defaultValue: V): V? {
+        if (key == 0) return if (hasZeroValue) zeroValue!! else defaultValue
         val i = locateKey(key)
         return if (i >= 0) valueTable[i] else defaultValue
     }
@@ -489,7 +489,7 @@ open class IntMap<V> : MutableMap<Int, V> {
             if (key != 0) {
                 val value: V? = valueTable[i]
                 if (value == null) {
-                    if (other.get(key, ObjectMap.dummy as V?) != null) return false
+                    if (other.get(key, ObjectMap.dummy as V) != null) return false
                 }
                 else {
                     if (value != other[key]) return false
@@ -518,7 +518,7 @@ open class IntMap<V> : MutableMap<Int, V> {
         val n = keyTable.size
         while (i < n) {
             val key = keyTable[i]
-            if (key != 0 && valueTable[i] !== other.get(key, ObjectMap.dummy as V?)) return false
+            if (key != 0 && valueTable[i] !== other.get(key, ObjectMap.dummy as V)) return false
             i++
         }
         return true

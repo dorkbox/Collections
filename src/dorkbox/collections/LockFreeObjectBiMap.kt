@@ -36,10 +36,10 @@ import java.util.concurrent.atomic.*
  */
 class LockFreeObjectBiMap<K: Any, V: Any> : MutableMap<K, V>, Cloneable, Serializable {
     @Volatile
-    private var forwardHashMap: MutableMap<K, V>
+    private var forwardHashMap: ObjectMap<K, V>
 
     @Volatile
-    private var reverseHashMap: MutableMap<V, K>
+    private var reverseHashMap: ObjectMap<V, K>
 
     private val inverse: LockFreeObjectBiMap<V, K>
 
@@ -52,7 +52,7 @@ class LockFreeObjectBiMap<K: Any, V: Any> : MutableMap<K, V>, Cloneable, Seriali
         inverse = LockFreeObjectBiMap(reverseHashMap, forwardHashMap, this)
     }
 
-    private constructor(forwardHashMap: MutableMap<K, V>, reverseHashMap: MutableMap<V, K>, inverse: LockFreeObjectBiMap<V, K>) {
+    private constructor(forwardHashMap: ObjectMap<K, V>, reverseHashMap: ObjectMap<V, K>, inverse: LockFreeObjectBiMap<V, K>) {
         this.forwardHashMap = forwardHashMap
         this.reverseHashMap = reverseHashMap
         this.inverse = inverse
@@ -428,10 +428,10 @@ class LockFreeObjectBiMap<K: Any, V: Any> : MutableMap<K, V>, Cloneable, Seriali
 
         // Recommended for best performance while adhering to the "single writer principle". Must be static-final
         private val forwardREF = AtomicReferenceFieldUpdater.newUpdater(
-            LockFreeObjectBiMap::class.java, MutableMap::class.java, "forwardHashMap"
+            LockFreeObjectBiMap::class.java, ObjectMap::class.java, "forwardHashMap"
         )
         private val reverseREF = AtomicReferenceFieldUpdater.newUpdater(
-            LockFreeObjectBiMap::class.java, MutableMap::class.java, "reverseHashMap"
+            LockFreeObjectBiMap::class.java, ObjectMap::class.java, "reverseHashMap"
         )
     }
 }

@@ -255,7 +255,7 @@ open class ObjectIntMap<K: Any> : MutableMap<K, Int> {
     /**
      * Returns the value for the specified key, or the default value if the key is not in the map.
      */
-    operator fun get(key: K, defaultValue: Int?): Int? {
+    open operator fun get(key: K, defaultValue: Int): Int {
         val i = locateKey(key)
         return if (i < 0) {
             defaultValue

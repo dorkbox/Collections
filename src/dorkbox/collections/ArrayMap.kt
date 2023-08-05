@@ -231,7 +231,7 @@ class ArrayMap<K: Any, V> : MutableMap<K, V?>{
      * Returns the value (which may be null) for the specified key, or the default value if the key is not in the map. Note this
      * does a .equals() comparison of each key in reverse order until the specified key is found.
      */
-    operator fun get(key: K?, defaultValue: V?): V? {
+    operator fun get(key: K?, defaultValue: V): V? {
         val keys = keyTable
         var i = size_ - 1
         if (key == null) {
@@ -246,6 +246,7 @@ class ArrayMap<K: Any, V> : MutableMap<K, V?>{
                 i--
             }
         }
+
         return defaultValue
     }
 
@@ -626,7 +627,7 @@ class ArrayMap<K: Any, V> : MutableMap<K, V?>{
             val key = keys[i] as K
             val value = values[i]
             if (value == null) {
-                if (other.get(key, dummy as V?) != null) {
+                if (other.get(key, dummy as V) != null) {
                     return false
                 }
             }
@@ -656,7 +657,7 @@ class ArrayMap<K: Any, V> : MutableMap<K, V?>{
         var i = 0
         val n = size_
         while (i < n) {
-            if (values[i] !== other.get(keys[i], dummy as V?)) return false
+            if (values[i] !== other.get(keys[i], dummy as V)) return false
             i++
         }
         return true
@@ -787,11 +788,17 @@ class ArrayMap<K: Any, V> : MutableMap<K, V?>{
         return keys2!!
     }
 
-    class Entries<K: Any, V>(private val map: ArrayMap<K, V?>) :  MutableSet<Entry<K, V?>>,Iterable<Entry<K, V?>>, MutableIterator<Entry<K, V?>> {
+    class Entries<K: Any, V>(private val map: ArrayMap<K, V?>) : MutableSet<Entry<K, V?>>, MutableIterator<Entry<K, V?>> {
 
-        var entry: Entry<K, V?> = Entry(map)
-        var index = 0
-        var valid = true
+        private lateinit var entry: Entry<K, V?>
+        internal var index = 0
+        internal var valid = true
+
+        init {
+            if (hasNext()) {
+                entry = Entry(map)
+            }
+        }
 
         override fun hasNext(): Boolean {
             if (!valid) throw RuntimeException("#iterator() cannot be used nested.")
@@ -882,7 +889,7 @@ class ArrayMap<K: Any, V> : MutableMap<K, V?>{
             if (index >= map.size_) throw NoSuchElementException(index.toString())
             if (!valid) throw RuntimeException("#iterator() cannot be used nested.")
 
-            entry.key = map.keyTable[index] as K
+            entry.key = map.keyTable[index]!!
             entry.value = map.valueTable[index++]
             return entry
         }
@@ -897,9 +904,10 @@ class ArrayMap<K: Any, V> : MutableMap<K, V?>{
         }
     }
 
-    class Entry<K: Any, V>(val map: ArrayMap<K, V?>) : MutableMap.MutableEntry<K, V?> {
-        override lateinit var key: K
-        override var value: V? = null
+    class Entry<K: Any, V>(val map: ArrayMap<K, V>) : MutableMap.MutableEntry<K, V?> {
+        // we know there will be at least one
+        override var key: K = map.keyTable[0]!!
+        override var value: V? = map.valueTable[0]
 
         override fun setValue(newValue: V?): V? {
             val oldValue = value
@@ -913,7 +921,7 @@ class ArrayMap<K: Any, V> : MutableMap<K, V?>{
         }
     }
 
-    class Values<V>(map: ArrayMap<Any, V?>) : MutableCollection<V>, Iterable<V>, MutableIterator<V> {
+    class Values<V>(map: ArrayMap<Any, V?>) : MutableCollection<V>, MutableIterator<V> {
         private val map: ArrayMap<Any, V?>
         var index = 0
         var valid = true
@@ -1028,7 +1036,7 @@ class ArrayMap<K: Any, V> : MutableMap<K, V?>{
         }
     }
 
-    class Keys<K: Any>(map: ArrayMap<K, Any>) : MutableSet<K>, Iterable<K>, MutableIterator<K> {
+    class Keys<K: Any>(map: ArrayMap<K, Any>) : MutableSet<K>, MutableIterator<K> {
         private val map: ArrayMap<K, Any>
         var index = 0
         var valid = true

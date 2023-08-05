@@ -59,7 +59,7 @@ import java.util.*
  * @author Nathan Sweet
  * @author Tommy Ettinger
  */
-open class ObjectMap<K: Any, V> : MutableMap<K, V> {
+open class ObjectMap<K: Any, V> : MutableMap<K, V?> {
 
     companion object {
         const val version = Collections.version
@@ -189,7 +189,7 @@ open class ObjectMap<K: Any, V> : MutableMap<K, V> {
     /**
      * Returns the old value associated with the specified key, or null.
      */
-    override fun put(key: K, value: V): V? {
+    override fun put(key: K, value: V?): V? {
         var i = locateKey(key)
         if (i >= 0) { // Existing key was found.
             val oldValue = valueTable[i]
@@ -203,7 +203,7 @@ open class ObjectMap<K: Any, V> : MutableMap<K, V> {
         return null
     }
 
-    open fun putAll(from: ObjectMap<out K, out V>) {
+    open fun putAll(from: ObjectMap<out K, out V?>) {
         ensureCapacity(from.mapSize)
 
         val keyTable = from.keyTable
@@ -214,13 +214,13 @@ open class ObjectMap<K: Any, V> : MutableMap<K, V> {
         while (i < n) {
             key = keyTable[i]
             if (key != null) {
-                put(key, valueTable[i]!!)
+                put(key, valueTable[i])
             }
             i++
         }
     }
 
-    override fun putAll(from: Map<out K, V>) {
+    override fun putAll(from: Map<out K, V?>) {
         ensureCapacity(from.size)
 
         from.forEach { (k, v) ->
@@ -255,7 +255,7 @@ open class ObjectMap<K: Any, V> : MutableMap<K, V> {
     /**
      * Returns the value for the specified key, or the default value if the key is not in the map.
      */
-    operator fun get(key: K, defaultValue: V?): V? {
+    operator fun get(key: K, defaultValue: V): V? {
         val i = locateKey(key)
         return if (i < 0) {
             defaultValue
@@ -338,7 +338,7 @@ open class ObjectMap<K: Any, V> : MutableMap<K, V> {
         Arrays.fill(valueTable, null)
     }
 
-    override fun containsValue(value: V): Boolean {
+    override fun containsValue(value: V?): Boolean {
         return containsValue(value, false)
     }
 
@@ -452,7 +452,7 @@ open class ObjectMap<K: Any, V> : MutableMap<K, V> {
             if (key != null) {
                 val value = valueTable[i]
                 if (value == null) {
-                    if (other.get(key, dummy as V?) != null) return false
+                    if (other.get(key, dummy as V) != null) return false
                 }
                 else {
                     if (value != other.get(key)) return false
@@ -478,7 +478,7 @@ open class ObjectMap<K: Any, V> : MutableMap<K, V> {
         val n = keyTable.size
         while (i < n) {
             val key: K? = keyTable[i]
-            if (key != null && valueTable[i] !== other.get(key, dummy as V?)) return false
+            if (key != null && valueTable[i] !== other.get(key, dummy as V)) return false
             i++
         }
         return true
@@ -523,8 +523,8 @@ open class ObjectMap<K: Any, V> : MutableMap<K, V> {
         return buffer.toString()
     }
 
-    override val entries: MutableSet<MutableMap.MutableEntry<K, V>>
-        get() = entries() as MutableSet<MutableMap.MutableEntry<K, V>>
+    override val entries: MutableSet<MutableMap.MutableEntry<K, V?>>
+        get() = entries() as MutableSet<MutableMap.MutableEntry<K, V?>>
 
 
     /**
@@ -553,7 +553,7 @@ open class ObjectMap<K: Any, V> : MutableMap<K, V> {
         return entries2 as Entries<K, V?>
     }
 
-    override val values: MutableCollection<V>
+    override val values: MutableCollection<V?>
         get() = values()
 
     /**
@@ -563,7 +563,7 @@ open class ObjectMap<K: Any, V> : MutableMap<K, V> {
      *
      * Use the [Values] constructor for nested or multithreaded iteration.
      */
-    open fun values(): Values<V> {
+    open fun values(): Values<V?> {
         if (allocateIterators) return Values(this as ObjectMap<K, V?>)
         if (values1 == null) {
             values1 = Values(this as ObjectMap<K, V?>)
@@ -573,12 +573,12 @@ open class ObjectMap<K: Any, V> : MutableMap<K, V> {
             values1!!.reset()
             values1!!.valid = true
             values2!!.valid = false
-            return values1 as Values<V>
+            return values1 as Values<V?>
         }
         values2!!.reset()
         values2!!.valid = true
         values1!!.valid = false
-        return values2 as Values<V>
+        return values2 as Values<V?>
     }
 
     override val keys: MutableSet<K>
@@ -601,17 +601,18 @@ open class ObjectMap<K: Any, V> : MutableMap<K, V> {
             keys1!!.reset()
             keys1!!.valid = true
             keys2!!.valid = false
-            return keys1 as Keys<K>
+            return keys1!!
         }
         keys2!!.reset()
         keys2!!.valid = true
         keys1!!.valid = false
-        return keys2 as Keys<K>
+        return keys2!!
     }
 
-    class Entry<K: Any, V>(val map: ObjectMap<K, V?>) : MutableMap.MutableEntry<K, V?> {
-        override lateinit var key: K
-        override var value: V? = null
+    class Entry<K: Any, V>(val map: ObjectMap<K, V?>, index: Int) : MutableMap.MutableEntry<K, V?> {
+        // we know there will be at least one
+        override var key: K = map.keyTable[index]!!
+        override var value: V? = map.valueTable[index]
 
         override fun setValue(newValue: V?): V? {
             val oldValue = value
@@ -625,7 +626,7 @@ open class ObjectMap<K: Any, V> : MutableMap<K, V> {
         }
     }
 
-    abstract class MapIterator<K: Any, V, I>(val map: ObjectMap<K, V>) : Iterable<I>, MutableIterator<I> {
+    abstract class MapIterator<K: Any, V, I>(val map: ObjectMap<K, V?>) : MutableIterator<I> {
         var hasNext = false
         var nextIndex = 0
         var currentIndex = 0
@@ -683,7 +684,14 @@ open class ObjectMap<K: Any, V> : MutableMap<K, V> {
     }
 
     open class Entries<K: Any, V>(map: ObjectMap<K, V?>) : MutableSet<Entry<K, V?>>, MapIterator<K, V?, Entry<K, V?>>(map) {
-        var entry = Entry<K, V?>(map)
+        internal lateinit var entry: Entry<K, V?>
+
+        init {
+            if (hasNext) {
+                findNextIndex()
+                entry = Entry(map, nextIndex)
+            }
+        }
 
         /** Note the same entry instance is returned each time this method is called.  */
         override fun next(): Entry<K, V?> {
@@ -776,7 +784,7 @@ open class ObjectMap<K: Any, V> : MutableMap<K, V> {
         }
     }
 
-    open class Values<V>(map: ObjectMap<*, V?>) : MutableCollection<V>, MapIterator<Any, V, V>(map as ObjectMap<Any, V>) {
+    open class Values<V>(map: ObjectMap<*, V?>) : MutableCollection<V>, MapIterator<Any, V, V>(map as ObjectMap<Any, V?>) {
         override fun hasNext(): Boolean {
             if (!valid) throw RuntimeException("#iterator() cannot be used nested.")
             return hasNext

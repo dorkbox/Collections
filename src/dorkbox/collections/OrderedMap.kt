@@ -63,7 +63,7 @@ import dorkbox.collections.Collections.allocateIterators
  * @author Nathan Sweet
  * @author Tommy Ettinger
  */
-class OrderedMap<K, V> : ObjectMap<K, V?> where K : Any, K : Comparable<K> {
+class OrderedMap<K, V> : ObjectMap<K, V> where K : Any, K : Comparable<K> {
     companion object {
         const val version = Collections.version
     }
@@ -132,14 +132,14 @@ class OrderedMap<K, V> : ObjectMap<K, V?> where K : Any, K : Comparable<K> {
         return null
     }
 
-    fun putAll(map: OrderedMap<K, out V?>) {
+    fun putAll(map: OrderedMap<K, V>) {
         ensureCapacity(map.size)
         val keys = map.keys_
         var i = 0
         val n = map.keys_.size
         while (i < n) {
             val key = keys[i]
-            put(key, map.get(key))
+            put(key, map.get(key)!!) // we know this is value, because we checked it earlier
             i++
         }
     }
@@ -169,7 +169,10 @@ class OrderedMap<K, V> : ObjectMap<K, V?> where K : Any, K : Comparable<K> {
         if (containsKey(after)) return false
         val index = keys_.indexOf(before)
         if (index == -1) return false
-        super.put(after, super.remove(before))
+        val prev = super.remove(before)
+        if (prev != null) {
+            super.put(after, prev)
+        }
         keys_[index] = after
         return true
     }
@@ -186,7 +189,10 @@ class OrderedMap<K, V> : ObjectMap<K, V?> where K : Any, K : Comparable<K> {
      */
     fun alterIndex(index: Int, after: K): Boolean {
         if (index < 0 || index >= size || containsKey(after)) return false
-        super.put(after, super.remove(keys_[index]))
+        val prev = super.remove(keys_[index])
+        if (prev != null) {
+            super.put(after, prev)
+        }
         keys_[index] = after
         return true
     }

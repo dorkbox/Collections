@@ -47,10 +47,10 @@ import java.util.concurrent.atomic.*
  * Iteration can be very slow for a map with a large capacity. [.clear] and [.shrink] can be used to reduce
  * the capacity. [OrderedMap] provides much faster iteration.
  */
-class LockFreeObjectMap<K: Any, V> : ObjectMap<K, V?>, Cloneable, Serializable {
+class LockFreeObjectMap<K: Any, V> : MutableMap<K, V>, Cloneable, Serializable {
 
     @Volatile
-    private var hashMap: ObjectMap<K, V?>
+    private var hashMap: ObjectMap<K, V>
 
     // synchronized is used here to ensure the "single writer principle", and make sure that ONLY one thread at a time can enter this
     // section. Because of this, we can have unlimited reader threads all going at the same time, without contention (which is our
@@ -107,7 +107,12 @@ class LockFreeObjectMap<K: Any, V> : ObjectMap<K, V?>, Cloneable, Serializable {
         return value.containsKey(key)
     }
 
-    override fun containsValue(value: Any?, identity: Boolean): Boolean {
+    override fun containsValue(value: V): Boolean {
+        // use the SWP to get a lock-free get of the value
+        return mapREF[this].containsValue(value, false)
+    }
+
+    fun containsValue(value: Any?, identity: Boolean): Boolean {
         // use the SWP to get a lock-free get of the value
         return mapREF[this].containsValue(value, identity)
     }
@@ -120,7 +125,7 @@ class LockFreeObjectMap<K: Any, V> : ObjectMap<K, V?>, Cloneable, Serializable {
     }
 
     @Synchronized
-    override fun put(key: K, value: V?): V? {
+    override fun put(key: K, value: V): V? {
         return hashMap.put(key, value)
     }
 
@@ -130,7 +135,7 @@ class LockFreeObjectMap<K: Any, V> : ObjectMap<K, V?>, Cloneable, Serializable {
     }
 
     @Synchronized
-    override fun putAll(from: ObjectMap<out K, out V?>) {
+    override fun putAll(from: Map<out K, V>) {
         hashMap.putAll(from)
     }
 
@@ -139,6 +144,8 @@ class LockFreeObjectMap<K: Any, V> : ObjectMap<K, V?>, Cloneable, Serializable {
         hashMap.clear()
     }
 
+
+
     /**
      * DO NOT MODIFY THE MAP VIA THIS (unless you synchronize around it!) It will result in unknown object visibility!
      *
@@ -146,9 +153,10 @@ class LockFreeObjectMap<K: Any, V> : ObjectMap<K, V?>, Cloneable, Serializable {
      * time this method is called. Use the [ObjectMap.Entries] constructor for nested or multithreaded iteration.
      */
     @Suppress("UNCHECKED_CAST")
-    override fun keys(): Keys<K> {
-        return mapREF[this].keys() as Keys<K>
-    }
+    override val keys: ObjectMap.Keys<K>
+        get() {
+            return mapREF[this].keys() as ObjectMap.Keys<K>
+        }
 
     /**
      * DO NOT MODIFY THE MAP VIA THIS (unless you synchronize around it!) It will result in unknown object visibility!
@@ -157,9 +165,10 @@ class LockFreeObjectMap<K: Any, V> : ObjectMap<K, V?>, Cloneable, Serializable {
      * time this method is called. Use the [ObjectMap.Entries] constructor for nested or multithreaded iteration.
      */
     @Suppress("UNCHECKED_CAST")
-    override fun values(): Values<V?> {
-        return mapREF[this].values() as Values<V?>
-    }
+    override val values: ObjectMap.Values<V>
+        get() {
+            return mapREF[this].values() as ObjectMap.Values<V>
+        }
 
     /**
      * DO NOT MODIFY THE MAP VIA THIS (unless you synchronize around it!) It will result in unknown object visibility!
@@ -168,15 +177,16 @@ class LockFreeObjectMap<K: Any, V> : ObjectMap<K, V?>, Cloneable, Serializable {
      * time this method is called. Use the [ObjectMap.Entries] constructor for nested or multithreaded iteration.
      */
     @Suppress("UNCHECKED_CAST")
-    override fun entries(): Entries<K, V?> {
-        return mapREF[this].entries() as Entries<K, V?>
-    }
+    override val entries: MutableSet<MutableMap.MutableEntry<K, V>>
+        get() {
+            return mapREF[this].entries() as MutableSet<MutableMap.MutableEntry<K, V>>
+        }
 
     override fun equals(other: Any?): Boolean {
         return mapREF[this] == other
     }
 
-    override fun equalsIdentity(other: Any?): Boolean {
+    fun equalsIdentity(other: Any?): Boolean {
         return mapREF[this].equalsIdentity(other)
     }
 
@@ -193,7 +203,7 @@ class LockFreeObjectMap<K: Any, V> : ObjectMap<K, V?>, Cloneable, Serializable {
      * is done by allocating new arrays, though for large arrays this can be faster than clearing the existing array.
      */
     @Synchronized
-    override fun clear(maximumCapacity: Int) {
+    fun clear(maximumCapacity: Int) {
         mapREF[this].clear(maximumCapacity)
     }
 
@@ -203,7 +213,7 @@ class LockFreeObjectMap<K: Any, V> : ObjectMap<K, V?>, Cloneable, Serializable {
      * If the map contains more items than the specified capacity, the next highest power of two capacity is used instead.
      */
     @Synchronized
-    override fun shrink(maximumCapacity: Int) {
+    fun shrink(maximumCapacity: Int) {
         mapREF[this].shrink(maximumCapacity)
     }
 

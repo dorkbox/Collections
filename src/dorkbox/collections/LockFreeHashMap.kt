@@ -34,10 +34,10 @@ import java.util.concurrent.atomic.*
  *
  * This data structure is for many-read/few-write scenarios
  */
-class LockFreeHashMap<K: Any, V> : MutableMap<K, V?>, Cloneable, Serializable {
+class LockFreeHashMap<K: Any, V> : MutableMap<K, V>, Cloneable, Serializable {
 
     @Volatile
-    private var hashMap: MutableMap<K, V?>
+    private var hashMap: HashMap<K, V>
 
 
     // synchronized is used here to ensure the "single writer principle", and make sure that ONLY one thread at a time can enter this
@@ -96,11 +96,11 @@ class LockFreeHashMap<K: Any, V> : MutableMap<K, V?>, Cloneable, Serializable {
         hashMap = HashMap(initialCapacity, loadFactor)
     }
 
-    val map: MutableMap<K, V>
-    get() {
-        @Suppress("UNCHECKED_CAST")
-        return mapREF[this] as MutableMap<K, V>
-    }
+    private val map: MutableMap<K, V>
+        get() {
+            @Suppress("UNCHECKED_CAST")
+            return mapREF[this] as MutableMap<K, V>
+        }
 
 
     override val size: Int
@@ -114,16 +114,14 @@ class LockFreeHashMap<K: Any, V> : MutableMap<K, V?>, Cloneable, Serializable {
             return map.keys
         }
 
-    override val values: MutableCollection<V?>
+    override val values: MutableCollection<V>
         get() {
-            @Suppress("UNCHECKED_CAST")
-            return map.values as MutableCollection<V?>
+            return map.values
         }
 
-    override val entries: MutableSet<MutableMap.MutableEntry<K, V?>>
+    override val entries: MutableSet<MutableMap.MutableEntry<K, V>>
         get() {
-            @Suppress("UNCHECKED_CAST")
-            return map.entries as MutableSet<MutableMap.MutableEntry<K, V?>>
+            return map.entries
         }
 
     override fun isEmpty(): Boolean {
@@ -136,7 +134,7 @@ class LockFreeHashMap<K: Any, V> : MutableMap<K, V?>, Cloneable, Serializable {
         return mapREF[this].containsKey(key)
     }
 
-    override fun containsValue(value: V?): Boolean {
+    override fun containsValue(value: V): Boolean {
         // use the SWP to get a lock-free get of the value
         return mapREF[this].containsValue(value)
     }
@@ -147,7 +145,7 @@ class LockFreeHashMap<K: Any, V> : MutableMap<K, V?>, Cloneable, Serializable {
     }
 
     @Synchronized
-    override fun put(key: K, value: V?): V? {
+    override fun put(key: K, value: V): V? {
         return hashMap.put(key, value)
     }
 
@@ -168,7 +166,7 @@ class LockFreeHashMap<K: Any, V> : MutableMap<K, V?>, Cloneable, Serializable {
     }
 
     @Synchronized
-    override fun putAll(from: Map<out K, V?>) {
+    override fun putAll(from: Map<out K, V>) {
         hashMap.putAll(from)
     }
 

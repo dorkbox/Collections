@@ -47,10 +47,10 @@ import java.util.concurrent.atomic.*
  * Iteration can be very slow for a map with a large capacity. [.clear] and [.shrink] can be used to reduce
  * the capacity. [OrderedMap] provides much faster iteration.
  */
-class LockFreeIntMap<V> : MutableMap<Int, V>, Cloneable, Serializable {
+class LockFreeObjectIntMap<K: Any> : MutableMap<K, Int>, Cloneable, Serializable {
 
     @Volatile
-    private var hashMap: IntMap<V>
+    private var hashMap: ObjectIntMap<K>
 
     // synchronized is used here to ensure the "single writer principle", and make sure that ONLY one thread at a time can enter this
     // section. Because of this, we can have unlimited reader threads all going at the same time, without contention (which is our
@@ -60,7 +60,7 @@ class LockFreeIntMap<V> : MutableMap<Int, V>, Cloneable, Serializable {
      * (16) and the default load factor (0.75).
      */
     constructor() {
-        hashMap = IntMap()
+        hashMap = ObjectIntMap()
     }
 
     /**
@@ -72,7 +72,7 @@ class LockFreeIntMap<V> : MutableMap<Int, V>, Cloneable, Serializable {
      * @throws IllegalArgumentException if the initial capacity is negative.
      */
     constructor(initialCapacity: Int) {
-        hashMap = IntMap(initialCapacity)
+        hashMap = ObjectIntMap(initialCapacity)
     }
 
     /**
@@ -86,7 +86,7 @@ class LockFreeIntMap<V> : MutableMap<Int, V>, Cloneable, Serializable {
      * or the load factor is nonpositive
      */
     constructor(initialCapacity: Int, loadFactor: Float) {
-        hashMap = IntMap(initialCapacity, loadFactor)
+        hashMap = ObjectIntMap(initialCapacity, loadFactor)
     }
 
     override val size: Int
@@ -100,41 +100,42 @@ class LockFreeIntMap<V> : MutableMap<Int, V>, Cloneable, Serializable {
         return mapREF[this].size == 0
     }
 
-    @Suppress("UNCHECKED_CAST")
-    override fun containsKey(key: Int): Boolean {
+    override fun containsKey(key: K): Boolean {
         // use the SWP to get a lock-free get of the value
-        val value = mapREF[this] as IntMap<V>
-        return value.containsKey(key)
+        return mapREF[this].containsKey(key)
     }
 
-    override fun containsValue(value: V): Boolean {
-        return containsValue(value, false)
+    override fun containsValue(value: Int): Boolean {
+        // use the SWP to get a lock-free get of the value
+        return mapREF[this].containsValue(value)
     }
 
-    fun containsValue(value: Any?, identity: Boolean): Boolean {
+    override operator fun get(key: K): Int? {
         // use the SWP to get a lock-free get of the value
-        return mapREF[this].containsValue(value, identity)
+        return mapREF[this].get(key)
     }
 
-    @Suppress("UNCHECKED_CAST")
-    override operator fun get(key: Int): V? {
-        // use the SWP to get a lock-free get of the value
-        val value = mapREF[this] as IntMap<V>
-        return value.get(key)
+    /**
+     * Returns the value for the specified key, or the default value if the key is not in the map.
+     */
+    operator fun get(key: K, defaultValue: Int): Int {
+        @Suppress("UNCHECKED_CAST")
+        val objectIntMap = mapREF[this] as ObjectIntMap<K>
+        return objectIntMap.get(key, defaultValue)
     }
 
     @Synchronized
-    override fun put(key: Int, value: V): V? {
+    override fun put(key: K, value: Int): Int? {
         return hashMap.put(key, value)
     }
 
     @Synchronized
-    override fun remove(key: Int): V? {
+    override fun remove(key: K): Int? {
         return hashMap.remove(key)
     }
 
     @Synchronized
-    override fun putAll(from: Map<out Int, V>) {
+    override fun putAll(from: Map<out K, Int>) {
         hashMap.putAll(from)
     }
 
@@ -149,9 +150,10 @@ class LockFreeIntMap<V> : MutableMap<Int, V>, Cloneable, Serializable {
      * Returns an iterator for the keys in the map. Remove is supported. Note that the same iterator instance is returned each
      * time this method is called. Use the [ObjectMap.Entries] constructor for nested or multithreaded iteration.
      */
-    override val keys: IntMap.Keys
+    @Suppress("UNCHECKED_CAST")
+    override val keys: ObjectIntMap.Keys<K>
         get() {
-            return mapREF[this].keys()
+            return mapREF[this].keys() as ObjectIntMap.Keys<K>
         }
 
     /**
@@ -160,10 +162,9 @@ class LockFreeIntMap<V> : MutableMap<Int, V>, Cloneable, Serializable {
      * Returns an iterator for the values in the map. Remove is supported. Note that the same iterator instance is returned each
      * time this method is called. Use the [ObjectMap.Entries] constructor for nested or multithreaded iteration.
      */
-    @Suppress("UNCHECKED_CAST")
-    override val values: IntMap.Values<V>
+    override val values: ObjectIntMap.Values
         get() {
-            return mapREF[this].values() as IntMap.Values<V>
+            return mapREF[this].values()
         }
 
     /**
@@ -173,17 +174,13 @@ class LockFreeIntMap<V> : MutableMap<Int, V>, Cloneable, Serializable {
      * time this method is called. Use the [ObjectMap.Entries] constructor for nested or multithreaded iteration.
      */
     @Suppress("UNCHECKED_CAST")
-    override val entries: MutableSet<MutableMap.MutableEntry<Int, V>>
+    override val entries: MutableSet<MutableMap.MutableEntry<K, Int>>
         get() {
-            return mapREF[this].entries() as MutableSet<MutableMap.MutableEntry<Int, V>>
+            return mapREF[this].entries() as MutableSet<MutableMap.MutableEntry<K, Int>>
         }
 
     override fun equals(other: Any?): Boolean {
         return mapREF[this] == other
-    }
-
-    fun equalsIdentity(other: Any?): Boolean {
-        return mapREF[this].equalsIdentity(other)
     }
 
     override fun hashCode(): Int {
@@ -218,7 +215,7 @@ class LockFreeIntMap<V> : MutableMap<Int, V>, Cloneable, Serializable {
 
         // Recommended for best performance while adhering to the "single writer principle". Must be static-final
         private val mapREF = AtomicReferenceFieldUpdater.newUpdater(
-            LockFreeIntMap::class.java, IntMap::class.java, "hashMap"
+            LockFreeObjectIntMap::class.java, ObjectIntMap::class.java, "hashMap"
         )
     }
 }
