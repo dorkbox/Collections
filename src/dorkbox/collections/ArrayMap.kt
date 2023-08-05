@@ -210,7 +210,21 @@ class ArrayMap<K: Any, V> : MutableMap<K, V?>{
      * .equals() comparison of each key in reverse order until the specified key is found.
      */
     override operator fun get(key: K): V? {
-        return get(key, null)
+        val keys = keyTable
+        var i = size_ - 1
+        if (key == null) {
+            while (i >= 0) {
+                if (keys[i] === key) return valueTable[i]!!
+                i--
+            }
+        }
+        else {
+            while (i >= 0) {
+                if (key == keys[i]) return valueTable[i]!!
+                i--
+            }
+        }
+        return null
     }
 
     /**
