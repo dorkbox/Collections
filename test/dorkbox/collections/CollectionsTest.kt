@@ -28,6 +28,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:Suppress("UNCHECKED_CAST")
+
 package dorkbox.collections
 
 import org.junit.Test
@@ -138,6 +140,7 @@ $b"""
         }
     }
 
+    @Suppress("SameParameterValue")
     private operator fun set(fieldName: String, `object`: Any, value: Any) {
         try {
             `object`.javaClass.fields.firstOrNull { it.name == fieldName }?.set(`object`, value)
@@ -195,6 +198,7 @@ $b"""
 
         var iterationCount = 0
         while (it.hasNext()) {
+            @Suppress("UNUSED_VARIABLE")
             val entry = it.next()
             iterationCount++
         }
@@ -209,6 +213,7 @@ $b"""
                 it = anotherMap.iterator()
                 iterationCount = 0
                 while (it.hasNext()) {
+                    @Suppress("UNUSED_VARIABLE")
                     val entry = it.next()
                     if (iterationCount == i) {
                         it.remove()
@@ -315,7 +320,7 @@ $b"""
                 while (i < n) {
                     val anotherMap = copy(map)
                     assertEquals(map, anotherMap)
-                    if ((map as IntMap<*>)[keys[n - 1] as Int] != null) {
+                    if (map[keys[n - 1] as Int] != null) {
                         throw RuntimeException("get() on an impossible key returned non-null")
                     }
 
@@ -433,7 +438,7 @@ $b"""
         val i = entries.iterator()
         while (i.hasNext()) {
             val m = i.next()
-            assertEquals(hm.containsKey(m.key!!), true)
+            assertEquals(hm.containsKey(m.key), true)
             assertEquals(hm.containsValue(m.value, false), true)
         }
 
@@ -444,15 +449,16 @@ $b"""
         assertEquals(1001, hm.size)
     }
 
+    @Suppress("EqualsOrHashCode")
     @Test
     fun testBinaryHeap() {
         class Node(value: Float) : BinaryHeap.Node(value) {
-            override fun equals(o: Any?): Boolean {
-                if (this === o) return true
-                return if (o == null || javaClass != o.javaClass) {
+            override fun equals(other: Any?): Boolean {
+                if (this === other) return true
+                return if (other == null || javaClass != other.javaClass) {
                     false
                 } else {
-                    (o as Node).value === value
+                    (other as Node).value == value
                 }
             }
         }
