@@ -21,7 +21,7 @@ object Collections {
     /**
      * Gets the version number.
      */
-    const val version = "2.2"
+    const val version = "2.3"
 
     init {
         // Add this project to the updates system, which verifies this class + UUID + version information
