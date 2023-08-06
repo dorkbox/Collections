@@ -63,9 +63,6 @@ open class ObjectIntMap<K: Any> : MutableMap<K, Int> {
 
     companion object {
         const val version = Collections.version
-
-        // This is used to tell the difference between a legit NULL value in a map, and a non-existent value
-        internal val dummy = Any()
     }
 
     protected var mapSize = 0
@@ -200,6 +197,7 @@ open class ObjectIntMap<K: Any> : MutableMap<K, Int> {
         keyTable[i] = key
         valueTable[i] = value
         if (++mapSize >= threshold) resize(keyTable.size shl 1)
+
         return null
     }
 
