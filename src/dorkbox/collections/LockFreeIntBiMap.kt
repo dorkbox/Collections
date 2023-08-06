@@ -168,12 +168,14 @@ class LockFreeIntBiMap<V: Any> : MutableMap<Int, V>, Cloneable, Serializable {
     override fun put(key: Int, value: V): V? {
         val prevForwardValue = forwardHashMap.put(key, value)
         if (prevForwardValue != null) {
-            reverseHashMap.remove(prevForwardValue, defaultReturnValue)
+            reverseHashMap.remove(prevForwardValue)
         }
 
-        val prevReverseValue = reverseHashMap[value, defaultReturnValue]!!
+        val prevReverseValue = reverseHashMap[value, defaultReturnValue]
         reverseHashMap.put(value, key)
         if (prevReverseValue != defaultReturnValue) {
+            // WHOOPS!
+
             // put the old value back
             if (prevForwardValue != null) {
                 forwardHashMap.put(key, prevForwardValue)
@@ -181,6 +183,7 @@ class LockFreeIntBiMap<V: Any> : MutableMap<Int, V>, Cloneable, Serializable {
             else {
                 forwardHashMap.remove(key)
             }
+
             reverseHashMap.put(value, prevReverseValue)
 
             throw StateException("Value already exists. Keys and values must both be unique!")
@@ -277,7 +280,7 @@ class LockFreeIntBiMap<V: Any> : MutableMap<Int, V>, Cloneable, Serializable {
     override fun remove(key: Int): V? {
         val value = forwardHashMap.remove(key)
         if (value != null) {
-            reverseHashMap.remove(value, defaultReturnValue)
+            reverseHashMap.remove(value)
         }
         return value
     }

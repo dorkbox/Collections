@@ -165,23 +165,25 @@ class LockFreeObjectIntBiMap<K: Any> : MutableMap<K, Int>, Cloneable, Serializab
      * unmodified in this event. To avoid this exception, call [.putForce]  putForce(K, V) instead.
      */
     @Synchronized
-    @Throws(IllegalArgumentException::class)
-    override fun put(key: K, value: Int): Int {
-        val prevForwardValue = forwardHashMap[key, defaultReturnValue]!!
-        forwardHashMap.put(key, value)
-        if (prevForwardValue != defaultReturnValue) {
+    @Throws(StateException::class)
+    override fun put(key: K, value: Int): Int? {
+        val prevForwardValue = forwardHashMap.put(key, value)
+        if (prevForwardValue != null) {
             reverseHashMap.remove(prevForwardValue)
         }
 
         val prevReverseValue = reverseHashMap.put(value, key)
         if (prevReverseValue != null) {
+            // WHOOPS!!
+
             // put the old value back
-            if (prevForwardValue != defaultReturnValue) {
+            if (prevForwardValue != null) {
                 forwardHashMap.put(key, prevForwardValue)
             }
             else {
-                forwardHashMap.remove(key, defaultReturnValue)
+                forwardHashMap.remove(key)
             }
+
             reverseHashMap.put(value, prevReverseValue)
 
             throw StateException("Value already exists. Keys and values must both be unique!")
