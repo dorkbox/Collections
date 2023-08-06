@@ -58,7 +58,7 @@ class LockFreeHashMap<K: Any, V> : MutableMap<K, V>, Cloneable, Serializable {
      *
      * @param initialCapacity the initial capacity.
      *
-     * @throws IllegalArgumentException if the initial capacity is negative.
+     * @throws StateException if the initial capacity is negative.
      */
     constructor(initialCapacity: Int) {
         hashMap = HashMap(initialCapacity)
@@ -89,7 +89,7 @@ class LockFreeHashMap<K: Any, V> : MutableMap<K, V>, Cloneable, Serializable {
      * @param initialCapacity the initial capacity
      * @param loadFactor the load factor
      *
-     * @throws IllegalArgumentException if the initial capacity is negative
+     * @throws StateException if the initial capacity is negative
      * or the load factor is nonpositive
      */
     constructor(initialCapacity: Int, loadFactor: Float) {

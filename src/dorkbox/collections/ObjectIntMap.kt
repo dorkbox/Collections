@@ -36,7 +36,6 @@ package dorkbox.collections
 
 import dorkbox.collections.Collections.allocateIterators
 import dorkbox.collections.ObjectSet.Companion.tableSize
-import java.lang.IllegalStateException
 import java.util.*
 
 /**
@@ -123,7 +122,7 @@ open class ObjectIntMap<K: Any> : MutableMap<K, Int> {
      * @param loadFactor The loadfactor used to determine backing array growth
      */
     constructor(initialCapacity: Int = 51, loadFactor: Float = 0.8f) {
-        require(!(loadFactor <= 0f || loadFactor >= 1f)) { "loadFactor must be > 0 and < 1: $loadFactor" }
+        if ((loadFactor <= 0f || loadFactor >= 1f)) { throw StateException("loadFactor must be > 0 and < 1: $loadFactor") }
 
         this.loadFactor = loadFactor
         val tableSize = tableSize(initialCapacity, loadFactor)
@@ -329,7 +328,8 @@ open class ObjectIntMap<K: Any> : MutableMap<K, Int> {
      * instead.
      */
     open fun shrink(maximumCapacity: Int) {
-        require(maximumCapacity >= 0) { "maximumCapacity must be >= 0: $maximumCapacity" }
+        if (maximumCapacity < 0) { throw StateException("maximumCapacity must be >= 0: $maximumCapacity") }
+
         val tableSize = tableSize(maximumCapacity, loadFactor)
         if (keyTable.size > tableSize) resize(tableSize)
     }

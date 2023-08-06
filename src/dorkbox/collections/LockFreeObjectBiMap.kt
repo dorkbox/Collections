@@ -98,23 +98,17 @@ class LockFreeObjectBiMap<K: Any, V: Any> : MutableMap<K, V>, Cloneable, Seriali
      *
      * @throws NullPointerException if the specified map is null
      *
-     * @throws IllegalArgumentException if a given value in the map is already bound to a different key in this bimap. The bimap will remain
+     * @throws StateException if a given value in the map is already bound to a different key in this bimap. The bimap will remain
      * unmodified in this event. To avoid this exception, call [.replaceAllForce] replaceAllForce(map) instead.
      */
     @Synchronized
-    @Throws(IllegalArgumentException::class)
+    @Throws(StateException::class)
     fun replaceAll(hashMap: Map<K, V>?) {
         if (hashMap == null) {
             throw NullPointerException("hashMap")
         }
         val biMap = LockFreeObjectBiMap<K, V>()
-        try {
-            biMap.putAll(hashMap)
-        }
-        catch (e: IllegalArgumentException) {
-            // do nothing if there is an exception
-            throw e
-        }
+        biMap.putAll(hashMap)
 
         // only if there are no problems with the creation of the new bimap.
         forwardHashMap.clear()
@@ -161,16 +155,17 @@ class LockFreeObjectBiMap<K: Any, V: Any> : MutableMap<K, V>, Cloneable, Seriali
      * (A <tt>null</tt> return can also indicate that the map
      * previously associated <tt>null</tt> with <tt>key</tt>.)
      *
-     * @throws IllegalArgumentException if the given value is already bound to a different key in this bimap. The bimap will remain
+     * @throws StateException if the given value is already bound to a different key in this bimap. The bimap will remain
      * unmodified in this event. To avoid this exception, call [.putForce]  putForce(K, V) instead.
      */
     @Synchronized
-    @Throws(IllegalArgumentException::class)
+    @Throws(StateException::class)
     override fun put(key: K, value: V): V? {
         val prevForwardValue = forwardHashMap.put(key, value)
         if (prevForwardValue != null) {
             reverseHashMap.remove(prevForwardValue)
         }
+
         val prevReverseValue = reverseHashMap.put(value, key)
         if (prevReverseValue != null) {
             // put the old value back
@@ -181,7 +176,7 @@ class LockFreeObjectBiMap<K: Any, V: Any> : MutableMap<K, V>, Cloneable, Seriali
                 forwardHashMap.remove(key)
             }
             reverseHashMap[value] = prevReverseValue
-            throw IllegalArgumentException("Value already exists. Keys and values must both be unique!")
+            throw StateException("Value already exists. Keys and values must both be unique!")
         }
         return prevForwardValue
     }
@@ -222,19 +217,19 @@ class LockFreeObjectBiMap<K: Any, V: Any> : MutableMap<K, V>, Cloneable, Seriali
      *
      * @throws NullPointerException if the specified map is null
      *
-     * @throws IllegalArgumentException if the given value is already bound to a different key in this bimap. The bimap will remain
+     * @throws StateException if the given value is already bound to a different key in this bimap. The bimap will remain
      * unmodified in this event. To avoid this exception, call [.putAllForce] putAllForce(K, V) instead.
      */
     @Synchronized
-    @Throws(IllegalArgumentException::class)
+    @Throws(StateException::class)
     override fun putAll(from: Map<out K, V>) {
         val biMap = LockFreeObjectBiMap<K, V>()
         for ((key, value) in from) {
             biMap.put(key, value)
 
             // we have to verify that the keys/values between the bimaps are unique
-            require(!forwardHashMap.containsKey(key)) { "Key already exists. Keys and values must both be unique!" }
-            require(!reverseHashMap.containsKey(value)) { "Value already exists. Keys and values must both be unique!" }
+            if (forwardHashMap.containsKey(key)) { throw StateException("Key already exists. Keys and values must both be unique!") }
+            if (reverseHashMap.containsKey(value)) { throw StateException("Value already exists. Keys and values must both be unique!") }
         }
 
 

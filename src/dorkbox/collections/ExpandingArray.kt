@@ -165,7 +165,8 @@ class ExpandingArray<T> : MutableIterable<T> {
     }
 
     fun addAll(array: ExpandingArray<out T>, start: Int, count: Int) {
-        require(start + count <= array.size) { "start + count must be <= size: " + start + " + " + count + " <= " + array.size }
+        if (start + count > array.size) { throw StateException("start + count must be <= size: $start + $count <= ${array.size}") }
+
         @Suppress("UNCHECKED_CAST")
         addAll(array.items as Array<T>, start, count)
     }
@@ -503,7 +504,8 @@ class ExpandingArray<T> : MutableIterable<T> {
      * @return [.items]
      */
     fun ensureCapacity(additionalCapacity: Int): Array<T?> {
-        require(additionalCapacity >= 0) { "additionalCapacity must be >= 0: $additionalCapacity" }
+        if (additionalCapacity < 0) { throw StateException("additionalCapacity must be >= 0: $additionalCapacity") }
+
         val sizeNeeded = size + additionalCapacity
         if (sizeNeeded > items.size) resize(
             max(max(8.0, sizeNeeded.toDouble()), (size * 1.75f).toInt().toDouble()).toInt()
@@ -643,7 +645,8 @@ class ExpandingArray<T> : MutableIterable<T> {
      * taken.
      */
     fun truncate(newSize: Int) {
-        require(newSize >= 0) { "newSize must be >= 0: $newSize" }
+        if (newSize < 0) { throw StateException("newSize must be >= 0: $newSize") }
+
         if (size <= newSize) return
         for (i in newSize until size) items[i] = null
         size = newSize

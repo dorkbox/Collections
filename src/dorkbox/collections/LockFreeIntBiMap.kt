@@ -103,23 +103,17 @@ class LockFreeIntBiMap<V: Any> : MutableMap<Int, V>, Cloneable, Serializable {
      *
      * @throws NullPointerException if the specified map is null
      *
-     * @throws IllegalArgumentException if a given value in the map is already bound to a different key in this bimap. The bimap will remain
+     * @throws StateException if a given value in the map is already bound to a different key in this bimap. The bimap will remain
      * unmodified in this event. To avoid this exception, call [.replaceAllForce] replaceAllForce(map) instead.
      */
     @Synchronized
-    @Throws(IllegalArgumentException::class)
+    @Throws(StateException::class)
     fun replaceAll(hashMap: Map<Int, V>?) {
         if (hashMap == null) {
             throw NullPointerException("hashMap")
         }
         val biMap = LockFreeIntBiMap<V>()
-        try {
-            biMap.putAll(hashMap)
-        }
-        catch (e: IllegalArgumentException) {
-            // do nothing if there is an exception
-            throw e
-        }
+        biMap.putAll(hashMap)
 
         // only if there are no problems with the creation of the new bimap.
         forwardHashMap.clear()
@@ -166,11 +160,11 @@ class LockFreeIntBiMap<V: Any> : MutableMap<Int, V>, Cloneable, Serializable {
      * (A <tt>null</tt> return can also indicate that the map
      * previously associated <tt>null</tt> with <tt>key</tt>.)
      *
-     * @throws IllegalArgumentException if the given value is already bound to a different key in this bimap. The bimap will remain
+     * @throws StateException if the given value is already bound to a different key in this bimap. The bimap will remain
      * unmodified in this event. To avoid this exception, call [.putForce]  putForce(K, V) instead.
      */
     @Synchronized
-    @Throws(IllegalArgumentException::class)
+    @Throws(StateException::class)
     override fun put(key: Int, value: V): V? {
         val prevForwardValue = forwardHashMap.put(key, value)
         if (prevForwardValue != null) {
@@ -188,7 +182,8 @@ class LockFreeIntBiMap<V: Any> : MutableMap<Int, V>, Cloneable, Serializable {
                 forwardHashMap.remove(key)
             }
             reverseHashMap.put(value, prevReverseValue)
-            throw java.lang.IllegalArgumentException("Value already exists. Keys and values must both be unique!")
+
+            throw StateException("Value already exists. Keys and values must both be unique!")
         }
 
         return prevForwardValue
@@ -233,25 +228,19 @@ class LockFreeIntBiMap<V: Any> : MutableMap<Int, V>, Cloneable, Serializable {
      *
      * @throws NullPointerException if the specified map is null
      *
-     * @throws IllegalArgumentException if the given value is already bound to a different key in this bimap. The bimap will remain
+     * @throws StateException if the given value is already bound to a different key in this bimap. The bimap will remain
      * unmodified in this event. To avoid this exception, call [.putAllForce] putAllForce(K, V) instead.
      */
     @Synchronized
-    @Throws(IllegalArgumentException::class)
+    @Throws(StateException::class)
     override fun putAll(from: Map<out Int, V>) {
         val biMap = LockFreeIntBiMap<V>()
-        try {
-            for ((key, value) in from) {
-                biMap.put(key, value)
+        for ((key, value) in from) {
+            biMap.put(key, value)
 
-                // we have to verify that the keys/values between the bimaps are unique
-                require(!forwardHashMap.containsKey(key)) { "Key already exists. Keys and values must both be unique!" }
-                require(!reverseHashMap.containsKey(value)) { "Value already exists. Keys and values must both be unique!" }
-            }
-        }
-        catch (e: IllegalArgumentException) {
-            // do nothing if there is an exception
-            throw e
+            // we have to verify that the keys/values between the bimaps are unique
+            if (forwardHashMap.containsKey(key)) { throw StateException("Key already exists. Keys and values must both be unique!") }
+            if (reverseHashMap.containsKey(value)) { throw StateException("Value already exists. Keys and values must both be unique!") }
         }
 
         // only if there are no problems with the creation of the new bimap AND the uniqueness constrain is guaranteed

@@ -83,7 +83,7 @@ class BinarySearch<T>(private val eval: Evaluator<T>, private val indexed: Index
             val t = indexed[i]
             val nue = eval.getValue(t)
             if (`val` != Long.MIN_VALUE) {
-                require(nue >= `val`) { "Collection is not sorted at " + i + " - " + indexed }
+                if (nue < `val`) { throw StateException("Collection is not sorted at " + i + " - " + indexed) }
             }
             `val` = nue
         }

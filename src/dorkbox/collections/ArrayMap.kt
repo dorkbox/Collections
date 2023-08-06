@@ -193,7 +193,7 @@ class ArrayMap<K: Any, V> : MutableMap<K, V?>{
     }
 
     fun putAll(map: ArrayMap<out K, out V>, offset: Int = 0, length: Int = map.size_) {
-        require(offset + length <= map.size_) { "offset + length must be <= size: $offset + $length <= ${map.size_}" }
+        if (offset + length > map.size_) { throw StateException("offset + length must be <= size: $offset + $length <= ${map.size_}") }
 
         val sizeNeeded = size_ + length - offset
         if (sizeNeeded >= keyTable.size) {
@@ -532,7 +532,8 @@ class ArrayMap<K: Any, V> : MutableMap<K, V?>{
      * many entries to avoid multiple backing array resizes.
      */
     fun ensureCapacity(additionalCapacity: Int) {
-        require(additionalCapacity >= 0) { "additionalCapacity must be >= 0: $additionalCapacity" }
+        if (additionalCapacity < 0) { throw StateException("additionalCapacity must be >= 0: $additionalCapacity") }
+
         val sizeNeeded = size_ + additionalCapacity
         if (sizeNeeded > keyTable.size) resize(
             max(max(8.0, sizeNeeded.toDouble()), (size_ * 1.75f).toInt().toDouble()).toInt()
