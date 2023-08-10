@@ -44,6 +44,15 @@ class ConcurrentIterator<T: Any> {
      * called from within SYNCHRONIZE
      */
     @Synchronized
+    fun contains(entry: T): Boolean {
+        return entries.contains(entry)
+    }
+
+    /**
+     * single writer principle!
+     * called from within SYNCHRONIZE
+     */
+    @Synchronized
     fun clear() {
         entries.clear()
         head = null
@@ -98,8 +107,6 @@ class ConcurrentIterator<T: Any> {
      */
     @Synchronized
     fun add(listener: T) {
-        @Suppress("UNCHECKED_CAST")
-        var head: ConcurrentEntry<T>? = headREF[this] as ConcurrentEntry<T>?
         if (!entries.containsKey(listener)) {
             head = ConcurrentEntry(listener, head)
             entries.put(listener, head)
@@ -130,12 +137,9 @@ class ConcurrentIterator<T: Any> {
      */
     @Synchronized
     fun remove(concurrentEntry: ConcurrentEntry<T>): Boolean {
-        @Suppress("UNCHECKED_CAST")
-        var head: ConcurrentEntry<T>? = headREF[this] as ConcurrentEntry<T>?
-
         if (concurrentEntry == head) {
             // if it was second, now it's first
-            head = head.next()
+            head = head!!.next()
             //oldHead.clear(); // optimize for GC not possible because of potentially running iterators
         } else {
             concurrentEntry.remove()
