@@ -36,7 +36,7 @@ object Extras {
     // set for the project
     const val description = "Collection types and utilities to enhance the default collections."
     const val group = "com.dorkbox"
-    const val version = "2.3"
+    const val version = "2.4"
 
     // set as project.ext
     const val name = "Collections"
