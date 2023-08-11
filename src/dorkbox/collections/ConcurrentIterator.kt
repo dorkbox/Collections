@@ -44,8 +44,8 @@ class ConcurrentIterator<T: Any> {
      * called from within SYNCHRONIZE
      */
     @Synchronized
-    fun contains(entry: T): Boolean {
-        return entries.contains(entry)
+    fun contains(entry: T?): Boolean {
+        return entries.containsKey(entry)
     }
 
     /**
