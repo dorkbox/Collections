@@ -349,7 +349,7 @@ class LockFreeIntBiMap<V: Any> : MutableMap<Int, V>, Cloneable, Serializable {
     override val entries: MutableSet<MutableMap.MutableEntry<Int, V>>
         // use the SWP to get a lock-free get of the value
         @Suppress("UNCHECKED_CAST")
-        get() = forwardREF[this].keys as MutableSet<MutableMap.MutableEntry<Int, V>>
+        get() = forwardREF[this].entries as MutableSet<MutableMap.MutableEntry<Int, V>>
 
 
 
@@ -420,6 +420,21 @@ class LockFreeIntBiMap<V: Any> : MutableMap<Int, V>, Cloneable, Serializable {
     val reverseValues: MutableCollection<Int>
         // use the SWP to get a lock-free get of the value
         get() = reverseREF[this].values
+
+
+    /**
+     * Return a non-thread-safe copy of the backing map
+     */
+    fun toMap(): IntMap<V> {
+        return IntMap(forwardREF[this] as IntMap<V>)
+    }
+
+    /**
+     * Return a non-thread-safe copy of the backing reverse-map
+     */
+    fun toReverseMap(): ObjectIntMap<V> {
+        return ObjectIntMap(reverseREF[this] as ObjectIntMap<V>)
+    }
 
     companion object {
         const val version = Collections.version

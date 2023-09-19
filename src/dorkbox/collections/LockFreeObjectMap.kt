@@ -217,6 +217,13 @@ class LockFreeObjectMap<K: Any, V> : MutableMap<K, V>, Cloneable, Serializable {
         mapREF[this].shrink(maximumCapacity)
     }
 
+    /**
+     * Return a non-thread-safe copy of the backing map
+     */
+    fun toMap(): ObjectMap<K, V> {
+        return ObjectMap(mapREF[this] as ObjectMap<K, V>)
+    }
+
     companion object {
         const val version = Collections.version
 

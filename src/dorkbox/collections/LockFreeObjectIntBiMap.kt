@@ -428,6 +428,21 @@ class LockFreeObjectIntBiMap<K: Any> : MutableMap<K, Int>, Cloneable, Serializab
         @Suppress("UNCHECKED_CAST")
         get() = reverseREF[this].values as MutableCollection<K>
 
+
+    /**
+     * Return a non-thread-safe copy of the backing map
+     */
+    fun toMap(): ObjectIntMap<K> {
+        return ObjectIntMap(forwardREF[this] as ObjectIntMap<K>)
+    }
+
+    /**
+     * Return a non-thread-safe copy of the backing reverse-map
+     */
+    fun toReverseMap(): IntMap<K> {
+        return IntMap(reverseREF[this] as IntMap<K>)
+    }
+
     companion object {
         const val version = Collections.version
 

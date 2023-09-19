@@ -213,6 +213,13 @@ class LockFreeIntMap<V> : MutableMap<Int, V>, Cloneable, Serializable {
         mapREF[this].shrink(maximumCapacity)
     }
 
+    /**
+     * Return a non-thread-safe copy of the backing map
+     */
+    fun toMap(): IntMap<V> {
+        return IntMap(mapREF[this] as IntMap<V>)
+    }
+
     companion object {
         const val version = Collections.version
 

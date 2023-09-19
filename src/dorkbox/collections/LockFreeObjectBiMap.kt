@@ -418,6 +418,20 @@ class LockFreeObjectBiMap<K: Any, V: Any> : MutableMap<K, V>, Cloneable, Seriali
         @Suppress("UNCHECKED_CAST")
         get() = reverseREF[this].values as MutableCollection<K>
 
+    /**
+     * Return a non-thread-safe copy of the backing map
+     */
+    fun toMap(): ObjectMap<K, V> {
+        return ObjectMap(forwardREF[this] as ObjectMap<K, V>)
+    }
+
+    /**
+     * Return a non-thread-safe copy of the backing reverse-map
+     */
+    fun toReverseMap(): ObjectMap<V, K> {
+        return ObjectMap(reverseREF[this] as ObjectMap<V, K>)
+    }
+
     companion object {
         const val version = Collections.version
 

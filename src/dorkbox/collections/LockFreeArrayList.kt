@@ -17,7 +17,6 @@ package dorkbox.collections
 
 import java.io.Serializable
 import java.util.concurrent.atomic.*
-import kotlin.Array
 
 /**
  * This class uses the "single-writer-principle" for lock-free publication.
@@ -200,6 +199,13 @@ class LockFreeArrayList<E> : MutableList<E>, RandomAccess, Cloneable, Serializab
     fun elements(): ArrayList<E> {
         @Suppress("UNCHECKED_CAST")
         return listRef[this] as ArrayList<E>
+    }
+
+    /**
+     * Return a non-thread-safe copy of the backing array
+     */
+    fun toList(): ArrayList<E> {
+        return ArrayList(listRef[this] as ArrayList<E>)
     }
 
     // this must be at the end of the file!

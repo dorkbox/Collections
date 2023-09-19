@@ -17,7 +17,6 @@ package dorkbox.collections
 
 import java.io.Serializable
 import java.util.concurrent.atomic.*
-import kotlin.Array
 
 /**
  * This class uses the "single-writer-principle" for lock-free publication.
@@ -124,6 +123,13 @@ class LockFreeHashSet<E> : MutableSet<E>, Cloneable, Serializable {
 
     override fun toString(): String {
         return setREF[this].toString()
+    }
+
+    /**
+     * Return a non-thread-safe copy of the backing set
+     */
+    fun toSet(): HashSet<E> {
+        return HashSet(setREF[this] as HashSet<E>)
     }
 
     companion object {

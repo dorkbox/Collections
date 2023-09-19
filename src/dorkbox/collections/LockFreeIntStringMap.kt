@@ -197,6 +197,14 @@ class LockFreeIntStringMap : MutableMap<Int, String?>, Cloneable, Serializable {
         return mapREF[this].toString()
     }
 
+
+    /**
+     * Return a non-thread-safe copy of the backing map
+     */
+    fun toMap(): IntMap<String?> {
+        return IntMap(mapREF[this] as IntMap<String?>)
+    }
+
     // this must be at the end of the file!
     companion object {
         const val version = Collections.version

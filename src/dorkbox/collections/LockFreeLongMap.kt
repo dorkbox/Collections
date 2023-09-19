@@ -213,6 +213,14 @@ class LockFreeLongMap<V> : MutableMap<Long, V>, Cloneable, Serializable {
         mapREF[this].shrink(maximumCapacity)
     }
 
+
+    /**
+     * Return a non-thread-safe copy of the backing map
+     */
+    fun toMap(): LongMap<V> {
+        return LongMap(mapREF[this] as LongMap<V>)
+    }
+
     companion object {
         const val version = Collections.version
 

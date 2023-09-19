@@ -193,6 +193,13 @@ class LockFreeHashMap<K: Any, V> : MutableMap<K, V>, Cloneable, Serializable {
         return mapREF[this].toString()
     }
 
+    /**
+     * Return a non-thread-safe copy of the backing map
+     */
+    fun toMap(): HashMap<K, V> {
+        return HashMap(mapREF[this] as HashMap<K, V>)
+    }
+
     // this must be at the end of the file!
     companion object {
         const val version = Collections.version
