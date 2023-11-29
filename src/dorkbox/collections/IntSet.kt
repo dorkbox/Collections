@@ -32,7 +32,6 @@
  */
 package dorkbox.collections
 
-import dorkbox.collections.Collections.allocateIterators
 import dorkbox.collections.ObjectSet.Companion.tableSize
 import java.util.*
 
@@ -65,6 +64,14 @@ class IntSet: MutableSet<Int> {
             return set
         }
     }
+
+    /**
+     * When true, [Iterable.iterator] will allocate a new iterator for each invocation.
+     *
+     * When false, the iterator is reused and nested use will throw an exception. Default is
+     * false.
+     */
+    var allocateIterators = false
 
     private var size_ = 0
     var keyTable: IntArray

@@ -32,10 +32,6 @@
  */
 package dorkbox.collections
 
-import dorkbox.collections.Collections.allocateIterators
-
-
-
 /**
  * An [ObjectMap] that also stores keys in an [ArrayList] using the insertion order. Null keys are not allowed. No
  * allocation is done except when growing the table size.

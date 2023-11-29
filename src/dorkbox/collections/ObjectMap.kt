@@ -34,9 +34,7 @@
 
 package dorkbox.collections
 
-import dorkbox.collections.Collections.allocateIterators
 import dorkbox.collections.ObjectSet.Companion.tableSize
-import java.lang.IllegalStateException
 import java.util.*
 
 /**
@@ -67,6 +65,14 @@ open class ObjectMap<K: Any, V> : MutableMap<K, V?> {
         // This is used to tell the difference between a legit NULL value in a map, and a non-existent value
         internal val dummy = Any()
     }
+
+    /**
+     * When true, [Iterable.iterator] will allocate a new iterator for each invocation.
+     *
+     * When false, the iterator is reused and nested use will throw an exception. Default is
+     * false.
+     */
+    var allocateIterators = false
 
     protected var mapSize = 0
 

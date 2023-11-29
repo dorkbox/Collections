@@ -32,7 +32,6 @@
  */
 package dorkbox.collections
 
-import dorkbox.collections.Collections.allocateIterators
 import dorkbox.collections.Collections.random
 import dorkbox.collections.Predicate.PredicateIterable
 import java.util.*
@@ -46,6 +45,14 @@ import kotlin.math.min
  * @author Nathan Sweet
  */
 class ExpandingArray<T> : MutableIterable<T> {
+    /**
+     * When true, [Iterable.iterator] will allocate a new iterator for each invocation.
+     *
+     * When false, the iterator is reused and nested use will throw an exception. Default is
+     * false.
+     */
+    var allocateIterators = false
+
     /**
      * Provides direct access to the underlying array. If the Array's generic type is not Object, this field may only be accessed
      * if the [ExpandingArray.Array] constructor was used.
@@ -813,7 +820,7 @@ class ExpandingArray<T> : MutableIterable<T> {
          * @see Collections.allocateIterators
          */
         override fun iterator(): ArrayIterator<T> {
-            if (allocateIterators) return ArrayIterator(array, allowRemove)
+            if (array.allocateIterators) return ArrayIterator(array, allowRemove)
 
             // lastAcquire.getBuffer().setLength(0);
             // new Throwable().printStackTrace(new java.io.PrintWriter(lastAcquire));

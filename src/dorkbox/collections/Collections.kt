@@ -46,13 +46,4 @@ object Collections {
     fun nextPowerOfTwo(value: Int): Int {
         return 1 shl 32 - Integer.numberOfLeadingZeros(value - 1)
     }
-
-    /**
-     * When true, [Iterable.iterator] for [ObjectMap], and other collections will allocate a new
-     * iterator for each invocation.
-     *
-     * When false, the iterator is reused and nested use will throw an exception. Default is
-     * false.
-     */
-    var allocateIterators = false
 }

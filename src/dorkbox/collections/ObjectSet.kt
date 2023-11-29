@@ -79,6 +79,14 @@ open class ObjectSet<T: Any> : MutableSet<T> {
         }
     }
 
+    /**
+     * When true, [Iterable.iterator] will allocate a new iterator for each invocation.
+     *
+     * When false, the iterator is reused and nested use will throw an exception. Default is
+     * false.
+     */
+    var allocateIterators = false
+
     override var size = 0
 
     var keyTable: Array<T?>
@@ -466,7 +474,7 @@ open class ObjectSet<T: Any> : MutableSet<T> {
      * Use the [ObjectSetIterator] constructor for nested or multithreaded iteration.
      */
     override fun iterator(): ObjectSetIterator<T> {
-        if (Collections.allocateIterators) return ObjectSetIterator(this)
+        if (allocateIterators) return ObjectSetIterator(this)
         if (iterator1 == null) {
             iterator1 = ObjectSetIterator(this)
             iterator2 = ObjectSetIterator(this)

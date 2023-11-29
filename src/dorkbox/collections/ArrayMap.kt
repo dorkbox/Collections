@@ -32,10 +32,8 @@
  */
 package dorkbox.collections
 
-import dorkbox.collections.Collections.allocateIterators
 import dorkbox.collections.Collections.random
 import dorkbox.collections.ObjectMap.Companion.dummy
-import java.lang.IllegalStateException
 import java.util.*
 import kotlin.math.max
 import kotlin.math.min
@@ -53,6 +51,14 @@ class ArrayMap<K: Any, V> : MutableMap<K, V?>{
     companion object {
         const val version = Collections.version
     }
+
+    /**
+     * When true, [Iterable.iterator] will allocate a new iterator for each invocation.
+     *
+     * When false, the iterator is reused and nested use will throw an exception. Default is
+     * false.
+     */
+    var allocateIterators = false
 
     var keyTable: Array<K?>
     var valueTable: Array<V?>

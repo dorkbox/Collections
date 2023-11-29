@@ -32,7 +32,6 @@
  */
 package dorkbox.collections
 
-import dorkbox.collections.Collections.allocateIterators
 import java.util.Comparator
 
 /**

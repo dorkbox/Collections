@@ -34,7 +34,6 @@
 
 package dorkbox.collections
 
-import dorkbox.collections.Collections.allocateIterators
 import dorkbox.collections.ObjectSet.Companion.tableSize
 import java.util.*
 
@@ -63,6 +62,14 @@ open class ObjectIntMap<K: Any> : MutableMap<K, Int> {
     companion object {
         const val version = Collections.version
     }
+
+    /**
+     * When true, [Iterable.iterator] will allocate a new iterator for each invocation.
+     *
+     * When false, the iterator is reused and nested use will throw an exception. Default is
+     * false.
+     */
+    var allocateIterators = false
 
     protected var mapSize = 0
 
