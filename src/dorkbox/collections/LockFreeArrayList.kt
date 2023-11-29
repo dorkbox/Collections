@@ -205,6 +205,7 @@ class LockFreeArrayList<E> : MutableList<E>, RandomAccess, Cloneable, Serializab
      * Return a non-thread-safe copy of the backing array
      */
     fun toList(): ArrayList<E> {
+        @Suppress("UNCHECKED_CAST")
         return ArrayList(listRef[this] as ArrayList<E>)
     }
 

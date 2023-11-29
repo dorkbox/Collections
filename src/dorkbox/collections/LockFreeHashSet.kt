@@ -129,6 +129,7 @@ class LockFreeHashSet<E> : MutableSet<E>, Cloneable, Serializable {
      * Return a non-thread-safe copy of the backing set
      */
     fun toSet(): HashSet<E> {
+        @Suppress("UNCHECKED_CAST")
         return HashSet(setREF[this] as HashSet<E>)
     }
 

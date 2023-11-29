@@ -214,6 +214,7 @@ class LockFreeObjectIntMap<K: Any> : MutableMap<K, Int>, Cloneable, Serializable
      * Return a non-thread-safe copy of the backing map
      */
     fun toMap(): ObjectIntMap<K> {
+        @Suppress("UNCHECKED_CAST")
         return ObjectIntMap(mapREF[this] as ObjectIntMap<K>)
     }
 

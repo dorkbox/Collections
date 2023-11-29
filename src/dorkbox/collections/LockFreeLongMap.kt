@@ -218,6 +218,7 @@ class LockFreeLongMap<V> : MutableMap<Long, V>, Cloneable, Serializable {
      * Return a non-thread-safe copy of the backing map
      */
     fun toMap(): LongMap<V> {
+        @Suppress("UNCHECKED_CAST")
         return LongMap(mapREF[this] as LongMap<V>)
     }
 

@@ -208,7 +208,7 @@ class LockFreeObjectIntBiMap<K: Any> : MutableMap<K, Int>, Cloneable, Serializab
      */
     @Synchronized
     fun putForce(key: K, value: Int): Int {
-        val prevForwardValue = forwardHashMap[key, defaultReturnValue]!!
+        val prevForwardValue = forwardHashMap[key, defaultReturnValue]
         forwardHashMap.put(key, value)
         if (prevForwardValue != defaultReturnValue) {
             reverseHashMap.remove(prevForwardValue)
@@ -433,6 +433,7 @@ class LockFreeObjectIntBiMap<K: Any> : MutableMap<K, Int>, Cloneable, Serializab
      * Return a non-thread-safe copy of the backing map
      */
     fun toMap(): ObjectIntMap<K> {
+        @Suppress("UNCHECKED_CAST")
         return ObjectIntMap(forwardREF[this] as ObjectIntMap<K>)
     }
 
@@ -440,6 +441,7 @@ class LockFreeObjectIntBiMap<K: Any> : MutableMap<K, Int>, Cloneable, Serializab
      * Return a non-thread-safe copy of the backing reverse-map
      */
     fun toReverseMap(): IntMap<K> {
+        @Suppress("UNCHECKED_CAST")
         return IntMap(reverseREF[this] as IntMap<K>)
     }
 

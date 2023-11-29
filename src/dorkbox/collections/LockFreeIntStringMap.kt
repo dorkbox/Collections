@@ -202,6 +202,7 @@ class LockFreeIntStringMap : MutableMap<Int, String?>, Cloneable, Serializable {
      * Return a non-thread-safe copy of the backing map
      */
     fun toMap(): IntMap<String?> {
+        @Suppress("UNCHECKED_CAST")
         return IntMap(mapREF[this] as IntMap<String?>)
     }
 

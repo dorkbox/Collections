@@ -426,6 +426,7 @@ class LockFreeIntBiMap<V: Any> : MutableMap<Int, V>, Cloneable, Serializable {
      * Return a non-thread-safe copy of the backing map
      */
     fun toMap(): IntMap<V> {
+        @Suppress("UNCHECKED_CAST")
         return IntMap(forwardREF[this] as IntMap<V>)
     }
 
@@ -433,6 +434,7 @@ class LockFreeIntBiMap<V: Any> : MutableMap<Int, V>, Cloneable, Serializable {
      * Return a non-thread-safe copy of the backing reverse-map
      */
     fun toReverseMap(): ObjectIntMap<V> {
+        @Suppress("UNCHECKED_CAST")
         return ObjectIntMap(reverseREF[this] as ObjectIntMap<V>)
     }
 

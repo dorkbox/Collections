@@ -217,6 +217,7 @@ class LockFreeIntMap<V> : MutableMap<Int, V>, Cloneable, Serializable {
      * Return a non-thread-safe copy of the backing map
      */
     fun toMap(): IntMap<V> {
+        @Suppress("UNCHECKED_CAST")
         return IntMap(mapREF[this] as IntMap<V>)
     }
 

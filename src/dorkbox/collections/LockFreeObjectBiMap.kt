@@ -422,6 +422,7 @@ class LockFreeObjectBiMap<K: Any, V: Any> : MutableMap<K, V>, Cloneable, Seriali
      * Return a non-thread-safe copy of the backing map
      */
     fun toMap(): ObjectMap<K, V> {
+        @Suppress("UNCHECKED_CAST")
         return ObjectMap(forwardREF[this] as ObjectMap<K, V>)
     }
 
@@ -429,6 +430,7 @@ class LockFreeObjectBiMap<K: Any, V: Any> : MutableMap<K, V>, Cloneable, Seriali
      * Return a non-thread-safe copy of the backing reverse-map
      */
     fun toReverseMap(): ObjectMap<V, K> {
+        @Suppress("UNCHECKED_CAST")
         return ObjectMap(reverseREF[this] as ObjectMap<V, K>)
     }
 

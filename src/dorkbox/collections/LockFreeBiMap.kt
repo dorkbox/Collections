@@ -415,6 +415,7 @@ class LockFreeBiMap<K: Any, V: Any> : MutableMap<K, V>, Cloneable, Serializable 
      * Return a non-thread-safe copy of the backing map
      */
     fun toMap(): MutableMap<K, V> {
+        @Suppress("UNCHECKED_CAST")
         return HashMap(forwardREF[this] as MutableMap<K, V>)
     }
 
@@ -422,6 +423,7 @@ class LockFreeBiMap<K: Any, V: Any> : MutableMap<K, V>, Cloneable, Serializable 
      * Return a non-thread-safe copy of the backing map
      */
     fun toReverseMap(): MutableMap<V, K> {
+        @Suppress("UNCHECKED_CAST")
         return HashMap(reverseREF[this] as MutableMap<V, K>)
     }
 

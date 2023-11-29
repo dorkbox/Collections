@@ -197,6 +197,7 @@ class LockFreeHashMap<K: Any, V> : MutableMap<K, V>, Cloneable, Serializable {
      * Return a non-thread-safe copy of the backing map
      */
     fun toMap(): HashMap<K, V> {
+        @Suppress("UNCHECKED_CAST")
         return HashMap(mapREF[this] as HashMap<K, V>)
     }
 
