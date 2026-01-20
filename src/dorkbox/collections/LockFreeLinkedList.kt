@@ -187,8 +187,9 @@ class LockFreeLinkedList<E> : MutableList<E>, Cloneable, Serializable {
     }
 
     // lock-free get
-    fun toArray(): Array<Any> {
-        return listRef[this].toTypedArray()
+    fun toArray(): Array<E> {
+        @Suppress("UNCHECKED_CAST")
+        return listRef[this].toTypedArray() as Array<E>
     }
 
     // lock-free get

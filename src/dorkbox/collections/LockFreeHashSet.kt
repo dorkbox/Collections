@@ -103,9 +103,9 @@ class LockFreeHashSet<E> : MutableSet<E>, Cloneable, Serializable {
         return setREF[this].iterator() as MutableIterator<E>
     }
 
-    fun toArray(): Array<Any> {
+    fun toArray(): Array<E> {
         @Suppress("UNCHECKED_CAST")
-        return setREF[this].toTypedArray() as Array<Any>
+        return setREF[this].toTypedArray() as Array<E>
     }
 
     @Synchronized
