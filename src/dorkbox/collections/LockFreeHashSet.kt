@@ -31,6 +31,7 @@ import java.util.concurrent.atomic.*
  *
  * This data structure is for many-read/few-write scenarios
  */
+@Suppress("unused")
 class LockFreeHashSet<E> : MutableSet<E>, Cloneable, Serializable {
 
     @Volatile
@@ -50,10 +51,9 @@ class LockFreeHashSet<E> : MutableSet<E>, Cloneable, Serializable {
         this.hashSet.addAll(hashSet.hashSet)
     }
 
+    // use the SWP to get a lock-free get of the value
     override val size: Int
-        get() {
-            return setREF[this].size
-        }
+        get() = setREF[this].size
 
     val elements: MutableSet<E>
         get() {

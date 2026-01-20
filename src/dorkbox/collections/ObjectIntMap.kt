@@ -57,6 +57,7 @@ import java.util.*
  * @author Nathan Sweet
  * @author Tommy Ettinger
  */
+@Suppress("unused")
 open class ObjectIntMap<K: Any> : MutableMap<K, Int> {
 
     companion object {
@@ -151,9 +152,7 @@ open class ObjectIntMap<K: Any> : MutableMap<K, Int> {
     }
 
     override val size: Int
-        get() {
-            return mapSize
-        }
+        get() = mapSize
 
     /**
      * Returns an index >= 0 and <= [.mask] for the specified `item`.
@@ -263,7 +262,8 @@ open class ObjectIntMap<K: Any> : MutableMap<K, Int> {
         val i = locateKey(key)
         return if (i < 0) {
             defaultValue
-        } else {
+        }
+        else {
             valueTable[i]
         }
     }
@@ -335,7 +335,9 @@ open class ObjectIntMap<K: Any> : MutableMap<K, Int> {
      * instead.
      */
     open fun shrink(maximumCapacity: Int) {
-        if (maximumCapacity < 0) { throw StateException("maximumCapacity must be >= 0: $maximumCapacity") }
+        if (maximumCapacity < 0) {
+            throw StateException("maximumCapacity must be >= 0: $maximumCapacity")
+        }
 
         val tableSize = tableSize(maximumCapacity, loadFactor)
         if (keyTable.size > tableSize) resize(tableSize)
@@ -518,8 +520,7 @@ open class ObjectIntMap<K: Any> : MutableMap<K, Int> {
     /**
      * Returns an iterator for the entries in the map. Remove is supported.
      *
-     *
-     * If [Collections.allocateIterators] is false, the same iterator instance is returned each time this method is called.
+     * If [allocateIterators] is false, the same iterator instance is returned each time this method is called.
      *
      * Use the [Entries] constructor for nested or multithreaded iteration.
      */
@@ -547,7 +548,7 @@ open class ObjectIntMap<K: Any> : MutableMap<K, Int> {
     /**
      * Returns an iterator for the values in the map. Remove is supported.
      *
-     * If [Collections.allocateIterators] is false, the same iterator instance is returned each time this method is called.
+     * If [allocateIterators] is false, the same iterator instance is returned each time this method is called.
      *
      * Use the [Values] constructor for nested or multithreaded iteration.
      */
@@ -575,7 +576,7 @@ open class ObjectIntMap<K: Any> : MutableMap<K, Int> {
     /**
      * Returns an iterator for the keys in the map. Remove is supported.
      *
-     * If [Collections.allocateIterators] is false, the same iterator instance is returned each time this method is called.
+     * If [allocateIterators] is false, the same iterator instance is returned each time this method is called.
      *
      * Use the [Keys] constructor for nested or multithreaded iteration.
      */

@@ -54,6 +54,7 @@ import java.util.*
  * @author Nathan Sweet
  * @author Tommy Ettinger
  */
+@Suppress("unused")
 open class IntMap<V> : MutableMap<Int, V> {
     companion object {
         const val version = Collections.version
@@ -568,7 +569,7 @@ open class IntMap<V> : MutableMap<Int, V> {
     /**
      * Returns an iterator for the entries in the map. Remove is supported.
      *
-     * If [Collections.allocateIterators] is false, the same iterator instance is returned each time this method is called.
+     * If [allocateIterators] is false, the same iterator instance is returned each time this method is called.
      *
      * Use the [Entries] constructor for nested or multithreaded iteration.
      */
@@ -594,7 +595,7 @@ open class IntMap<V> : MutableMap<Int, V> {
     /**
      * Returns an iterator for the values in the map. Remove is supported.
      *
-     * If [Collections.allocateIterators] is false, the same iterator instance is returned each time this method is called.
+     * If [allocateIterators] is false, the same iterator instance is returned each time this method is called.
      * Use the [Entries] constructor for nested or multithreaded iteration.
      */
     open fun values(): Values<V> {
@@ -618,7 +619,7 @@ open class IntMap<V> : MutableMap<Int, V> {
     /**
      * Returns an iterator for the keys in the map. Remove is supported.
      *
-     * If [Collections.allocateIterators] is false, the same iterator instance is returned each time this method is called.
+     * If [allocateIterators] is false, the same iterator instance is returned each time this method is called.
      * Use the [Entries] constructor for nested or multithreaded iteration.
      */
     open fun keys(): Keys {
@@ -936,10 +937,12 @@ open class IntMap<V> : MutableMap<Int, V> {
             if (!valid) throw RuntimeException("#iterator() cannot be used nested.")
             return hasNext
         }
+        @Suppress("DuplicatedCode")
         override operator fun next(): Int {
             if (!hasNext) throw NoSuchElementException()
             if (!valid) throw RuntimeException("#iterator() cannot be used nested.")
             val key = if (nextIndex == INDEX_ZERO) 0 else map.keyTable[nextIndex]
+
             currentIndex = nextIndex
             findNextIndex()
             return key

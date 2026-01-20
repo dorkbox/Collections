@@ -53,6 +53,7 @@ package dorkbox.collections
  * @author Tommy Ettinger
  * @author Nathan Sweet
  */
+@Suppress("unused")
 class IdentityMap<K: Any, V> : ObjectMap<K, V> {
     companion object {
         const val version = Collections.version

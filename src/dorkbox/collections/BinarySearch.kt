@@ -59,6 +59,7 @@ import kotlin.math.abs
  *
  * @author Tim Boudreau
  */
+@Suppress("unused")
 class BinarySearch<T>(private val eval: Evaluator<T>, private val indexed: Indexed<T>) {
     companion object {
         const val version = Collections.version

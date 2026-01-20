@@ -30,6 +30,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:Suppress("unused")
+
 package dorkbox.collections
 
 import dorkbox.collections.Collections.random
@@ -681,6 +683,7 @@ class ArrayMap<K: Any, V> : MutableMap<K, V?>{
         buffer.append('=')
         buffer.append(values[0])
 
+        @Suppress("EmptyRange")
         for (i in 1 until size_) {
             buffer.append(", ")
             buffer.append(keys[i])
@@ -704,10 +707,10 @@ class ArrayMap<K: Any, V> : MutableMap<K, V?>{
     /**
      * Returns an iterator for the entries in the map. Remove is supported.
      *
-     * If [Collections.allocateIterators] is false, the same iterator instance is returned each time this method is called.
+     * If [allocateIterators] is false, the same iterator instance is returned each time this method is called.
      * Use the [Entries] constructor for nested or multithreaded iteration.
      *
-     * @see Collections.allocateIterators
+     * @see allocateIterators
      */
     @Suppress("UNCHECKED_CAST")
     fun entries(): Entries<K, V?> {
@@ -735,10 +738,10 @@ class ArrayMap<K: Any, V> : MutableMap<K, V?>{
     /**
      * Returns an iterator for the values in the map. Remove is supported.
      *
-     * If [Collections.allocateIterators] is false, the same iterator instance is returned each time this method is called.
+     * If [allocateIterators] is false, the same iterator instance is returned each time this method is called.
      * Use the [Entries] constructor for nested or multithreaded iteration.
      *
-     * @see Collections.allocateIterators
+     * @see allocateIterators
      */
     @Suppress("UNCHECKED_CAST")
     fun values(): Values<V?> {
@@ -766,10 +769,10 @@ class ArrayMap<K: Any, V> : MutableMap<K, V?>{
     /**
      * Returns an iterator for the keys in the map. Remove is supported.
      *
-     * If [Collections.allocateIterators] is false, the same iterator instance is returned each time this method is called.
+     * If [allocateIterators] is false, the same iterator instance is returned each time this method is called.
      * Use the [Entries] constructor for nested or multithreaded iteration.
      *
-     * @see Collections.allocateIterators
+     * @see allocateIterators
      */
     @Suppress("UNCHECKED_CAST")
     fun keys(): Keys<K> {
@@ -782,6 +785,7 @@ class ArrayMap<K: Any, V> : MutableMap<K, V?>{
             keys2 = Keys(this as ArrayMap<K,Any>)
         }
 
+        @Suppress("DuplicatedCode")
         if (!keys1!!.valid) {
             keys1!!.index = 0
             keys1!!.valid = true

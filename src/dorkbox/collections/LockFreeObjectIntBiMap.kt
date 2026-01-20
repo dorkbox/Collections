@@ -34,6 +34,7 @@ import java.util.concurrent.atomic.*
  *
  * This data structure is for many-read/few-write scenarios
  */
+@Suppress("unused")
 class LockFreeObjectIntBiMap<K: Any> : MutableMap<K, Int>, Cloneable, Serializable {
     val defaultReturnValue: Int
 

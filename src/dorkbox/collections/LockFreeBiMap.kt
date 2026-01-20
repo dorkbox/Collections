@@ -31,6 +31,7 @@ import java.util.concurrent.atomic.*
  *
  * This uses regular hashmaps as the backing data structures
  */
+@Suppress("unused")
 class LockFreeBiMap<K: Any, V: Any> : MutableMap<K, V>, Cloneable, Serializable {
     @Volatile
     private var forwardHashMap: MutableMap<K, V>

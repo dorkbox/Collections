@@ -54,6 +54,7 @@ import java.util.*
  * @author Nathan Sweet
  * @author Tommy Ettinger
  */
+@Suppress("unused")
 class LongSet: MutableSet<Long> {
     companion object {
         const val version = Collections.version
@@ -445,7 +446,7 @@ class LongSet: MutableSet<Long> {
     /**
      * Returns an iterator for the keys in the set. Remove is supported.
      *
-     * If [Collections.allocateIterators] is false, the same iterator instance is returned each time this method is called.
+     * If [allocateIterators] is false, the same iterator instance is returned each time this method is called.
      *
      * Use the [LongSetIterator] constructor for nested or multithreaded iteration.
      */

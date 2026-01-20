@@ -53,6 +53,7 @@ import java.util.*
  * @author Nathan Sweet
  * @author Tommy Ettinger
  */
+@Suppress("unused")
 class IntIntMap : MutableMap<Int, Int> {
     companion object {
         const val version = Collections.version
@@ -119,7 +120,7 @@ class IntIntMap : MutableMap<Int, Int> {
      * growing the backing table.
      *
      * @param initialCapacity The backing array size is initialCapacity / loadFactor, increased to the next power of two.
-     * @param loadFactor The loadfactor used to determine backing array growth
+     * @param loadFactor The loadFactor used to determine backing array growth
      */
     constructor(initialCapacity: Int = 51, loadFactor: Float = 0.8f) {
         if ((loadFactor <= 0f || loadFactor >= 1f)) { throw StateException("loadFactor must be > 0 and < 1: $loadFactor") }
@@ -521,7 +522,7 @@ class IntIntMap : MutableMap<Int, Int> {
     /**
      * Returns an iterator for the entries in the map. Remove is supported.
      *
-     * If [Collections.allocateIterators] is false, the same iterator instance is returned each time this method is called.
+     * If [allocateIterators] is false, the same iterator instance is returned each time this method is called.
      *
      * Use the [Entries] constructor for nested or multithreaded iteration.
      */
@@ -546,7 +547,7 @@ class IntIntMap : MutableMap<Int, Int> {
     /**
      * Returns an iterator for the values in the map. Remove is supported.
      *
-     * If [Collections.allocateIterators] is false, the same iterator instance is returned each time this method is called.
+     * If [allocateIterators] is false, the same iterator instance is returned each time this method is called.
      * Use the [Entries] constructor for nested or multithreaded iteration.
      */
     fun values(): Values {
@@ -570,7 +571,7 @@ class IntIntMap : MutableMap<Int, Int> {
     /**
      * Returns an iterator for the keys in the map. Remove is supported.
      *
-     * If [Collections.allocateIterators] is false, the same iterator instance is returned each time this method is called.
+     * If [allocateIterators] is false, the same iterator instance is returned each time this method is called.
      * Use the [Entries] constructor for nested or multithreaded iteration.
      */
     fun keys(): Keys {

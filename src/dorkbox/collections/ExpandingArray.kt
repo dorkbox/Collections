@@ -30,6 +30,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:Suppress("unused")
+
 package dorkbox.collections
 
 import dorkbox.collections.Collections.random
@@ -55,7 +57,7 @@ class ExpandingArray<T> : MutableIterable<T> {
 
     /**
      * Provides direct access to the underlying array. If the Array's generic type is not Object, this field may only be accessed
-     * if the [ExpandingArray.Array] constructor was used.
+     * if the [Array] constructor was used.
      */
     var items: Array<T?>
 
@@ -419,6 +421,7 @@ class ExpandingArray<T> : MutableIterable<T> {
             val n = array.size
             while (i < n) {
                 val item = array[i]
+                @Suppress("EmptyRange")
                 for (ii in 0 until size) {
                     if (item === items[ii]) {
                         removeIndex(ii)
@@ -434,6 +437,7 @@ class ExpandingArray<T> : MutableIterable<T> {
             val n = array.size
             while (i < n) {
                 val item = array[i]
+                @Suppress("EmptyRange")
                 for (ii in 0 until size) {
                     if (item == items[ii]) {
                         removeIndex(ii)
@@ -620,7 +624,7 @@ class ExpandingArray<T> : MutableIterable<T> {
     /**
      * Returns an iterator for the items in the array. Remove is supported.
      *
-     * If [Collections.allocateIterators] is false, the same iterator instance is returned each time this method is called.
+     * If [allocateIterators] is false, the same iterator instance is returned each time this method is called.
      *
      * Use the [ArrayIterator] constructor for nested or multithreaded iteration.
      */
@@ -633,7 +637,7 @@ class ExpandingArray<T> : MutableIterable<T> {
     /**
      * Returns an iterable for the selected items in the array. Remove is supported, but not between hasNext() and next().
      *
-     * If [Collections.allocateIterators] is false, the same iterable instance is returned each time this method is called.
+     * If [allocateIterators] is false, the same iterable instance is returned each time this method is called.
      *
      * Use the [Predicate.PredicateIterable] constructor for nested or multithreaded iteration.
      */
@@ -711,6 +715,7 @@ class ExpandingArray<T> : MutableIterable<T> {
         if (!other.ordered) return false
         val n = size
         if (n != other.size) return false
+
         val items1 = items
         val items2= other.items
         for (i in 0 until n) {
@@ -724,6 +729,7 @@ class ExpandingArray<T> : MutableIterable<T> {
     /**
      * Uses == for comparison of each item. Returns false if either array is unordered.
      */
+    @Suppress("EmptyRange")
     fun equalsIdentity(other: Any): Boolean {
         if (other === this) return true
         if (!ordered) return false
@@ -741,6 +747,7 @@ class ExpandingArray<T> : MutableIterable<T> {
         return true
     }
 
+    @Suppress("EmptyRange")
     override fun toString(): String {
         if (size == 0) return "[]"
         val items = items
@@ -755,6 +762,7 @@ class ExpandingArray<T> : MutableIterable<T> {
         return buffer.toString()
     }
 
+    @Suppress("EmptyRange")
     fun toString(separator: String): String {
         if (size == 0) return ""
         val items = items
@@ -817,7 +825,7 @@ class ExpandingArray<T> : MutableIterable<T> {
         }
 
         /**
-         * @see Collections.allocateIterators
+         * @see allocateIterators
          */
         override fun iterator(): ArrayIterator<T> {
             if (array.allocateIterators) return ArrayIterator(array, allowRemove)

@@ -31,12 +31,14 @@ import java.util.concurrent.atomic.*
  *
  * This data structure is for many-read/few-write scenarios
  */
+@Suppress("unused")
 class LockFreeArrayList<E> : MutableList<E>, RandomAccess, Cloneable, Serializable {
 
     @Volatile
     private var arrayList = ArrayList<E>()
 
     constructor()
+
     constructor(elements: Collection<E>?) {
         arrayList.addAll(elements!!)
     }
@@ -162,13 +164,10 @@ class LockFreeArrayList<E> : MutableList<E>, RandomAccess, Cloneable, Serializab
         return listRef[this].containsAll(elements)
     }
 
-    // lock-free get
+    // use the SWP to get a lock-free get of the value
     override val size: Int
-        get() {
-            return listRef[this].size
-        }
+        get() = listRef[this].size
 
-    // lock-free get
     override fun isEmpty(): Boolean {
         return listRef[this].isEmpty()
     }

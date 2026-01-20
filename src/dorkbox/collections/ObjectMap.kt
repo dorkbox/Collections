@@ -537,8 +537,7 @@ open class ObjectMap<K: Any, V> : MutableMap<K, V?> {
     /**
      * Returns an iterator for the entries in the map. Remove is supported.
      *
-     *
-     * If [Collections.allocateIterators] is false, the same iterator instance is returned each time this method is called.
+     * If [allocateIterators] is false, the same iterator instance is returned each time this method is called.
      *
      * Use the [Entries] constructor for nested or multithreaded iteration.
      */
@@ -566,7 +565,7 @@ open class ObjectMap<K: Any, V> : MutableMap<K, V?> {
     /**
      * Returns an iterator for the values in the map. Remove is supported.
      *
-     * If [Collections.allocateIterators] is false, the same iterator instance is returned each time this method is called.
+     * If [allocateIterators] is false, the same iterator instance is returned each time this method is called.
      *
      * Use the [Values] constructor for nested or multithreaded iteration.
      */
@@ -594,7 +593,7 @@ open class ObjectMap<K: Any, V> : MutableMap<K, V?> {
     /**
      * Returns an iterator for the keys in the map. Remove is supported.
      *
-     * If [Collections.allocateIterators] is false, the same iterator instance is returned each time this method is called.
+     * If [allocateIterators] is false, the same iterator instance is returned each time this method is called.
      *
      * Use the [Keys] constructor for nested or multithreaded iteration.
      */

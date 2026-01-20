@@ -470,7 +470,7 @@ open class ObjectSet<T: Any> : MutableSet<T> {
     /**
      * Returns an iterator for the keys in the set. Remove is supported.
      *
-     * If [Collections.allocateIterators] is false, the same iterator instance is returned each time this method is called.
+     * If [allocateIterators] is false, the same iterator instance is returned each time this method is called.
      * Use the [ObjectSetIterator] constructor for nested or multithreaded iteration.
      */
     override fun iterator(): ObjectSetIterator<T> {
@@ -496,6 +496,9 @@ open class ObjectSet<T: Any> : MutableSet<T> {
         var nextIndex = 0
         var currentIndex = 0
         var valid = true
+
+        open val size: Int
+            get() = set.size
 
         init {
             @Suppress("LeakingThis")

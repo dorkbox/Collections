@@ -47,6 +47,7 @@ import java.util.concurrent.atomic.*
  * Iteration can be very slow for a map with a large capacity. [.clear] and [.shrink] can be used to reduce
  * the capacity. [OrderedMap] provides much faster iteration.
  */
+@Suppress("unused")
 class LockFreeObjectIntMap<K: Any> : MutableMap<K, Int>, Cloneable, Serializable {
 
     @Volatile
@@ -89,11 +90,9 @@ class LockFreeObjectIntMap<K: Any> : MutableMap<K, Int>, Cloneable, Serializable
         hashMap = ObjectIntMap(initialCapacity, loadFactor)
     }
 
+    // use the SWP to get a lock-free get of the value
     override val size: Int
-        get() {
-            // use the SWP to get a lock-free get of the value
-            return mapREF[this].size
-        }
+        get() = mapREF[this].size
 
     override fun isEmpty(): Boolean {
         // use the SWP to get a lock-free get of the value
@@ -152,9 +151,7 @@ class LockFreeObjectIntMap<K: Any> : MutableMap<K, Int>, Cloneable, Serializable
      */
     @Suppress("UNCHECKED_CAST")
     override val keys: ObjectIntMap.Keys<K>
-        get() {
-            return mapREF[this].keys() as ObjectIntMap.Keys<K>
-        }
+        get() = mapREF[this].keys() as ObjectIntMap.Keys<K>
 
     /**
      * DO NOT MODIFY THE MAP VIA THIS (unless you synchronize around it!) It will result in unknown object visibility!
@@ -175,9 +172,7 @@ class LockFreeObjectIntMap<K: Any> : MutableMap<K, Int>, Cloneable, Serializable
      */
     @Suppress("UNCHECKED_CAST")
     override val entries: MutableSet<MutableMap.MutableEntry<K, Int>>
-        get() {
-            return mapREF[this].entries() as MutableSet<MutableMap.MutableEntry<K, Int>>
-        }
+        get() = mapREF[this].entries() as MutableSet<MutableMap.MutableEntry<K, Int>>
 
     override fun equals(other: Any?): Boolean {
         return mapREF[this] == other

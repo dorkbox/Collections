@@ -34,6 +34,7 @@ import java.util.concurrent.atomic.*
  *
  * This data structure is for many-read/few-write scenarios
  */
+@Suppress("unused")
 class LockFreeIntStringMap : MutableMap<Int, String?>, Cloneable, Serializable {
 
     @Volatile
@@ -105,12 +106,9 @@ class LockFreeIntStringMap : MutableMap<Int, String?>, Cloneable, Serializable {
         return mapREF[this] as IntMap<String>
     }
 
-
+    // use the SWP to get a lock-free get of the value
     override val size: Int
-        get() {
-            // use the SWP to get a lock-free get of the value
-            return mapREF[this].size
-        }
+        get() = mapREF[this].size
 
     override val keys: MutableSet<Int>
         get() {

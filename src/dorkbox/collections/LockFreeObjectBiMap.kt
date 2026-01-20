@@ -34,6 +34,7 @@ import java.util.concurrent.atomic.*
  *
  * This data structure is for many-read/few-write scenarios
  */
+@Suppress("unused")
 class LockFreeObjectBiMap<K: Any, V: Any> : MutableMap<K, V>, Cloneable, Serializable {
     @Volatile
     private var forwardHashMap: ObjectMap<K, V>

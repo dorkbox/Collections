@@ -16,6 +16,8 @@
 package dorkbox.collections
 
 import java.util.*
+import kotlin.math.ceil
+import kotlin.math.max
 
 object Collections {
     /**

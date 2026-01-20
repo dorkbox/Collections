@@ -39,9 +39,6 @@ package dorkbox.collections
  *
  * Iteration over the [.entries], [.keys], and [.values] is ordered and faster than an unordered map. Keys
  * can also be accessed and the order changed using [.orderedKeys]. There is some additional overhead for put and remove.
- * When used for faster iteration versus ObjectMap and the order does not actually matter, copying during remove can be greatly
- * reduced by setting [Array.ordered] to false for [OrderedMap.orderedKeys].
- *
  *
  * This class performs fast contains (typically O(1), worst case O(n) but that is rare in practice). Remove is somewhat slower due
  * to [.orderedKeys]. Add may be slightly slower, depending on hash collisions. Hashcodes are rehashed to reduce
@@ -59,6 +56,7 @@ package dorkbox.collections
  * @author Nathan Sweet
  * @author Tommy Ettinger
  */
+@Suppress("unused")
 class OrderedMap<K, V> : ObjectMap<K, V> where K : Any, K : Comparable<K> {
     companion object {
         const val version = Collections.version
@@ -210,7 +208,7 @@ class OrderedMap<K, V> : ObjectMap<K, V> where K : Any, K : Comparable<K> {
     /**
      * Returns an iterator for the entries in the map. Remove is supported.
      *
-     * If [Collections.allocateIterators] is false, the same iterator instance is returned each time this method is called.
+     * If [allocateIterators] is false, the same iterator instance is returned each time this method is called.
      * Use the [OrderedMapEntries] constructor for nested or multithreaded iteration.
      */
     @Suppress("UNCHECKED_CAST")
@@ -235,7 +233,7 @@ class OrderedMap<K, V> : ObjectMap<K, V> where K : Any, K : Comparable<K> {
     /**
      * Returns an iterator for the values in the map. Remove is supported.
      *
-     * If [Collections.allocateIterators] is false, the same iterator instance is returned each time this method is called.
+     * If [allocateIterators] is false, the same iterator instance is returned each time this method is called.
      *
      * Use the [OrderedMapValues] constructor for nested or multithreaded iteration.
      */
@@ -261,7 +259,7 @@ class OrderedMap<K, V> : ObjectMap<K, V> where K : Any, K : Comparable<K> {
     /**
      * Returns an iterator for the keys in the map. Remove is supported.
      *
-     * If [Collections.allocateIterators] is false, the same iterator instance is returned each time this method is called.
+     * If [allocateIterators] is false, the same iterator instance is returned each time this method is called.
      *
      * Use the [OrderedMapKeys] constructor for nested or multithreaded iteration.
      */
@@ -352,6 +350,9 @@ class OrderedMap<K, V> : ObjectMap<K, V> where K : Any, K : Comparable<K> {
         init {
             keys = map.keys_
         }
+
+        override val size: Int
+            get() = keys.size - nextIndex
 
         override fun reset() {
             currentIndex = -1

@@ -32,8 +32,6 @@
  */
 package dorkbox.collections
 
-import java.util.Comparator
-
 /**
  * A [ObjectSet] that also stores keys in an [ArrayList] using the insertion order. Null keys are not allowed.
  *
@@ -248,6 +246,9 @@ class OrderedSet<T> : ObjectSet<T> where T : Any, T : Comparable<T> {
 
     class OrderedSetIterator<T>(set: OrderedSet<T>) : ObjectSetIterator<T>(set) where T : Any, T : Comparable<T> {
         private val items: ArrayList<T>
+
+        override val size: Int
+            get() = set.size - nextIndex
 
         init {
             items = set.items

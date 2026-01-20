@@ -47,6 +47,7 @@ import java.util.concurrent.atomic.*
  * Iteration can be very slow for a map with a large capacity. [.clear] and [.shrink] can be used to reduce
  * the capacity. [OrderedMap] provides much faster iteration.
  */
+@Suppress("unused")
 class LockFreeObjectMap<K: Any, V> : MutableMap<K, V>, Cloneable, Serializable {
 
     @Volatile
@@ -89,11 +90,9 @@ class LockFreeObjectMap<K: Any, V> : MutableMap<K, V>, Cloneable, Serializable {
         hashMap = ObjectMap(initialCapacity, loadFactor)
     }
 
+    // use the SWP to get a lock-free get of the value
     override val size: Int
-        get() {
-            // use the SWP to get a lock-free get of the value
-            return mapREF[this].size
-        }
+        get() = mapREF[this].size
 
     override fun isEmpty(): Boolean {
         // use the SWP to get a lock-free get of the value

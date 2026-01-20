@@ -37,6 +37,7 @@ import java.util.*
  * [Node] class can be extended to store additional information.
  * @author Nathan Sweet
  */
+@Suppress("unused")
 class BinaryHeap<T : BinaryHeap.Node?> @JvmOverloads constructor(capacity: Int = 16, private val isMaxHeap: Boolean = false) {
     companion object {
         const val version = Collections.version

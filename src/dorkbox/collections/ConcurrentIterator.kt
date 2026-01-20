@@ -20,6 +20,7 @@ import java.util.concurrent.atomic.*
 /**
  * @author dorkbox, llc
  */
+@Suppress("unused")
 class ConcurrentIterator<T: Any> {
     /**
      * Specifies the load-factor for the IdentityMap used
@@ -35,6 +36,7 @@ class ConcurrentIterator<T: Any> {
     private var head: ConcurrentEntry<T>? = null // reference to the first element
 
     constructor()
+
     constructor(loadFactor: Float) {
         this.loadFactor = loadFactor
     }

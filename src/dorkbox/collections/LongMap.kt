@@ -53,6 +53,7 @@ import java.util.*
  * @author Nathan Sweet
  * @author Tommy Ettinger
  */
+@Suppress("unused")
 class LongMap<V> : MutableMap<Long, V?> {
     companion object {
         const val version = Collections.version
@@ -567,7 +568,7 @@ class LongMap<V> : MutableMap<Long, V?> {
     /**
      * Returns an iterator for the entries in the map. Remove is supported.
      *
-     * If [Collections.allocateIterators] is false, the same iterator instance is returned each time this method is called.
+     * If [allocateIterators] is false, the same iterator instance is returned each time this method is called.
      *
      * Use the [Entries] constructor for nested or multithreaded iteration.
      */
@@ -593,7 +594,7 @@ class LongMap<V> : MutableMap<Long, V?> {
     /**
      * Returns an iterator for the values in the map. Remove is supported.
      *
-     * If [Collections.allocateIterators] is false, the same iterator instance is returned each time this method is called.
+     * If [allocateIterators] is false, the same iterator instance is returned each time this method is called.
      * Use the [Entries] constructor for nested or multithreaded iteration.
      */
     @Suppress("UNCHECKED_CAST")
@@ -618,7 +619,7 @@ class LongMap<V> : MutableMap<Long, V?> {
     /**
      * Returns an iterator for the keys in the map. Remove is supported.
      *
-     * If [Collections.allocateIterators] is false, the same iterator instance is returned each time this method is called.
+     * If [allocateIterators] is false, the same iterator instance is returned each time this method is called.
      * Use the [Entries] constructor for nested or multithreaded iteration.
      */
     fun keys(): Keys {
