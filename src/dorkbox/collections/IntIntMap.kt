@@ -32,7 +32,7 @@
  */
 package dorkbox.collections
 
-import dorkbox.collections.ObjectSet.Companion.tableSize
+import dorkbox.collections.Collections.tableSize
 import java.util.*
 
 /**

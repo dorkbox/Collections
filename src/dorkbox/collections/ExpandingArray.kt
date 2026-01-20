@@ -47,6 +47,32 @@ import kotlin.math.min
  * @author Nathan Sweet
  */
 class ExpandingArray<T> : MutableIterable<T> {
+    companion object {
+        const val version = Collections.version
+
+        /**
+         * @see .Array
+         */
+        fun <T: Any> of(arrayType: Class<T>): ExpandingArray<T> {
+            return ExpandingArray(arrayType)
+        }
+
+        /**
+         * @see .Array
+         */
+        fun <T: Any> of(ordered: Boolean, capacity: Int, arrayType: Class<T>): ExpandingArray<T> {
+            return ExpandingArray(ordered, capacity, arrayType)
+        }
+
+        /**
+         * @see .Array
+         */
+        fun <T: Any> with(vararg array: T): ExpandingArray<T> {
+            @Suppress("UNCHECKED_CAST")
+            return ExpandingArray(array) as ExpandingArray<T>
+        }
+    }
+
     /**
      * When true, [Iterable.iterator] will allocate a new iterator for each invocation.
      *
@@ -848,32 +874,6 @@ class ExpandingArray<T> : MutableIterable<T> {
             iterator2!!.valid = true
             iterator1!!.valid = false
             return iterator2!!
-        }
-    }
-
-    companion object {
-        const val version = Collections.version
-
-        /**
-         * @see .Array
-         */
-        fun <T> of(arrayType: Class<T>): ExpandingArray<T> {
-            return ExpandingArray(arrayType)
-        }
-
-        /**
-         * @see .Array
-         */
-        fun <T> of(ordered: Boolean, capacity: Int, arrayType: Class<T>): ExpandingArray<T> {
-            return ExpandingArray(ordered, capacity, arrayType)
-        }
-
-        /**
-         * @see .Array
-         */
-        fun <T> with(vararg array: T): ExpandingArray<T> {
-            @Suppress("UNCHECKED_CAST")
-            return ExpandingArray(array) as ExpandingArray<T>
         }
     }
 }

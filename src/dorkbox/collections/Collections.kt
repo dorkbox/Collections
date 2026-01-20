@@ -48,4 +48,15 @@ object Collections {
     fun nextPowerOfTwo(value: Int): Int {
         return 1 shl 32 - Integer.numberOfLeadingZeros(value - 1)
     }
+
+    fun tableSize(capacity: Int, loadFactor: Float): Int {
+        if (capacity < 0) { throw StateException("capacity must be >= 0: $capacity") }
+
+        val tableSize: Int = nextPowerOfTwo(
+            max(2.0, ceil((capacity / loadFactor).toDouble()).toInt().toDouble()).toInt()
+        )
+
+        if (tableSize > 1 shl 30) { throw StateException("The required capacity is too large: $capacity") }
+        return tableSize
+    }
 }

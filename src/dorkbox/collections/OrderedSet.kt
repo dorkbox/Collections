@@ -274,11 +274,6 @@ class OrderedSet<T> : ObjectSet<T> where T : Any, T : Comparable<T> {
             (set as OrderedSet<*>).removeIndex(nextIndex)
         }
 
-        @Suppress("USELESS_CAST", "UNCHECKED_CAST")
-        override fun toArray(): Array<T> {
-            return Array(set.size - nextIndex) { next() as Any } as Array<T>
-        }
-
         override fun toArray(array: Array<T>): Array<T> {
             var i = nextIndex
             while(hasNext) {

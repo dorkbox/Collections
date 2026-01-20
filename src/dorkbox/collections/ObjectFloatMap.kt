@@ -34,7 +34,7 @@
 
 package dorkbox.collections
 
-import dorkbox.collections.ObjectSet.Companion.tableSize
+import dorkbox.collections.Collections.tableSize
 import java.util.*
 
 /**
@@ -61,9 +61,6 @@ open class ObjectFloatMap<K: Any> : MutableMap<K, Float> {
 
     companion object {
         const val version = Collections.version
-
-        // This is used to tell the difference between a legit NULL value in a map, and a non-existent value
-        internal val dummy = Any()
     }
 
     /**
@@ -132,7 +129,9 @@ open class ObjectFloatMap<K: Any> : MutableMap<K, Float> {
      * @param loadFactor The loadFactor used to determine backing array growth
      */
     constructor(initialCapacity: Int = 51, loadFactor: Float = 0.8f) {
-        if ((loadFactor <= 0f || loadFactor >= 1f)) { throw StateException("loadFactor must be > 0 and < 1: $loadFactor") }
+        if ((loadFactor <= 0f || loadFactor >= 1f)) {
+            throw StateException("loadFactor must be > 0 and < 1: $loadFactor")
+        }
 
         this.loadFactor = loadFactor
         val tableSize = tableSize(initialCapacity, loadFactor)
@@ -228,7 +227,7 @@ open class ObjectFloatMap<K: Any> : MutableMap<K, Float> {
         return defaultValue
     }
 
-    open fun putAll(from: ObjectFloatMap<out K>) {
+    open fun putAll(from: ObjectFloatMap<K>) {
         ensureCapacity(from.mapSize)
 
         val keyTable = from.keyTable

@@ -33,9 +33,8 @@
  */
 package dorkbox.collections
 
+import dorkbox.collections.Collections.tableSize
 import java.util.*
-import kotlin.math.ceil
-import kotlin.math.max
 
 /**
  * An unordered set where the keys are objects. Null keys are not allowed. No allocation is done except when growing the table
@@ -65,17 +64,6 @@ open class ObjectSet<T: Any> : MutableSet<T> {
             val set = ObjectSet<T>()
             set.addAll(*array)
             return set
-        }
-
-        fun tableSize(capacity: Int, loadFactor: Float): Int {
-            if (capacity < 0) { throw StateException("capacity must be >= 0: $capacity") }
-
-            val tableSize: Int = Collections.nextPowerOfTwo(
-                max(2.0, ceil((capacity / loadFactor).toDouble()).toInt().toDouble()).toInt()
-            )
-
-            if (tableSize > 1 shl 30) { throw StateException("The required capacity is too large: $capacity") }
-            return tableSize
         }
     }
 

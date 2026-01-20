@@ -376,11 +376,6 @@ class OrderedMap<K, V> : ObjectMap<K, V> where K : Any, K : Comparable<K> {
             nextIndex = currentIndex
             currentIndex = -1
         }
-
-        @Suppress("USELESS_CAST", "UNCHECKED_CAST")
-        override fun toArray(): Array<K> {
-            return Array(keys.size - nextIndex) { next() as Any } as Array<K>
-        }
     }
 
     class OrderedMapValues<V>(map: OrderedMap<*, V?>) : Values<V?>(map) {
@@ -389,6 +384,9 @@ class OrderedMap<K, V> : ObjectMap<K, V> where K : Any, K : Comparable<K> {
         init {
             keys = map.keys_
         }
+
+        override val size: Int
+            get() = keys.size - nextIndex
 
         override fun reset() {
             currentIndex = -1
@@ -411,11 +409,6 @@ class OrderedMap<K, V> : ObjectMap<K, V> where K : Any, K : Comparable<K> {
             (map as OrderedMap<*, *>).removeIndex(currentIndex)
             nextIndex = currentIndex
             currentIndex = -1
-        }
-
-        override fun toArray(): Array<V?> {
-            @Suppress("UNCHECKED_CAST")
-            return Array(keys.size - nextIndex) { next() as Any } as Array<V?>
         }
     }
 }

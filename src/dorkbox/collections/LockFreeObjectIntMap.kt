@@ -160,9 +160,7 @@ class LockFreeObjectIntMap<K: Any> : MutableMap<K, Int>, Cloneable, Serializable
      * time this method is called. Use the [ObjectMap.Entries] constructor for nested or multithreaded iteration.
      */
     override val values: ObjectIntMap.Values
-        get() {
-            return mapREF[this].values()
-        }
+        get() = mapREF[this].values()
 
     /**
      * DO NOT MODIFY THE MAP VIA THIS (unless you synchronize around it!) It will result in unknown object visibility!

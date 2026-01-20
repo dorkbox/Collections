@@ -35,7 +35,6 @@
 package dorkbox.collections
 
 import dorkbox.collections.Collections.random
-import dorkbox.collections.ObjectMap.Companion.dummy
 import java.util.*
 import kotlin.math.max
 import kotlin.math.min
@@ -49,9 +48,12 @@ import kotlin.math.min
  *
  * @author Nathan Sweet
  */
-class ArrayMap<K: Any, V> : MutableMap<K, V?>{
+class ArrayMap<K: Any, V> : MutableMap<K, V?> {
     companion object {
         const val version = Collections.version
+
+        // This is used to tell the difference between a legit NULL value in a map, and a non-existent value
+        private val dummy = Any()
     }
 
     /**
@@ -220,17 +222,9 @@ class ArrayMap<K: Any, V> : MutableMap<K, V?>{
     override operator fun get(key: K): V? {
         val keys = keyTable
         var i = size_ - 1
-        if (key == null) {
-            while (i >= 0) {
-                if (keys[i] === key) return valueTable[i]!!
-                i--
-            }
-        }
-        else {
-            while (i >= 0) {
-                if (key == keys[i]) return valueTable[i]!!
-                i--
-            }
+        while (i >= 0) {
+            if (key == keys[i]) return valueTable[i]!!
+            i--
         }
         return null
     }
@@ -915,9 +909,12 @@ class ArrayMap<K: Any, V> : MutableMap<K, V?>{
         }
     }
 
-    class Entry<K: Any, V>(key: K, value: V, val map: ArrayMap<K, V>) : MutableMap.MutableEntry<K, V?> {
+    class Entry<K: Any, V>(
         // we know there will be at least one
-        override var key: K = key
+        override var key: K,
+        value: V,
+        val map: ArrayMap<K, V>) : MutableMap.MutableEntry<K, V?> {
+
         override var value: V? = value
 
         override fun setValue(newValue: V?): V? {
@@ -932,14 +929,9 @@ class ArrayMap<K: Any, V> : MutableMap<K, V?>{
         }
     }
 
-    class Values<V>(map: ArrayMap<Any, V?>) : MutableCollection<V>, MutableIterator<V> {
-        private val map: ArrayMap<Any, V?>
+    class Values<V>(val map: ArrayMap<Any, V?>) : MutableCollection<V>, MutableIterator<V> {
         var index = 0
         var valid = true
-
-        init {
-            this.map = map
-        }
 
         override fun hasNext(): Boolean {
             if (!valid) throw RuntimeException("#iterator() cannot be used nested.")
@@ -1047,14 +1039,9 @@ class ArrayMap<K: Any, V> : MutableMap<K, V?>{
         }
     }
 
-    class Keys<K: Any>(map: ArrayMap<K, Any>) : MutableSet<K>, MutableIterator<K> {
-        private val map: ArrayMap<K, Any>
+    class Keys<K: Any>(val map: ArrayMap<K, Any>) : MutableSet<K>, MutableIterator<K> {
         var index = 0
         var valid = true
-
-        init {
-            this.map = map
-        }
 
         override fun hasNext(): Boolean {
             if (!valid) throw RuntimeException("#iterator() cannot be used nested.")

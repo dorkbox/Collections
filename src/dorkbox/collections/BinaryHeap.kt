@@ -30,7 +30,6 @@
  */
 package dorkbox.collections
 
-import dorkbox.collections.BinaryHeap.Node
 import java.util.*
 
 /** A binary heap that stores nodes which each have a float value and are sorted either lowest first or highest first. The

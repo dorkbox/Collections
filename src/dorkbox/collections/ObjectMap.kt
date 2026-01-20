@@ -34,7 +34,7 @@
 
 package dorkbox.collections
 
-import dorkbox.collections.ObjectSet.Companion.tableSize
+import dorkbox.collections.Collections.tableSize
 import java.util.*
 
 /**
@@ -63,7 +63,7 @@ open class ObjectMap<K: Any, V> : MutableMap<K, V?> {
         const val version = Collections.version
 
         // This is used to tell the difference between a legit NULL value in a map, and a non-existent value
-        internal val dummy = Any()
+        private val dummy = Any()
     }
 
     /**
@@ -209,7 +209,7 @@ open class ObjectMap<K: Any, V> : MutableMap<K, V?> {
         return null
     }
 
-    open fun putAll(from: ObjectMap<out K, out V?>) {
+    open fun putAll(from: ObjectMap<K, V?>) {
         ensureCapacity(from.mapSize)
 
         val keyTable = from.keyTable
@@ -615,8 +615,7 @@ open class ObjectMap<K: Any, V> : MutableMap<K, V?> {
         return keys2!!
     }
 
-    class Entry<K: Any, V>(key: K, value: V, val map: ObjectMap<K, V?>) : MutableMap.MutableEntry<K, V?> {
-        override var key: K = key
+    class Entry<K: Any, V>(override var key: K, value: V, val map: ObjectMap<K, V?>) : MutableMap.MutableEntry<K, V?> {
         override var value: V? = value
 
         override fun setValue(newValue: V?): V? {

@@ -34,7 +34,7 @@
 
 package dorkbox.collections
 
-import dorkbox.collections.ObjectSet.Companion.tableSize
+import dorkbox.collections.Collections.tableSize
 import java.util.*
 
 /**
@@ -59,7 +59,6 @@ import java.util.*
  */
 @Suppress("unused")
 open class ObjectIntMap<K: Any> : MutableMap<K, Int> {
-
     companion object {
         const val version = Collections.version
     }
@@ -130,7 +129,9 @@ open class ObjectIntMap<K: Any> : MutableMap<K, Int> {
      * @param loadFactor The loadfactor used to determine backing array growth
      */
     constructor(initialCapacity: Int = 51, loadFactor: Float = 0.8f) {
-        if ((loadFactor <= 0f || loadFactor >= 1f)) { throw StateException("loadFactor must be > 0 and < 1: $loadFactor") }
+        if ((loadFactor <= 0f || loadFactor >= 1f)) {
+            throw StateException("loadFactor must be > 0 and < 1: $loadFactor")
+        }
 
         this.loadFactor = loadFactor
         val tableSize = tableSize(initialCapacity, loadFactor)
@@ -145,7 +146,10 @@ open class ObjectIntMap<K: Any> : MutableMap<K, Int> {
     /**
      * Creates a new map identical to the specified map.
      */
-    constructor(map: ObjectIntMap<out K>) : this((map.keyTable.size * map.loadFactor).toInt(), map.loadFactor) {
+    constructor(map: ObjectIntMap<out K>) : this(
+        (map.keyTable.size * map.loadFactor).toInt(), map.loadFactor
+    ) {
+
         System.arraycopy(map.keyTable, 0, keyTable, 0, map.keyTable.size)
         System.arraycopy(map.valueTable, 0, valueTable, 0, map.valueTable.size)
         mapSize = map.mapSize
@@ -206,7 +210,7 @@ open class ObjectIntMap<K: Any> : MutableMap<K, Int> {
         return null
     }
 
-    open fun putAll(from: ObjectIntMap<out K>) {
+    open fun putAll(from: ObjectIntMap<K>) {
         ensureCapacity(from.mapSize)
 
         val keyTable = from.keyTable
