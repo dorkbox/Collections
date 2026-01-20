@@ -877,13 +877,12 @@ open class ObjectMap<K: Any, V> : MutableMap<K, V?> {
         }
 
         /** Returns a new array containing the remaining values.  */
-        open fun toArray(): Array<V?> {
-            @Suppress("UNCHECKED_CAST")
-            return Array(map.mapSize) { next() as Any } as Array<V?>
+        fun toArray(): Array<V> {
+            return toArray(arrayOfNulls<Any>(size) as Array<V>)
         }
 
         /** Adds the remaining values to the specified array.  */
-        fun <T: V> toArray(array: Array<T?>): Array<T?> {
+        fun <T: V> toArray(array: Array<T>): Array<T> {
             var index = 0
             while (hasNext) {
                 array[index++] = next() as T
@@ -974,9 +973,8 @@ open class ObjectMap<K: Any, V> : MutableMap<K, V?> {
         }
 
         /** Returns a new array containing the remaining keys.  */
-        @Suppress("USELESS_CAST")
-        open fun toArray(): Array<K> {
-            return Array(map.mapSize) { next() as Any } as Array<K>
+        fun toArray(): Array<K> {
+            return toArray(arrayOfNulls<Any>(size) as Array<K>)
         }
 
         /** Adds the remaining keys to the array.  */

@@ -930,7 +930,17 @@ class LongMap<V> : MutableMap<Long, V?> {
          */
         fun toArray(): Array<V> {
             @Suppress("UNCHECKED_CAST")
-            return Array(map.size_) {next() as Any} as Array<V>
+            return toArray(arrayOfNulls<Any>(size) as Array<V>)
+        }
+
+        /** Adds the remaining values to the specified array.  */
+        fun <T: V> toArray(array: Array<T>): Array<T> {
+            var index = 0
+            while (hasNext) {
+                @Suppress("UNCHECKED_CAST")
+                array[index++] = next() as T
+            }
+            return array
         }
     }
 

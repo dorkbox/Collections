@@ -553,9 +553,9 @@ open class ObjectSet<T: Any> : MutableSet<T> {
         /**
          * Returns a new array containing the remaining values.
          */
-        open fun toArray(): Array<K> {
+        fun toArray(): Array<K> {
             @Suppress("UNCHECKED_CAST")
-            return Array<Any>(set.size) { next() } as Array<K>
+            return toArray(arrayOfNulls<Any>(size) as Array<K>)
         }
 
         /**

@@ -1027,14 +1027,14 @@ class ArrayMap<K: Any, V> : MutableMap<K, V?> {
             index = 0
         }
 
-        fun toArray(): ExpandingArray<V> {
+        inline fun <reified V> toArray(): ExpandingArray<V> {
             @Suppress("UNCHECKED_CAST")
-            return ExpandingArray(true, map.valueTable, index, map.size_ - index) as ExpandingArray<V>
+            return ExpandingArray(true, map.valueTable, index, size) as ExpandingArray<V>
         }
 
         fun toArray(array: ExpandingArray<V>): ExpandingArray<V> {
             @Suppress("UNCHECKED_CAST")
-            array.addAll(map.valueTable as Array<V>, index, map.size_ - index)
+            array.addAll(map.valueTable as Array<V>, index, size)
             return array
         }
     }
@@ -1130,8 +1130,9 @@ class ArrayMap<K: Any, V> : MutableMap<K, V?> {
             index = 0
         }
 
-        fun toArray(): ExpandingArray<K?> {
-            return ExpandingArray(true, map.keyTable, index, map.size_ - index)
+        inline fun <reified K: Any> toArray(): ExpandingArray<K> {
+            @Suppress("UNCHECKED_CAST")
+            return ExpandingArray(true, map.keyTable, index, size - index) as ExpandingArray<K>
         }
 
         fun toArray(array: ExpandingArray<K>): ExpandingArray<K> {

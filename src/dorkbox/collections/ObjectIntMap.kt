@@ -732,7 +732,7 @@ open class ObjectIntMap<K: Any> : MutableMap<K, Int> {
         }
 
         override fun contains(element: Entry<K>): Boolean {
-           return (map.get(element.key) == element.value)
+            return (map.get(element.key) == element.value)
         }
 
         override fun iterator(): Entries<K> {
@@ -960,9 +960,8 @@ open class ObjectIntMap<K: Any> : MutableMap<K, Int> {
         }
 
         /** Returns a new array containing the remaining keys.  */
-        @Suppress("USELESS_CAST")
-        open fun toArray(): Array<K> {
-            return Array(map.mapSize) { next() as Any } as Array<K>
+        fun toArray(): Array<K> {
+            return toArray(arrayOfNulls<Any>(size) as Array<K>)
         }
 
         /** Adds the remaining keys to the array.  */
