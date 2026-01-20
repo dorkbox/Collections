@@ -939,7 +939,7 @@ class ArrayMap<K: Any, V> : MutableMap<K, V?> {
         }
 
         override val size: Int
-            get() = map.size_
+            get() = map.size_ - index
 
         override fun clear() {
             map.clear()
