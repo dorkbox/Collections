@@ -37,17 +37,20 @@ import java.util.*
  * @author Nathan Sweet
  */
 @Suppress("unused")
-class BinaryHeap<T : BinaryHeap.Node?> @JvmOverloads constructor(capacity: Int = 16, private val isMaxHeap: Boolean = false) {
+class BinaryHeap<T : BinaryHeap.Node?> {
+    private val isMaxHeap: Boolean
+
+    constructor(capacity: Int = 16, isMaxHeap: Boolean = false) {
+        this.isMaxHeap = isMaxHeap
+        nodes = arrayOfNulls(capacity)
+    }
+
     companion object {
         const val version = Collections.version
     }
 
     var size = 0
     private var nodes: Array<Node?>
-
-    init {
-        nodes = arrayOfNulls(capacity)
-    }
 
     /**
      * Adds the node to the heap using its current value. The node should not already be in the heap.
